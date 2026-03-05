@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Being a Stranger in Your Own Family</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0806;
+      --bg2: #100d09;
+      --amber: #c8883a;
+      --amber-light: #e8a84e;
+      --amber-pale: #f5c87a;
+      --cream: #f0e8d8;
+      --muted: #8a7a68;
+      --muted2: #5a4e42;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.85;
+      overflow-x: hidden;
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.35;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 4rem 2rem;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(200,136,58,0.07) 0%, transparent 70%);
+    }
+
+    /* Floating orb */
+    .orb {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,136,58,0.06) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: breathe 8s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+    }
+
+    .eyeline {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 2.5rem;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .eyeline::before, .eyeline::after {
+      content: '';
+      display: block;
+      width: 60px; height: 1px;
+      background: var(--amber);
+      opacity: 0.4;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.2rem, 9vw, 7.5rem);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      position: relative;
+    }
+
+    .hero-title .line1 { display: block; color: var(--cream); }
+    .hero-title .line2 {
+      display: block;
+      font-style: italic;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--amber);
+      font-size: 0.9em;
+    }
+    .hero-title .line3 { display: block; color: var(--cream); font-size: 0.75em; font-weight: 400; }
+
+    .hero-sub {
+      margin-top: 2.5rem;
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 480px;
+    }
+
+    .scroll-cue {
+      margin-top: 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted2);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      animation: fadeup 3s ease-in-out infinite;
+    }
+    .scroll-cue .arrow { font-size: 1rem; }
+    @keyframes fadeup {
+      0%, 100% { opacity: 0.3; transform: translateY(0); }
+      50% { opacity: 0.8; transform: translateY(6px); }
+    }
+
+    /* ── ARTICLE ── */
+    .article-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 6rem 2rem 8rem;
+      position: relative;
+    }
+
+    /* Opening quote */
+    .opening-quote {
+      border-left: 2px solid var(--amber);
+      padding: 1.5rem 0 1.5rem 2rem;
+      margin-bottom: 4rem;
+      position: relative;
+    }
+    .opening-quote p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      line-height: 1.6;
+      color: var(--amber-pale);
+    }
+
+    p {
+      margin-bottom: 1.8rem;
+      color: rgba(240,232,216,0.88);
+    }
+
+    /* Dropcap */
+    .dropcap::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 5.5rem;
+      font-weight: 900;
+      line-height: 0.8;
+      float: left;
+      margin: 0.1em 0.15em -0.1em 0;
+      color: var(--amber);
+    }
+
+    /* Section break */
+    .section-break {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      margin: 3.5rem 0;
+      color: var(--amber);
+      opacity: 0.5;
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+    }
+    .section-break::before, .section-break::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--amber);
+      opacity: 0.3;
+    }
+
+    /* Pull quotes */
+    .pull-quote {
+      margin: 3rem -2rem;
+      padding: 2.5rem 3rem;
+      background: linear-gradient(135deg, rgba(200,136,58,0.06) 0%, transparent 100%);
+      border-top: 1px solid rgba(200,136,58,0.2);
+      border-bottom: 1px solid rgba(200,136,58,0.2);
+      text-align: center;
+      position: relative;
+    }
+    .pull-quote p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.6rem;
+      line-height: 1.5;
+      color: var(--amber-pale);
+      margin: 0;
+    }
+
+    /* Highlighted dialogue */
+    .whisper {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--amber);
+      margin: 2rem 0 2rem 2rem;
+      opacity: 0.85;
+    }
+
+    /* Italicized internal thoughts */
+    em {
+      font-style: italic;
+      color: rgba(240,232,216,0.7);
+    }
+
+    /* Callout lines */
+    .callout {
+      background: rgba(200,136,58,0.04);
+      border-left: 3px solid var(--amber);
+      padding: 1.2rem 1.5rem;
+      margin: 2.5rem 0;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--cream);
+      font-size: 1.05rem;
+    }
+
+    /* Closing */
+    .sign-off {
+      margin-top: 5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--muted2);
+      font-style: italic;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    .sign-off strong {
+      display: block;
+      margin-top: 0.5rem;
+      font-family: 'Playfair Display', serif;
+      font-style: normal;
+      font-size: 1.1rem;
+      color: var(--amber);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 4rem 2rem 3rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    footer p {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      color: var(--muted2);
+      margin: 0;
+    }
+    footer a {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200,136,58,0.3);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    footer a:hover {
+      color: var(--amber-pale);
+      border-color: var(--amber-pale);
+    }
+
+    /* ── ANIMATIONS ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--amber), var(--amber-pale));
+      width: 0%;
+      z-index: 999;
+      transition: width 0.1s linear;
+    }
+
+    /* ── DECORATIVE INITIAL SCENE ── */
+    .scene {
+      text-align: center;
+      margin: 4rem 0 3rem;
+      position: relative;
+    }
+    .scene .table-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--muted2);
+    }
+    .scene .visual {
+      font-size: 3rem;
+      margin: 1rem 0 0.5rem;
+      opacity: 0.6;
+      filter: grayscale(0.3);
+    }
+
+    @media (max-width: 600px) {
+      .pull-quote { margin: 3rem 0; padding: 2rem 1.5rem; }
+      .pull-quote p { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb"></div>
+  <div class="eyeline">A Personal Essay</div>
+  <h1 class="hero-title">
+    <span class="line1">Being a</span>
+    <span class="line2">"Stranger"</span>
+    <span class="line3">in Your Own Family</span>
+  </h1>
+  <p class="hero-sub">On the quiet grief of sitting at a table where no one truly knows you.</p>
+  <div class="scroll-cue">
+    <span>Read</span>
+    <span class="arrow">↓</span>
+  </div>
+</section>
+
+<!-- ARTICLE -->
+<main class="article-wrap">
+
+  <div class="opening-quote fade-in">
+    <p>"Does anyone here actually know me?"</p>
+  </div>
+
+  <div class="scene fade-in">
+    <div class="table-text">The dinner table</div>
+    <div class="visual">🕯️</div>
+  </div>
+
+  <p class="dropcap fade-in">You sit at the dinner table surrounded by your family. Your blood. The people who've known you your entire life.</p>
+
+  <p class="fade-in">And you've never felt more alone.</p>
+
+  <p class="fade-in">They're laughing at jokes you don't find funny. They're talking about things you don't care about. They're sharing opinions you don't agree with. They're living lives that feel completely foreign to yours.</p>
+
+  <p class="fade-in">And you're just sitting there, smiling, nodding, pretending to belong.</p>
+
+  <div class="pull-quote fade-in">
+    <p>But inside, you're screaming: "Does anyone here actually know me?"</p>
+  </div>
+
+  <p class="fade-in">Because the truth is, they don't. Not really. Not the real you.</p>
+
+  <p class="fade-in">They know the version of you that fits into their idea of family. The role you're supposed to play. The person they expect you to be.</p>
+
+  <p class="fade-in">But the actual you? The one with dreams they don't understand? With beliefs they don't share? With a life they don't approve of? With feelings they dismiss?</p>
+
+  <p class="fade-in">That person is a stranger to them.</p>
+
+  <p class="fade-in">And somehow, that makes you a stranger at your own family table.</p>
+
+  <div class="section-break fade-in">✦</div>
+
+  <p class="fade-in">You grew up in the same house. You share the same memories. You have the same last name. You're connected by blood and history and years.</p>
+
+  <p class="fade-in">But you don't feel connected. You feel different. Like you were born into the wrong family. Like you're visiting someone else's home. Like you're playing a part in a play you never auditioned for.</p>
+
+  <p class="fade-in">And the worst part? Nobody else seems to notice.</p>
+
+  <p class="fade-in">They're comfortable. They're content. They fit together like puzzle pieces. And then there's you, shaped differently, thinking differently, feeling differently.</p>
+
+  <div class="callout fade-in">The square peg in a family of round holes.</div>
+
+  <p class="fade-in">You try to explain yourself, and they don't get it. You try to share what matters to you, and they change the subject. You try to be honest about who you are, and they look at you like you've grown a second head.</p>
+
+  <span class="whisper fade-in">"Why are you like this?" they ask. Not with curiosity. With disappointment.</span>
+  <span class="whisper fade-in">"You've changed," they say. Like it's an accusation. Like staying the same was a promise you broke.</span>
+  <span class="whisper fade-in">"You're being too sensitive," they tell you when their words hurt. "We're just joking. Why can't you take a joke?"</span>
+
+  <p class="fade-in">So you learn to stay quiet. To keep your thoughts to yourself. To hide the parts of you they wouldn't understand anyway.</p>
+
+  <p class="fade-in">You learn to be two people: the one you really are, and the one they need you to be.</p>
+
+  <p class="fade-in">And the gap between those two people gets wider every year.</p>
+
+  <div class="section-break fade-in">✦</div>
+
+  <p class="fade-in">You watch your siblings fit in effortlessly. They laugh at the right times. They agree with the right opinions. They live the right kind of lives.</p>
+
+  <p class="fade-in"><em>And you wonder: What's wrong with me? Why can't I just be like them? Why do I have to be different?</em></p>
+
+  <p class="fade-in">You feel guilty for not feeling at home in your own home. Ashamed for wanting to leave family gatherings early. Broken for not feeling the warmth everyone says you're supposed to feel with family.</p>
+
+  <p class="fade-in">Because family is supposed to be where you belong, right? Where you're loved unconditionally. Where you can be yourself.</p>
+
+  <p class="fade-in">But what if you can't be yourself? What if being yourself means being misunderstood, judged, or rejected?</p>
+
+  <div class="pull-quote fade-in">
+    <p>What if your family loves you, but they don't actually know you?</p>
+  </div>
+
+  <p class="fade-in">That's the question that keeps you up at night. The fear that keeps you hiding. The pain that sits in your chest every time you're with them.</p>
+
+  <p class="fade-in">And holidays? Holidays are the worst. Everyone else talks about how excited they are for family time. How they can't wait to go home. How much they miss everyone.</p>
+
+  <p class="fade-in">And you're counting the days until it's over. Planning your exit strategy. Bracing yourself for the comments, the questions, the disappointment in their eyes.</p>
+
+  <span class="whisper fade-in">"When are you going to settle down?"</span>
+  <span class="whisper fade-in">"Why don't you visit more often?"</span>
+  <span class="whisper fade-in">"You're too focused on yourself."</span>
+  <span class="whisper fade-in">"You used to be so much easier."</span>
+
+  <p class="fade-in">Every question a reminder that you're not meeting their expectations. Every comment a confirmation that they don't understand you. Every gathering another performance where you play the part they want to see.</p>
+
+  <p class="fade-in">And you leave feeling more lonely than when you arrived. Because being alone is one thing. But being lonely in a room full of your own family? That's a different kind of hurt.</p>
+
+  <div class="section-break fade-in">✦</div>
+
+  <p class="fade-in">It makes you question everything. Your choices. Your path. Your identity.</p>
+
+  <p class="fade-in"><em>Maybe I am the problem, you think. Maybe I should just conform. Maybe I should just be who they want me to be. It would be easier. It would hurt less.</em></p>
+
+  <p class="fade-in">But then you remember: You tried that. You spent years being who they wanted. And it nearly destroyed you.</p>
+
+  <p class="fade-in">Because you can't live your life for other people. Not even family. Not even the people who raised you.</p>
+
+  <p class="fade-in">You have to live your life for yourself.</p>
+
+  <p class="fade-in">Even if it means sitting at that dinner table feeling like a stranger. Even if it means being the one who doesn't fit. Even if it means being misunderstood by the people who are supposed to understand you most.</p>
+
+  <div class="section-break fade-in">✦</div>
+
+  <div class="callout fade-in">Here's what I need you to know: You're not broken for feeling this way.</div>
+
+  <p class="fade-in">You're not selfish for wanting to be yourself. You're not wrong for being different from your family.</p>
+
+  <p class="fade-in">Sometimes we outgrow our families. Not in love, necessarily. But in understanding. In values. In life paths.</p>
+
+  <p class="fade-in">Sometimes the people who raised us can't comprehend the person we're becoming. Not because they don't care. But because we're growing in directions they never imagined. Living lives they can't relate to. Becoming someone they don't recognize.</p>
+
+  <p class="fade-in">And that's not your fault. It's not their fault. It's just what happens sometimes.</p>
+
+  <p class="fade-in">You can love your family and still feel like a stranger around them. Both things can be true.</p>
+
+  <p class="fade-in">You can be grateful for what they gave you while also acknowledging that they can't give you everything you need. Especially understanding. Especially acceptance of who you really are.</p>
+
+  <div class="pull-quote fade-in">
+    <p>And that's painful. It's a unique kind of grief. Mourning the family connection you wish you had while sitting right next to the family you actually have.</p>
+  </div>
+
+  <p class="fade-in">But here's the beautiful part: Family isn't just blood.</p>
+
+  <p class="fade-in">The people who truly see you, who understand you, who accept you exactly as you are, those people are your family too. Even if you're not related. Even if you met them later in life. Even if you found them instead of being born into them.</p>
+
+  <p class="fade-in">You can build your own family. One that speaks your language. One where you don't have to translate yourself. One where you can be the real you without fear.</p>
+
+  <p class="fade-in">And maybe, someday, your birth family will understand you better. Maybe they'll grow. Maybe the gap will close a little.</p>
+
+  <p class="fade-in">Or maybe it won't. Maybe you'll always be a little bit of a stranger at that dinner table.</p>
+
+  <p class="fade-in">And if that's the case, it's okay to love them from a distance. To set boundaries. To protect your peace. To choose yourself.</p>
+
+  <div class="callout fade-in">Because you deserve to be somewhere you're not just loved, you're known.</div>
+
+  <p class="fade-in">You deserve to sit at a table where you don't have to hide. Where your voice matters. Where being yourself isn't something you apologize for.</p>
+
+  <p class="fade-in">You deserve to belong.</p>
+
+  <p class="fade-in">And if you can't belong with the family you were born into, you can belong with the family you choose. The friends who become family. The community that embraces you. The people who get you without explanation.</p>
+
+  <div class="section-break fade-in">✦</div>
+
+  <p class="fade-in">So to everyone sitting at that dinner table right now, feeling like a stranger in their own family:</p>
+
+  <p class="fade-in">You're not alone. There are so many of us. Sitting at our own tables, feeling the same way, wondering if we're the only ones.</p>
+
+  <div class="pull-quote fade-in">
+    <p>We see you. We understand you. We speak your language.</p>
+  </div>
+
+  <p class="fade-in">And you belong with us.</p>
+  <p class="fade-in">Even if you don't belong there.</p>
+
+  <div class="sign-off fade-in">
+    With love and understanding,
+    <strong>A fellow stranger at the family table</strong>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <p>Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+</footer>
+
+<script>
+  // Progress bar
+  const progressBar = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = (scrollTop / docHeight * 100) + '%';
+  });
+
+  // Fade in on scroll
+  const faders = document.querySelectorAll('.fade-in');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  faders.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

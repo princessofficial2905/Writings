@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>It's Time to Forgive Yourself — Princess</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@200;300;400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #070a12;
+  --bg2:       #0b0f1a;
+  --blue:      #4a6fa5;
+  --blue-dim:  #2a3f60;
+  --blue-pale: #8aafd4;
+  --silver:    #c8d4e4;
+  --silver-dim:#7a8a9a;
+  --white:     #eef2f8;
+  --gold:      #d4aa60;
+  --gold-dim:  #7a5f2a;
+  --flame1:    #ff9d3a;
+  --flame2:    #ff6b1a;
+  --wax:       #e8dfd0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--silver);
+  font-family: 'Libre Baskerville', serif;
+  font-size: 18px;
+  line-height: 1.95;
+  overflow-x: hidden;
+}
+
+/* Noise grain */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:9999;
+  opacity:0.3;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* Ambient light */
+.amb { position:fixed; border-radius:50%; filter:blur(140px); pointer-events:none; z-index:0; }
+.amb1 { width:600px;height:600px;background:#1a2a4a;top:-100px;right:-150px;opacity:0.25; }
+.amb2 { width:400px;height:400px;background:#0a1525;bottom:-100px;left:-100px;opacity:0.4; }
+.amb-candle { position:fixed; width:300px;height:300px;background:rgba(255,157,58,0.06);
+  border-radius:50%;top:20%;left:50%;transform:translateX(-50%);filter:blur(80px);
+  pointer-events:none;z-index:0;
+  animation: candleAmb 3s ease-in-out infinite alternate; }
+
+@keyframes candleAmb {
+  from { opacity:0.6; transform:translateX(-50%) scale(1); }
+  to   { opacity:1;   transform:translateX(-50%) scale(1.15); }
+}
+
+/* ========== HERO ========== */
+.hero {
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:5rem 2rem 3rem;
+  position:relative;
+  z-index:1;
+}
+
+/* Star field */
+.stars {
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+.star {
+  position:absolute;
+  border-radius:50%;
+  background:#c8d4e4;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes twinkle {
+  0%,100%{ opacity:var(--lo,0.1); transform:scale(1); }
+  50%    { opacity:var(--hi,0.7); transform:scale(1.4); }
+}
+
+.hero-eyebrow {
+  font-family:'Josefin Sans',sans-serif;
+  font-weight:200;
+  font-size:0.65rem;
+  letter-spacing:0.45em;
+  color:var(--blue);
+  text-transform:uppercase;
+  margin-bottom:2.5rem;
+  opacity:0;
+  animation:fadeUp 1.2s ease forwards 0.5s;
+}
+
+.hero-title {
+  font-family:'IM Fell English',serif;
+  font-weight:400;
+  font-size:clamp(2.8rem,8vw,7rem);
+  line-height:1.08;
+  color:var(--white);
+  opacity:0;
+  animation:fadeUp 1.4s ease forwards 0.8s;
+  position:relative;
+  z-index:2;
+}
+
+.hero-title em {
+  display:block;
+  font-style:italic;
+  color:var(--blue-pale);
+  font-size:0.75em;
+  margin-bottom:0.2em;
+}
+
+.hero-title .main {
+  display:block;
+  background: linear-gradient(135deg, var(--white) 30%, var(--blue-pale) 70%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.hero-opener {
+  font-family:'Libre Baskerville',serif;
+  font-style:italic;
+  font-size:clamp(1rem,1.8vw,1.2rem);
+  color:var(--silver-dim);
+  max-width:460px;
+  margin:2rem auto 0;
+  line-height:1.8;
+  opacity:0;
+  animation:fadeUp 1.4s ease forwards 1.1s;
+}
+
+.hero-author {
+  margin-top:2.8rem;
+  font-family:'Josefin Sans',sans-serif;
+  font-weight:200;
+  font-size:0.6rem;
+  letter-spacing:0.35em;
+  color:var(--gold-dim);
+  text-transform:uppercase;
+  opacity:0;
+  animation:fadeIn 1.5s ease forwards 1.8s;
+}
+
+/* ========== CANDLE SECTION ========== */
+.candle-section {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:3rem 2rem 1rem;
+  position:relative;
+  z-index:1;
+}
+
+canvas#candleCanvas {
+  display:block;
+}
+
+.candle-caption {
+  margin-top:1.5rem;
+  font-family:'Josefin Sans',sans-serif;
+  font-weight:200;
+  font-size:0.6rem;
+  letter-spacing:0.35em;
+  text-transform:uppercase;
+  color:var(--blue-dim);
+  opacity:0.8;
+}
+
+/* ========== WEIGHT TICKER ========== */
+.weight-section {
+  max-width:700px;
+  margin:3rem auto;
+  padding:0 2rem;
+  position:relative;
+  z-index:1;
+}
+
+.weight-items {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0.8rem;
+}
+@media(max-width:500px){ .weight-items{grid-template-columns:1fr;} }
+
+.weight-item {
+  padding:1rem 1.2rem;
+  border:1px solid rgba(74,111,165,0.15);
+  background:rgba(74,111,165,0.04);
+  font-family:'IM Fell English',serif;
+  font-style:italic;
+  font-size:clamp(0.9rem,1.3vw,1rem);
+  color:var(--silver-dim);
+  position:relative;
+  overflow:hidden;
+  transition:border-color 0.5s, color 0.5s;
+}
+
+.weight-item.released {
+  border-color:rgba(74,111,165,0.04);
+  color:rgba(122,138,154,0.3);
+  text-decoration:line-through;
+  text-decoration-color:rgba(74,111,165,0.3);
+}
+
+.weight-item::before {
+  content:'';
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:2px;
+  background:linear-gradient(to bottom, transparent, var(--blue-dim), transparent);
+}
+
+/* ========== ARTICLE ========== */
+.article-wrap {
+  max-width:700px;
+  margin:0 auto;
+  padding:2rem 2rem 6rem;
+  position:relative;
+  z-index:1;
+}
+
+.section-rule {
+  display:flex;
+  align-items:center;
+  gap:1.2rem;
+  margin:3.5rem 0;
+}
+.rule-line {
+  flex:1;
+  height:1px;
+  background:linear-gradient(to right, transparent, var(--blue-dim));
+}
+.rule-line.r { background:linear-gradient(to left, transparent, var(--blue-dim)); }
+.rule-glyph {
+  font-family:'Josefin Sans',sans-serif;
+  font-size:0.55rem;
+  letter-spacing:0.4em;
+  color:var(--blue);
+  text-transform:uppercase;
+  opacity:0.6;
+}
+
+.article-body p {
+  margin-bottom:1.9rem;
+  font-size:clamp(1rem,1.4vw,1.12rem);
+  line-height:2;
+  color:var(--silver);
+  hyphens:none;
+}
+
+/* The bold turning-point lines */
+.turn {
+  font-family:'IM Fell English',serif;
+  font-style:italic;
+  font-size:clamp(1.15rem,2vw,1.45rem) !important;
+  color:var(--white) !important;
+  text-align:center;
+  margin:2.5rem 0 !important;
+  line-height:1.75 !important;
+  position:relative;
+  padding:0 1rem;
+}
+.turn::before,.turn::after {
+  content:'';
+  display:block;
+  width:30px;
+  height:1px;
+  background:var(--blue-dim);
+  margin:1.2rem auto;
+}
+
+/* Question block */
+.question-block {
+  margin:2.5rem 0;
+  padding:2rem 2rem 2rem 2.5rem;
+  border-left:1px solid var(--blue);
+  background:rgba(74,111,165,0.04);
+  position:relative;
+}
+.question-block::before {
+  content:'?';
+  position:absolute;
+  top:-0.5rem;left:-0.65rem;
+  font-family:'IM Fell English',serif;
+  font-style:italic;
+  font-size:2rem;
+  color:var(--blue);
+  background:var(--bg);
+  padding:0 4px;
+  line-height:1;
+  opacity:0.5;
+}
+.question-block p {
+  font-family:'IM Fell English',serif;
+  font-style:italic;
+  font-size:clamp(1rem,1.6vw,1.18rem) !important;
+  color:var(--blue-pale) !important;
+  margin-bottom:0.5rem !important;
+  line-height:1.8 !important;
+}
+.question-block p:last-child{ margin-bottom:0 !important; }
+
+/* Compassion mirror */
+.compassion-block {
+  margin:2.5rem 0;
+  padding:2.5rem;
+  background:linear-gradient(135deg, rgba(74,111,165,0.06) 0%, rgba(10,15,25,0) 100%);
+  border:1px solid rgba(74,111,165,0.12);
+  text-align:center;
+}
+.compassion-block p {
+  font-family:'IM Fell English',serif;
+  font-style:italic;
+  font-size:clamp(1.1rem,1.8vw,1.3rem) !important;
+  color:var(--blue-pale) !important;
+  line-height:1.85 !important;
+  margin-bottom:0.6rem !important;
+}
+.compassion-block p:last-child{ margin-bottom:0 !important; }
+
+/* The three freedoms */
+.freedoms {
+  margin:3rem 0;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+.freedom-row {
+  display:flex;
+  align-items:center;
+  padding:1rem 0;
+  border-bottom:1px solid rgba(74,111,165,0.1);
+  gap:1.5rem;
+}
+.freedom-row:first-child{ border-top:1px solid rgba(74,111,165,0.1); }
+.freedom-num {
+  font-family:'Josefin Sans',sans-serif;
+  font-weight:200;
+  font-size:2rem;
+  color:rgba(74,111,165,0.2);
+  width:2.5rem;
+  flex-shrink:0;
+  line-height:1;
+}
+.freedom-text {
+  font-family:'IM Fell English',serif;
+  font-style:italic;
+  font-size:clamp(0.95rem,1.5vw,1.1rem);
+  color:var(--silver-dim);
+  line-height:1.7;
+  margin:0;
+}
+.freedom-text strong {
+  color:var(--gold);
+  font-style:normal;
+  font-weight:400;
+}
+
+/* The final affirmation */
+.affirmation {
+  text-align:center;
+  margin:4rem 0 2rem;
+  padding:3rem 2rem;
+  position:relative;
+}
+.affirmation::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  border:1px solid rgba(74,111,165,0.08);
+  background:radial-gradient(ellipse at center, rgba(74,111,165,0.05) 0%, transparent 70%);
+}
+.affirmation-main {
+  font-family:'IM Fell English',serif;
+  font-style:italic;
+  font-size:clamp(1.6rem,3.5vw,2.6rem);
+  color:var(--white);
+  line-height:1.4;
+  position:relative;
+  z-index:1;
+}
+.affirmation-sub {
+  margin-top:1.2rem;
+  font-family:'Josefin Sans',sans-serif;
+  font-weight:200;
+  font-size:0.62rem;
+  letter-spacing:0.35em;
+  color:var(--blue);
+  text-transform:uppercase;
+  position:relative;
+  z-index:1;
+}
+
+/* Sign off */
+.signoff {
+  margin-top:4rem;
+  border-top:1px solid rgba(74,111,165,0.12);
+  padding-top:2.5rem;
+  text-align:right;
+}
+.signoff p {
+  font-family:'IM Fell English',serif;
+  font-style:italic;
+  color:var(--silver-dim);
+  font-size:clamp(0.95rem,1.4vw,1.05rem);
+  margin-bottom:0.4rem;
+}
+.signoff .sig-name {
+  color:var(--blue-pale);
+  font-size:clamp(1rem,1.6vw,1.2rem);
+}
+
+/* ========== FOOTER ========== */
+footer {
+  z-index:1;
+  position:relative;
+  text-align:center;
+  padding:4rem 2rem 5rem;
+  border-top:1px solid rgba(74,111,165,0.08);
+}
+footer::before {
+  content:'';
+  display:block;
+  width:1px;height:60px;
+  background:linear-gradient(to bottom, var(--blue-dim), transparent);
+  margin:0 auto 2.5rem;
+}
+.footer-pub {
+  font-family:'Josefin Sans',sans-serif;
+  font-weight:200;
+  font-size:0.62rem;
+  letter-spacing:0.32em;
+  color:var(--gold-dim);
+  text-transform:uppercase;
+  margin-bottom:0.6rem;
+}
+.footer-link {
+  color:var(--blue-pale);
+  text-decoration:none;
+  border-bottom:1px solid rgba(138,175,212,0.3);
+  padding-bottom:1px;
+  transition:color 0.3s, border-color 0.3s;
+}
+.footer-link:hover { color:var(--white); border-color:var(--white); }
+.footer-byline {
+  margin-top:1.5rem;
+  font-family:'Libre Baskerville',serif;
+  font-style:italic;
+  font-size:0.85rem;
+  color:var(--silver-dim);
+  opacity:0.5;
+}
+
+/* Reveal */
+.reveal {
+  opacity:0;
+  transform:translateY(22px);
+  transition:opacity 0.95s ease, transform 0.95s ease;
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+@keyframes fadeIn { from{opacity:0}to{opacity:1} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)} }
+</style>
+</head>
+<body>
+
+<div class="amb amb1"></div>
+<div class="amb amb2"></div>
+<div class="amb-candle"></div>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="stars" id="starField"></div>
+
+  <p class="hero-eyebrow">A letter to the one still punishing themselves</p>
+  <h1 class="hero-title">
+    <em>It's Time to</em>
+    <span class="main">Forgive Yourself</span>
+  </h1>
+  <p class="hero-opener">You've been carrying it for so long, haven't you?</p>
+  <p class="hero-author">Written by Princess</p>
+</section>
+
+<!-- ========== CANDLE ========== -->
+<div class="candle-section">
+  <canvas id="candleCanvas" width="200" height="320"></canvas>
+  <p class="candle-caption">let it burn down, let it go</p>
+</div>
+
+<!-- ========== WEIGHT ITEMS ========== -->
+<div class="weight-section reveal">
+  <div class="weight-items" id="weightGrid">
+    <div class="weight-item">The words you said that hurt someone.</div>
+    <div class="weight-item">The words you didn't say when you should have.</div>
+    <div class="weight-item">The choice you made that changed everything.</div>
+    <div class="weight-item">The choice you didn't make that still haunts you.</div>
+    <div class="weight-item">The questions you replay over and over.</div>
+    <div class="weight-item">The version of yourself you wish you had been.</div>
+  </div>
+</div>
+
+<!-- ========== ARTICLE ========== -->
+<div class="article-wrap">
+  <div class="section-rule reveal">
+    <div class="rule-line"></div>
+    <div class="rule-glyph">let go</div>
+    <div class="rule-line r"></div>
+  </div>
+
+  <div class="article-body">
+
+    <p class="reveal">You replay it over and over. What if you had done it differently? What if you had been better, smarter, stronger, braver? What if you had just known then what you know now?</p>
+
+    <p class="reveal">You punish yourself with these questions. Every single day. You wake up and the first thought is often about what you did wrong. You go to sleep and it's the last thing on your mind.</p>
+
+    <p class="reveal">You've apologized a thousand times in your head. You've imagined going back and fixing it. You've beaten yourself up more than anyone else ever could.</p>
+
+    <p class="turn reveal">And here's what I need you to hear:<br>It's time to forgive yourself.</p>
+
+    <p class="reveal">I know you don't think you deserve it. I know you think what you did was too bad, too wrong, too hurtful. I know you think that if you forgive yourself, it means what you did was okay.</p>
+
+    <p class="reveal">But that's not what forgiveness means.</p>
+
+    <p class="reveal">Forgiving yourself doesn't mean what you did was right. It doesn't erase the hurt. It doesn't make the mistake disappear.</p>
+
+    <p class="reveal">Forgiving yourself means you finally stop drowning in something that already happened. Something you can't change. Something you've already paid for a thousand times over in your own heart.</p>
+
+    <div class="question-block reveal">
+      <p>You were doing the best you could with what you knew at the time.</p>
+      <p>With the pain you were carrying.</p>
+      <p>With the wounds you hadn't healed yet.</p>
+      <p>With the tools you had.</p>
+    </div>
+
+    <p class="reveal">Was it enough? Maybe not. Did you mess up? Yes. Did you hurt someone? Probably. Did you hurt yourself? Definitely.</p>
+
+    <p class="reveal">But you're human. And humans mess up. They make wrong choices. They say things they regret. They hurt people they love. They fail. They fall. They break.</p>
+
+    <p class="reveal">And then, if they're lucky, they learn. They grow. They become better.</p>
+
+    <p class="turn reveal">You're not the same person who made that mistake.<br>You've grown since then. You've learned. You've changed.</p>
+
+    <p class="reveal">The fact that you feel this guilt, this remorse, that proves you're not the same person anymore. The person you were made that mistake. The person you are now carries the lesson. But you don't have to carry the punishment forever.</p>
+
+    <div class="compassion-block reveal">
+      <p>If someone you loved came to you with the same guilt you're carrying, what would you tell them?</p>
+      <p>You'd hug them. You'd tell them it's okay.</p>
+      <p>You'd tell them everyone makes mistakes.</p>
+      <p>You'd tell them to learn from it and move forward.</p>
+      <p>You'd tell them they deserve to heal.</p>
+      <p>So why can't you give yourself that same compassion?</p>
+    </div>
+
+    <p class="reveal">You've already learned from your mistake. You've already grown. You've already become better. Continuing to punish yourself doesn't help anyone. Not the person you hurt. Not the world. And definitely not you.</p>
+
+    <p class="reveal">Holding onto this guilt doesn't make you a good person. It just makes you a person in pain.</p>
+
+    <p class="reveal">And you've been in pain long enough.</p>
+
+    <div class="freedoms reveal">
+      <div class="freedom-row">
+        <span class="freedom-num">01</span>
+        <p class="freedom-text"><strong>Your peace matters.</strong> Your healing matters. Your ability to move forward and be better matters.</p>
+      </div>
+      <div class="freedom-row">
+        <span class="freedom-num">02</span>
+        <p class="freedom-text">You can choose to stop letting that mistake define you. You can choose to be <strong>more than the worst thing you've ever done.</strong></p>
+      </div>
+      <div class="freedom-row">
+        <span class="freedom-num">03</span>
+        <p class="freedom-text">You can choose to forgive yourself and use what you learned to be <strong>better from this day forward.</strong></p>
+      </div>
+    </div>
+
+    <p class="reveal">I know it's scary. You've lived with this guilt for so long that it almost feels comfortable. Familiar. Like an old friend you don't know how to live without.</p>
+
+    <p class="reveal">But imagine what your life could be like without it. Imagine waking up and not immediately feeling that heavy weight on your chest. Imagine going through your day without that voice in your head constantly reminding you of what you did wrong.</p>
+
+    <p class="turn reveal">Imagine being free.</p>
+
+    <p class="reveal">Not all at once. Forgiveness is a process, not a moment. Some days will be easier than others. Some days that guilt will try to come back and remind you of what happened. But each day, choose again. Choose to be gentle with yourself. Choose to remember that you're doing better now. Choose to believe that you deserve peace.</p>
+
+    <p class="reveal">Say it out loud if you need to: "I forgive myself."</p>
+
+    <p class="reveal">It might feel strange. It might feel wrong. It might feel like a lie at first. But keep saying it. Keep choosing it. Keep believing it. Because it's true.</p>
+
+    <div class="affirmation reveal">
+      <p class="affirmation-main">You deserve forgiveness.<br>From others, yes.<br>But most importantly, from yourself.</p>
+      <p class="affirmation-sub">You are worthy. You are more than your mistakes.</p>
+    </div>
+
+    <p class="reveal">You've carried this weight long enough. You've punished yourself enough. You've suffered enough.</p>
+
+    <p class="turn reveal">It's time to put it down.<br>It's time to heal.<br>It's time to be free.</p>
+
+    <p class="reveal">Forgive yourself. Not because what you did was okay. But because you are okay. You are worthy. You are more than your mistakes. And you deserve to live without this weight crushing you.</p>
+
+    <p class="reveal">Let it go. Please. For your own sake.</p>
+
+    <p class="reveal">You've been forgiven by the person who matters most.</p>
+
+    <p class="reveal" style="font-family:'IM Fell English',serif;font-style:italic;font-size:clamp(1.3rem,2.2vw,1.7rem);color:var(--white);text-align:center;line-height:1.6;">Yourself.<br><span style="font-size:0.7em;color:var(--blue-pale);display:block;margin-top:0.5rem;">Now believe it.</span></p>
+
+    <div class="signoff reveal">
+      <p>With compassion and understanding,</p>
+      <p class="sig-name">Someone who knows how hard forgiveness can be</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <p class="footer-pub">Originally published on <a class="footer-link" href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+  <p class="footer-byline">Written by Princess &nbsp;✦&nbsp; Just a girl dreaming of that one soul who feels less alone</p>
+</footer>
+
+<script>
+/* ======== STAR FIELD ======== */
+(function(){
+  const field = document.getElementById('starField');
+  for(let i=0;i<90;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random()*2+0.5;
+    const lo = (Math.random()*0.1).toFixed(2);
+    const hi = (Math.random()*0.5+0.2).toFixed(2);
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      --lo:${lo}; --hi:${hi};
+      --dur:${(Math.random()*4+2).toFixed(1)}s;
+      --delay:${(Math.random()*5).toFixed(1)}s;
+    `;
+    field.appendChild(s);
+  }
+})();
+
+/* ======== CANDLE ANIMATION ======== */
+(function(){
+  const canvas = document.getElementById('candleCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  let t = 0;
+  // Candle burns from full to almost nothing over 1200 frames, then resets
+  const CYCLE = 1200;
+
+  function drawCandle(burnProgress) {
+    ctx.clearRect(0,0,W,H);
+
+    const candleW = 42;
+    const candleMaxH = 180;
+    const candleH = candleMaxH * (1 - burnProgress * 0.75);
+    const candleX = (W - candleW) / 2;
+    const candleY = H - 60 - candleH;
+    const wickLen = 14;
+
+    // Candle glow on surface below
+    const glowY = H - 55;
+    const glowGrad = ctx.createRadialGradient(W/2, glowY, 0, W/2, glowY, 70);
+    glowGrad.addColorStop(0, 'rgba(255,157,58,0.12)');
+    glowGrad.addColorStop(1, 'rgba(255,157,58,0)');
+    ctx.fillStyle = glowGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Wax drips (decorative)
+    const drips = [
+      {x:candleX+5, len:8+(burnProgress*15)},
+      {x:candleX+candleW-8, len:4+(burnProgress*10)},
+      {x:candleX+20, len:6+(burnProgress*18)},
+    ];
+    drips.forEach(d => {
+      ctx.beginPath();
+      ctx.ellipse(d.x, candleY + d.len, 4, d.len, 0, 0, Math.PI*2);
+      const waxGrad = ctx.createLinearGradient(0, candleY, 0, candleY+d.len*2);
+      waxGrad.addColorStop(0,'rgba(232,223,208,0.9)');
+      waxGrad.addColorStop(1,'rgba(200,190,175,0.4)');
+      ctx.fillStyle = waxGrad;
+      ctx.fill();
+    });
+
+    // Candle body
+    const bodyGrad = ctx.createLinearGradient(candleX, 0, candleX + candleW, 0);
+    bodyGrad.addColorStop(0,  'rgba(160,150,135,0.9)');
+    bodyGrad.addColorStop(0.3,'rgba(232,223,208,0.95)');
+    bodyGrad.addColorStop(0.7,'rgba(215,205,190,0.95)');
+    bodyGrad.addColorStop(1,  'rgba(150,140,128,0.8)');
+    ctx.beginPath();
+    ctx.roundRect(candleX, candleY, candleW, candleH, [4, 4, 0, 0]);
+    ctx.fillStyle = bodyGrad;
+    ctx.fill();
+
+    // Top melt pool
+    ctx.beginPath();
+    ctx.ellipse(W/2, candleY+3, candleW/2-1, 6, 0, 0, Math.PI*2);
+    const meltGrad = ctx.createRadialGradient(W/2, candleY+3, 0, W/2, candleY+3, candleW/2);
+    meltGrad.addColorStop(0,'rgba(255,220,180,0.5)');
+    meltGrad.addColorStop(0.5,'rgba(232,223,208,0.8)');
+    meltGrad.addColorStop(1,'rgba(210,200,188,0.9)');
+    ctx.fillStyle = meltGrad;
+    ctx.fill();
+
+    // Wick
+    ctx.beginPath();
+    ctx.moveTo(W/2, candleY + 3);
+    const wickSway = Math.sin(t*0.06)*1.5;
+    ctx.quadraticCurveTo(W/2 + wickSway*0.5, candleY - wickLen/2, W/2 + wickSway, candleY - wickLen);
+    ctx.strokeStyle = '#3a2a1a';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Flame glow (outer)
+    const flameX = W/2 + wickSway;
+    const flameBaseY = candleY - wickLen;
+    const flicker = Math.sin(t*0.13)*4 + Math.sin(t*0.21)*2.5 + Math.sin(t*0.07)*1.5;
+    const flameH = 44 + flicker;
+    const flareSway = Math.sin(t*0.09)*3;
+
+    // Outer glow halo
+    const haloGrad = ctx.createRadialGradient(flameX, flameBaseY - flameH*0.4, 0, flameX, flameBaseY - flameH*0.3, 55);
+    haloGrad.addColorStop(0,'rgba(255,157,58,0.18)');
+    haloGrad.addColorStop(0.5,'rgba(255,100,20,0.07)');
+    haloGrad.addColorStop(1,'rgba(255,80,10,0)');
+    ctx.fillStyle = haloGrad;
+    ctx.beginPath();
+    ctx.ellipse(flameX, flameBaseY - flameH*0.3, 55, 55, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    // Flame outer (orange)
+    ctx.beginPath();
+    ctx.moveTo(flameX, flameBaseY);
+    ctx.bezierCurveTo(
+      flameX - 12 + flareSway, flameBaseY - flameH*0.4,
+      flameX - 8 + flareSway, flameBaseY - flameH*0.85,
+      flameX + flareSway*0.3, flameBaseY - flameH
+    );
+    ctx.bezierCurveTo(
+      flameX + 8 + flareSway, flameBaseY - flameH*0.85,
+      flameX + 12 + flareSway, flameBaseY - flameH*0.4,
+      flameX, flameBaseY
+    );
+    const outerFlame = ctx.createLinearGradient(flameX, flameBaseY, flameX, flameBaseY - flameH);
+    outerFlame.addColorStop(0,'rgba(255,100,20,0.95)');
+    outerFlame.addColorStop(0.5,'rgba(255,157,58,0.9)');
+    outerFlame.addColorStop(1,'rgba(255,220,120,0.6)');
+    ctx.fillStyle = outerFlame;
+    ctx.fill();
+
+    // Flame inner (bright core)
+    ctx.beginPath();
+    ctx.moveTo(flameX, flameBaseY - 2);
+    ctx.bezierCurveTo(
+      flameX - 5 + flareSway*0.5, flameBaseY - flameH*0.4,
+      flameX - 3 + flareSway*0.5, flameBaseY - flameH*0.8,
+      flameX + flareSway*0.2, flameBaseY - flameH*0.9
+    );
+    ctx.bezierCurveTo(
+      flameX + 4 + flareSway*0.5, flameBaseY - flameH*0.8,
+      flameX + 5 + flareSway*0.5, flameBaseY - flameH*0.4,
+      flameX, flameBaseY - 2
+    );
+    const innerFlame = ctx.createLinearGradient(flameX, flameBaseY, flameX, flameBaseY - flameH*0.9);
+    innerFlame.addColorStop(0,'rgba(255,200,80,0.95)');
+    innerFlame.addColorStop(0.6,'rgba(255,240,180,0.85)');
+    innerFlame.addColorStop(1,'rgba(255,255,240,0.5)');
+    ctx.fillStyle = innerFlame;
+    ctx.fill();
+
+    // Base plate / holder
+    const baseY = H - 60;
+    const baseGrad = ctx.createLinearGradient(0, baseY, 0, baseY + 18);
+    baseGrad.addColorStop(0,'rgba(90,80,70,0.9)');
+    baseGrad.addColorStop(1,'rgba(50,45,40,0.8)');
+    ctx.beginPath();
+    ctx.roundRect(candleX - 10, baseY, candleW + 20, 14, 4);
+    ctx.fillStyle = baseGrad;
+    ctx.fill();
+
+    // Warm pool on table
+    const tableGlow = ctx.createRadialGradient(W/2, H-30, 0, W/2, H-30, 80);
+    tableGlow.addColorStop(0, 'rgba(255,140,40,0.08)');
+    tableGlow.addColorStop(1, 'rgba(255,140,40,0)');
+    ctx.fillStyle = tableGlow;
+    ctx.fillRect(0, H-80, W, 80);
+  }
+
+  function loop(){
+    const burnProgress = (t % CYCLE) / CYCLE;
+    drawCandle(burnProgress);
+    t++;
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* ======== WEIGHT ITEMS — release one by one as you scroll ======== */
+(function(){
+  const items = document.querySelectorAll('.weight-item');
+  let released = 0;
+  function releaseNext(){
+    if(released < items.length){
+      items[released].classList.add('released');
+      released++;
+      if(released < items.length) setTimeout(releaseNext, 1800);
+    }
+  }
+  const grid = document.getElementById('weightGrid');
+  const gridObs = new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting){
+      setTimeout(releaseNext, 1200);
+      gridObs.disconnect();
+    }
+  },{threshold:0.4});
+  gridObs.observe(grid);
+})();
+
+/* ======== SCROLL REVEAL ======== */
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.1});
+reveals.forEach(el=>obs.observe(el));
+</script>
+
+</body>
+</html>

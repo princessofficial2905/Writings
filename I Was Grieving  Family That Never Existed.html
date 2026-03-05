@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I Was Grieving a Family That Never Existed</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #0d0b09;
+    --paper: #111009;
+    --amber: #c9893a;
+    --amber-soft: #e6b06a;
+    --amber-dim: #7a4e1e;
+    --cream: #e8d9c0;
+    --cream-faint: #b09070;
+    --text: #d4c4a8;
+    --text-dim: #7a6a54;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--ink);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 1.9;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* Opening curtain */
+  .curtain {
+    position: fixed;
+    inset: 0;
+    background: #0d0b09;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: curtainLift 2.2s cubic-bezier(0.76, 0, 0.24, 1) 0.4s forwards;
+  }
+
+  .curtain-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: var(--amber-dim);
+    text-transform: uppercase;
+    animation: fadeWord 2s ease forwards;
+  }
+
+  @keyframes curtainLift {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-100%); opacity: 1; }
+  }
+  @keyframes fadeWord {
+    0% { opacity: 0; } 40% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; }
+  }
+
+  /* Ambient glow */
+  .ambient {
+    position: fixed;
+    top: -20vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60vw;
+    height: 50vh;
+    background: radial-gradient(ellipse, rgba(180, 110, 40, 0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Main wrapper */
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    opacity: 0;
+    transform: translateY(24px);
+    animation: pageReveal 1s ease 2.4s forwards;
+  }
+
+  @keyframes pageReveal {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Header */
+  header {
+    padding: 10vh 0 6vh;
+    text-align: center;
+    position: relative;
+  }
+
+  .eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.5em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    opacity: 0.8;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    line-height: 1.2;
+    color: var(--cream);
+    letter-spacing: -0.01em;
+    margin-bottom: 1.2rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--amber-soft);
+  }
+
+  .subtitle {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    margin-bottom: 3rem;
+    letter-spacing: 0.02em;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    margin: 2rem 0 4rem;
+  }
+
+  .divider-line {
+    height: 1px;
+    width: 80px;
+    background: linear-gradient(to right, transparent, var(--amber-dim));
+  }
+  .divider-line.right {
+    background: linear-gradient(to left, transparent, var(--amber-dim));
+  }
+
+  .divider-mark {
+    width: 5px;
+    height: 5px;
+    background: var(--amber);
+    transform: rotate(45deg);
+    opacity: 0.8;
+  }
+
+  .byline {
+    font-family: 'Cinzel', serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.35em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .byline span {
+    color: var(--amber-soft);
+  }
+
+  /* Decorative drop cap section */
+  article {
+    padding-bottom: 8vh;
+  }
+
+  .drop-section p:first-child::first-letter {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5.5em;
+    font-weight: 600;
+    color: var(--amber);
+    float: left;
+    line-height: 0.78;
+    margin-right: 0.12em;
+    margin-top: 0.1em;
+  }
+
+  p {
+    margin-bottom: 1.8rem;
+    color: var(--text);
+    font-size: 1.08rem;
+    letter-spacing: 0.01em;
+  }
+
+  /* Pull quote stanza */
+  .stanza {
+    margin: 3.5rem 0;
+    padding: 2.5rem 0 2.5rem 2.5rem;
+    border-left: 1px solid var(--amber-dim);
+    position: relative;
+  }
+
+  .stanza::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 0;
+    height: 40%;
+    width: 1px;
+    background: var(--amber);
+    opacity: 0.6;
+  }
+
+  .stanza p {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1.18rem;
+    line-height: 2.2;
+    color: var(--cream-faint);
+    margin-bottom: 0;
+  }
+
+  .stanza p + p {
+    margin-top: 0.2rem;
+  }
+
+  /* Section break */
+  .section-break {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4rem 0;
+    gap: 0.6rem;
+  }
+
+  .dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--amber-dim);
+  }
+  .dot.center { background: var(--amber); width: 5px; height: 5px; }
+
+  /* Pull quote highlight */
+  .highlight {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--amber-soft);
+    line-height: 1.6;
+    text-align: center;
+    margin: 4rem auto;
+    max-width: 560px;
+    padding: 2rem 0;
+    position: relative;
+  }
+
+  .highlight::before, .highlight::after {
+    content: '';
+    display: block;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--amber-dim), transparent);
+    margin: 1.5rem 0;
+  }
+
+  /* Closing poem */
+  .closing-poem {
+    margin: 4rem 0 3rem;
+    text-align: center;
+    padding: 3rem 2rem;
+    position: relative;
+  }
+
+  .closing-poem::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(180, 110, 40, 0.05) 0%, transparent 70%);
+  }
+
+  .closing-poem p {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    line-height: 2.3;
+    color: var(--cream-faint);
+    margin-bottom: 0;
+    position: relative;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid rgba(122, 78, 30, 0.2);
+    padding: 4rem 0 6rem;
+    text-align: center;
+  }
+
+  .footer-glyph {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: var(--amber-dim);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.2em;
+  }
+
+  .medium-link {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .medium-link a {
+    color: var(--amber-soft);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(201, 137, 58, 0.3);
+    padding-bottom: 1px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .medium-link a:hover {
+    color: var(--cream);
+    border-color: var(--amber);
+  }
+
+  /* Scroll progress */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 1px;
+    background: linear-gradient(to right, var(--amber-dim), var(--amber-soft));
+    z-index: 998;
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 0.1s linear;
+  }
+
+  /* Floating chapter marker */
+  .chapter {
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.5em;
+    color: var(--amber-dim);
+    text-transform: uppercase;
+    margin-bottom: 1.8rem;
+    margin-top: 4rem;
+    display: block;
+  }
+
+  /* Scroll fade-in for paragraphs */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Ornament */
+  .ornament {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--amber-dim);
+    margin: 1rem 0 3rem;
+    letter-spacing: 0.3em;
+    opacity: 0.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="curtain"><span class="curtain-text">A Letter to the Heart</span></div>
+<div class="progress-bar" id="progress"></div>
+<div class="ambient"></div>
+
+<div class="wrapper">
+
+  <header>
+    <p class="eyebrow">Princess &nbsp;&bull;&nbsp; February 2026</p>
+    <h1>I Was Grieving a Family<br>That <em>Never Existed,</em></h1>
+    <p class="subtitle">Not a Relationship That Did.</p>
+    <div class="divider">
+      <span class="divider-line"></span>
+      <span class="divider-mark"></span>
+      <span class="divider-line right"></span>
+    </div>
+    <p class="byline">Written by <span>Princess</span></p>
+  </header>
+
+  <article>
+
+    <div class="drop-section fade-in">
+      <p>There comes a moment when you finally look back at the dreams you once held so closely, the home you imagined, the life you pictured, the future you quietly sculpted in your mind, and you realize it wasn't the loss of the person that hurt the most… it was the loss of the future you believed you would share with them. You weren't just in love with who they were, you were in love with who you thought they were becoming. You were in love with the possibilities. You were in love with the life you saw so clearly, a life where you were met with effort, love, partnership, and certainty. And when it didn't happen, it felt like your heart had to grieve a family that never existed, moments that never came, and a forever that only lived in your hope.</p>
+    </div>
+
+    <div class="stanza fade-in">
+      <p>You didn't dream small.</p>
+      <p>You dreamed with your whole heart.</p>
+      <p>You planned with trust.</p>
+      <p>You envisioned a love that would deepen over time, a bond that would strengthen through challenges, a life built on mutual tenderness.</p>
+      <p>You imagined holidays shared, secrets exchanged, fears soothed, goals pursued side by side.</p>
+      <p>You imagined staying, building, growing.</p>
+      <p>And none of that was foolish, it was simply the kind of dream a loving heart creates when it believes it's safe.</p>
+    </div>
+
+    <div class="section-break">
+      <span class="dot"></span><span class="dot center"></span><span class="dot"></span>
+    </div>
+
+    <span class="chapter">II. What God Saw</span>
+
+    <div class="stanza fade-in">
+      <p>But God saw what you could not see.</p>
+      <p>He saw the parts of their heart that would not grow with yours.</p>
+      <p>He saw the inconsistencies that would have broken you later.</p>
+      <p>He saw the emotional gaps that would have become wounds.</p>
+      <p>He saw the misalignment that would have turned your dream into a burden you were never meant to carry.</p>
+      <p>And though the ending hurt deeply, He was gently redirecting you away from a future that could not support your soul.</p>
+    </div>
+
+    <div class="highlight fade-in">
+      The future you imagined wasn't wrong, it just wasn't meant to be built with that person.
+    </div>
+
+    <div class="fade-in">
+      <div class="stanza">
+        <p>Because the right future, the real one, the God-ordained one, won't require you to carry the relationship alone.</p>
+        <p>It won't require you to shrink.</p>
+        <p>It won't require you to hope someone changes.</p>
+        <p>It won't require you to beg for presence, effort, or commitment.</p>
+        <p>The future meant for you will feel like partnership, not exhaustion.</p>
+        <p>It will feel like certainty, not confusion.</p>
+        <p>It will feel like alignment, not imbalance.</p>
+      </div>
+    </div>
+
+    <div class="section-break">
+      <span class="dot"></span><span class="dot center"></span><span class="dot"></span>
+    </div>
+
+    <span class="chapter">III. What is Coming</span>
+
+    <p class="fade-in">One day, My friend, you will meet someone with whom the future doesn't need to be imagined, it will unfold naturally. You won't have to guess if they see a future with you. You'll see it in their eyes, hear it in their words, feel it in their consistency. And when that future begins to take shape, you will understand why God didn't allow the one you once prayed for to build with you.</p>
+
+    <div class="closing-poem fade-in">
+      <p>The future you thought you'd build</p>
+      <p>was never a loss,</p>
+      <p>it was a stepping stone</p>
+      <p>toward the future God is preparing,</p>
+      <p>one that fits your heart</p>
+      <p>in every way the past never could.</p>
+    </div>
+
+    <div class="ornament">✦ ✦ ✦</div>
+
+  </article>
+
+  <footer>
+    <div class="footer-glyph">&#10022;</div>
+    <p class="medium-link">
+      Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+    </p>
+  </footer>
+
+</div>
+
+<script>
+  // Scroll progress bar
+  const bar = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    bar.style.transform = `scaleX(${pct})`;
+  });
+
+  // Intersection observer for fade-ins
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => {
+      if (el.isIntersecting) {
+        el.target.classList.add('visible');
+        observer.unobserve(el.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

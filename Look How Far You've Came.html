@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Look How Far You've Come</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0805;
+      --bg2: #0e0c09;
+      --amber: #c8862a;
+      --amber-light: #e8a84a;
+      --amber-glow: #f0c060;
+      --cream: #f0e6d0;
+      --muted: #7a6a52;
+      --dim: #3a3020;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 19px;
+      line-height: 1.85;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* Ambient light */
+    .ambient {
+      position: fixed;
+      top: -40vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80vw;
+      height: 80vh;
+      background: radial-gradient(ellipse, rgba(200,134,42,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      background: linear-gradient(to bottom, transparent, var(--bg));
+      pointer-events: none;
+    }
+
+    .hero-line {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--amber));
+      margin: 0 auto 3rem;
+      animation: growLine 1.5s ease forwards;
+      transform-origin: top;
+    }
+
+    @keyframes growLine {
+      from { transform: scaleY(0); opacity: 0; }
+      to { transform: scaleY(1); opacity: 1; }
+    }
+
+    .eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.4s forwards;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      opacity: 0;
+      animation: fadeUp 1.2s ease 0.6s forwards;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--amber-light);
+      display: block;
+    }
+
+    .hero-sub {
+      margin-top: 2rem;
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-style: italic;
+      letter-spacing: 0.05em;
+      opacity: 0;
+      animation: fadeUp 1s ease 1s forwards;
+    }
+
+    .scroll-cue {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.5s forwards;
+    }
+
+    .scroll-cue span {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .scroll-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--amber);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.4); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Article */
+    .article-wrap {
+      position: relative;
+      z-index: 2;
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 6rem 2.5rem 4rem;
+    }
+
+    /* Opening pull quote */
+    .pull-opener {
+      text-align: center;
+      margin-bottom: 5rem;
+      position: relative;
+    }
+
+    .pull-opener::before {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 1px;
+      background: var(--amber);
+      margin: 0 auto 2.5rem;
+    }
+
+    .pull-opener p {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--amber-light);
+      line-height: 1.4;
+    }
+
+    /* Body paragraphs */
+    .prose p {
+      margin-bottom: 1.8rem;
+      color: rgba(240, 230, 208, 0.88);
+      font-size: 1.15rem;
+    }
+
+    /* Memory blocks */
+    .memory {
+      border-left: 2px solid var(--dim);
+      padding: 1.2rem 0 1.2rem 2rem;
+      margin: 2.5rem 0;
+      position: relative;
+    }
+
+    .memory::before {
+      content: '';
+      position: absolute;
+      left: -1px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, var(--amber), transparent);
+    }
+
+    .memory p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.05rem !important;
+      color: rgba(200, 134, 42, 0.85) !important;
+      margin-bottom: 0.6rem !important;
+    }
+
+    .memory p:last-child { margin-bottom: 0 !important; }
+
+    /* Breaker */
+    .breaker {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin: 4rem 0;
+    }
+
+    .breaker::before, .breaker::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--dim));
+    }
+
+    .breaker::after {
+      background: linear-gradient(to left, transparent, var(--dim));
+    }
+
+    .breaker-diamond {
+      width: 8px;
+      height: 8px;
+      background: var(--amber);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    /* Pull quote mid */
+    .pull-mid {
+      text-align: center;
+      padding: 3rem 1rem;
+      margin: 3rem 0;
+      position: relative;
+    }
+
+    .pull-mid p {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
+      font-style: italic;
+      line-height: 1.5;
+      color: var(--cream) !important;
+      font-weight: 400;
+    }
+
+    .pull-mid p em {
+      color: var(--amber-glow);
+      font-style: normal;
+    }
+
+    .pull-mid::before {
+      content: '\201C';
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-size: 6rem;
+      line-height: 1;
+      color: var(--amber);
+      opacity: 0.3;
+      margin-bottom: -1.5rem;
+    }
+
+    /* Closing */
+    .closing {
+      margin-top: 5rem;
+      text-align: center;
+    }
+
+    .closing .big-line {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      font-style: italic;
+      color: var(--amber-light);
+      line-height: 1.3;
+      margin-bottom: 2rem;
+    }
+
+    .closing .final {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .closing .sign {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .closing .sign span {
+      color: var(--muted);
+    }
+
+    /* Signature line */
+    .sig-block {
+      margin: 4rem 0;
+      padding: 2rem;
+      border: 1px solid var(--dim);
+      text-align: center;
+      font-style: italic;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 4rem 2rem 6rem;
+      border-top: 1px solid var(--dim);
+      margin-top: 4rem;
+    }
+
+    footer p {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--amber);
+      text-decoration: none;
+      transition: color 0.3s;
+      border-bottom: 1px solid rgba(200,134,42,0.3);
+      padding-bottom: 1px;
+    }
+
+    footer a:hover { color: var(--amber-glow); }
+
+    footer .footer-line {
+      width: 40px;
+      height: 1px;
+      background: var(--dim);
+      margin: 1.5rem auto;
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .article-wrap { padding: 4rem 1.5rem 3rem; }
+      .hero h1 { font-size: 3.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-line"></div>
+  <p class="eyebrow">An Essay by Princess</p>
+  <h1>Look How Far<em>You've Come</em></h1>
+  <p class="hero-sub">Stop for a moment.</p>
+  <div class="scroll-cue">
+    <span>Read</span>
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<!-- ARTICLE -->
+<main class="article-wrap">
+
+  <div class="pull-opener reveal">
+    <p>I know you're busy looking ahead, worried about where you're going, stressed about where you should be by now. But please, just for a moment, look back.</p>
+  </div>
+
+  <div class="prose">
+
+    <p class="reveal">Do you remember that day you thought you'd never survive? That heartbreak you were sure would end you? That loss that made breathing feel impossible?</p>
+
+    <p class="reveal">You survived it. You're here.</p>
+
+    <p class="reveal">Do you remember lying awake at night, wondering if the pain would ever stop? If you'd ever feel normal again? If life would ever make sense?</p>
+
+    <p class="reveal">Look at you now. Still standing. Still trying. Still here.</p>
+
+    <div class="breaker reveal"><div class="breaker-diamond"></div></div>
+
+    <p class="reveal">I know you don't feel like you've come far. I know when you look at your life, you see all the things you haven't done yet. All the goals you haven't reached. All the ways you think you've failed.</p>
+
+    <p class="reveal">But let me remind you of something you've forgotten.</p>
+
+    <div class="pull-mid reveal">
+      <p>You've survived every single bad day you've ever had. <em>That's not nothing. That's everything.</em></p>
+    </div>
+
+    <div class="memory reveal">
+      <p>Remember when you couldn't get out of bed? But you did. Day after day, even when it felt impossible, you did.</p>
+      <p>Remember when you couldn't imagine smiling again? But you have. Maybe not every day, maybe not as easily as before, but you have.</p>
+      <p>Remember when you lost someone you thought you couldn't live without? But you learned to live. Not the same life, not without pain, but you learned to carry that loss and keep walking.</p>
+      <p>Remember when you failed at something that mattered? When you made mistakes that you thought defined you? When you felt like the biggest disappointment?</p>
+    </div>
+
+    <p class="reveal">But you didn't stay there. You picked yourself up. You tried again. Or maybe you didn't try again, but you moved forward anyway. You found a different path. You became someone new.</p>
+
+    <div class="breaker reveal"><div class="breaker-diamond"></div></div>
+
+    <p class="reveal">Look at all the versions of yourself you've had to be. The strong one when you felt weak. The brave one when you were terrified. The hopeful one when everything seemed hopeless.</p>
+
+    <p class="reveal">You've been the person who smiled through tears. The person who said "I'm fine" when you were falling apart. The person who kept everyone else together while you were breaking inside.</p>
+
+    <p class="reveal">And yes, maybe those versions hurt. Maybe you wish you didn't have to be strong. Maybe you're tired of being brave. Maybe you're exhausted from pretending.</p>
+
+    <p class="reveal">But look at what those versions taught you. Look at the strength you didn't know you had. Look at the resilience you built. Look at the person you've become.</p>
+
+    <div class="breaker reveal"><div class="breaker-diamond"></div></div>
+
+    <p class="reveal">You're not the same person you were a year ago. Five years ago. Ten years ago.</p>
+
+    <p class="reveal">You've grown. You've changed. You've learned things the hard way because that's the only way some things can be learned.</p>
+
+    <p class="reveal">You've loved and lost and loved again. Or maybe you haven't loved again yet, but you've kept your heart open enough to hope for it.</p>
+
+    <p class="reveal">You've made mistakes and learned from them. Or maybe you made the same mistake twice, but you figured it out eventually.</p>
+
+    <p class="reveal">You've had dreams that died, and somehow you found new ones. Or maybe you're still looking for new ones, but you haven't given up on dreaming.</p>
+
+    <div class="breaker reveal"><div class="breaker-diamond"></div></div>
+
+    <p class="reveal">I know there are scars. I know there's pain you still carry. I know there are wounds that haven't fully healed. I know there are parts of you that are still broken.</p>
+
+    <div class="pull-mid reveal">
+      <p>But you're here. With all your scars. With all your pain. With all your broken parts. <em>And you're still going.</em></p>
+    </div>
+
+    <p class="reveal">That counts. That matters. That means something.</p>
+
+    <p class="reveal">You might not be where you thought you'd be. You might not have accomplished what you planned to accomplish. You might feel behind, lost, or like you're just barely making it.</p>
+
+    <p class="reveal">But you're making it.</p>
+
+    <p class="reveal">Through all the storms, all the dark nights, all the moments you wanted to give up, you didn't. You're still here.</p>
+
+    <div class="breaker reveal"><div class="breaker-diamond"></div></div>
+
+    <p class="reveal">Maybe you're here because of the people who helped you. The friends who showed up. The family who held you. The strangers who were kind when you needed it most.</p>
+
+    <p class="reveal">Maybe you're here because of sheer stubbornness. Because some part of you refused to quit even when quitting felt easier.</p>
+
+    <p class="reveal">Maybe you're here because of hope. That tiny, stubborn spark that wouldn't go out no matter how many times life tried to blow it out.</p>
+
+    <p class="reveal">Or maybe you don't even know why you're still here. Maybe you're just here, and that's enough.</p>
+
+    <div class="pull-mid reveal">
+      <p>Because it is enough. <em>You are enough.</em></p>
+    </div>
+
+    <p class="reveal">Not the version of you that you think you should be. Not the version that has it all figured out. Not the version that never struggles.</p>
+
+    <p class="reveal">The version reading these words right now. The real you. The tired you. The trying you. The still-here you.</p>
+
+    <p class="reveal">That version is enough.</p>
+
+    <div class="breaker reveal"><div class="breaker-diamond"></div></div>
+
+    <p class="reveal">So today, give yourself some credit. Not for being perfect. Not for having it all together. Not for being where you think you should be.</p>
+
+    <p class="reveal">But for still being here.</p>
+
+    <p class="reveal">For surviving every single thing that tried to stop you.</p>
+
+    <p class="reveal">For getting up every time you fell down.</p>
+
+    <p class="reveal">For finding light even in your darkest moments.</p>
+
+    <p class="reveal">For being human, messy, imperfect, and real.</p>
+
+  </div>
+
+  <!-- Closing -->
+  <div class="closing reveal">
+    <div class="big-line">Look how far you've come.</div>
+    <p class="prose" style="text-align:center; color: rgba(240,230,208,0.75); font-size:1.1rem; margin-bottom:2rem;">Not how far you have left to go. Not how far others have gone. Not how far you think you should have gone.</p>
+    <p class="prose" style="text-align:center; color: rgba(240,230,208,0.75); font-size:1.1rem;">Just look at your journey. Your path. Your story.</p>
+    <p class="prose" style="text-align:center; color: rgba(240,230,208,0.75); font-size:1.1rem;">Look at the mountains you've climbed. The valleys you've walked through. The rivers you've crossed.</p>
+
+    <div class="big-line" style="font-size: clamp(1.5rem, 3.5vw, 2.5rem); margin-top:3rem;">Still standing. Still breathing.<br>Still hoping. Still trying. Still here.</div>
+
+    <p class="final" style="margin-top: 2.5rem;">And that, my friend, is beautiful.<br>That is brave. That is more than enough.<br>You are more than enough.</p>
+
+    <p class="prose" style="text-align:center; color: rgba(200,134,42,0.7); font-size:1.1rem; font-style:italic;">Keep going. The best parts of your story aren't over yet.</p>
+
+    <div class="sig-block reveal">
+      With pride in how far you've come,<br>
+      <span style="font-family:'Cinzel',serif; font-size:0.75rem; letter-spacing:0.2em; color: var(--amber); display:block; margin-top:0.8rem;">Someone who sees your journey</span>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="reveal">
+  <div class="footer-line"></div>
+  <p>Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+  <div class="footer-line"></div>
+  <p style="margin-top: 1rem; font-size: 0.55rem; color: var(--dim);">Written by Princess &nbsp;&middot;&nbsp; 2026</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Subtle ambient glow follows scroll
+  const ambient = document.querySelector('.ambient');
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    ambient.style.opacity = 0.6 + scrolled * 0.4;
+  });
+</script>
+</body>
+</html>

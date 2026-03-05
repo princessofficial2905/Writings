@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For the Girl — Princess</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Cormorant+Infant:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0806;
+      --bg2: #110e0a;
+      --amber: #c8882a;
+      --amber-light: #e8a84a;
+      --amber-pale: #f5d08a;
+      --cream: #f0e6d0;
+      --muted: #7a6a55;
+      --faint: #2a2218;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Cormorant Infant', Georgia, serif;
+      font-size: 19px;
+      line-height: 1.9;
+      overflow-x: hidden;
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.35;
+    }
+
+    /* ── AMBIENT GLOW ── */
+    .ambient {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,136,42,0.07) 0%, transparent 70%);
+      pointer-events: none;
+      transition: transform 0.8s ease;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0; right: 0;
+      height: 200px;
+      background: linear-gradient(to bottom, transparent, var(--bg));
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.2s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(4.5rem, 14vw, 11rem);
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      opacity: 0;
+      animation: fadeUp 1.1s ease 0.4s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--amber-light);
+    }
+
+    .hero-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      color: var(--muted);
+      margin-top: 2rem;
+      letter-spacing: 0.05em;
+      opacity: 0;
+      animation: fadeUp 1.1s ease 0.7s forwards;
+    }
+
+    .hero-rule {
+      width: 60px;
+      height: 1px;
+      background: var(--amber);
+      margin: 2.5rem auto;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.9s forwards;
+    }
+
+    .hero-meta {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.1s forwards;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeIn 1.5s ease 1.8s forwards;
+    }
+
+    .scroll-hint span {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, var(--amber), transparent);
+      animation: scrollPulse 2s ease infinite;
+    }
+
+    /* ── DROPCAP OPENER ── */
+    .opener {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 5rem 2rem 0;
+      position: relative;
+    }
+
+    .opener p:first-child::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 5.5rem;
+      font-weight: 900;
+      line-height: 0.8;
+      float: left;
+      margin-right: 0.12em;
+      margin-top: 0.08em;
+      color: var(--amber-light);
+    }
+
+    /* ── ARTICLE ── */
+    .article-wrapper {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+      position: relative;
+    }
+
+    .article-wrapper p {
+      margin-bottom: 1.8rem;
+      font-weight: 300;
+      color: #d4c4a8;
+    }
+
+    /* Pull quote style — italicised internal phrases */
+    .pull {
+      border-left: 2px solid var(--amber);
+      margin: 3.5rem 0;
+      padding: 1.5rem 0 1.5rem 2rem;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.45rem;
+      line-height: 1.6;
+      color: var(--amber-pale);
+    }
+
+    /* Self-talk whispers */
+    .whisper-block {
+      margin: 2.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      padding-left: 1.5rem;
+      border-left: 1px solid var(--faint);
+    }
+
+    .whisper-block p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 0 !important;
+    }
+
+    /* Section divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin: 4rem 0;
+      opacity: 0.4;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--amber);
+    }
+
+    .divider-glyph {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--amber);
+    }
+
+    /* Climax bold statement */
+    .statement {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: clamp(1.6rem, 4vw, 2.5rem);
+      line-height: 1.25;
+      color: var(--cream);
+      text-align: center;
+      margin: 4rem 0;
+      letter-spacing: -0.01em;
+    }
+
+    .statement em {
+      color: var(--amber-light);
+      font-style: italic;
+    }
+
+    /* Closing stanzas — short lines, centred */
+    .closing {
+      text-align: center;
+      margin: 4rem 0;
+    }
+
+    .closing p {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 0.6rem !important;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top: 1px solid var(--faint);
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      text-align: center;
+    }
+
+    .author-sig {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+      color: var(--amber-light);
+    }
+
+    .medium-link {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .medium-link span {
+      color: var(--amber);
+      border-bottom: 1px solid var(--amber);
+      transition: color 0.3s;
+    }
+
+    .medium-link:hover span { color: var(--amber-pale); }
+
+    /* ── FLOATING PETALS / PARTICLES ── */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: var(--amber);
+      opacity: 0;
+      animation: float linear infinite;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(to right, var(--amber), var(--amber-pale));
+      z-index: 999;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 0.7; }
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 1; transform: scaleY(1); }
+      50%       { opacity: 0.3; transform: scaleY(0.6); }
+    }
+
+    @keyframes float {
+      0%   { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.4; }
+      90%  { opacity: 0.15; }
+      100% { transform: translateY(-10vh) translateX(60px) rotate(360deg); opacity: 0; }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.85s ease, transform 0.85s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .hero-title { font-size: 4.5rem; }
+      .article-wrapper, .opener, .footer { padding-left: 1.2rem; padding-right: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progress"></div>
+  <div class="ambient" id="ambient"></div>
+
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <p class="hero-eyebrow">An essay by Princess</p>
+    <h1 class="hero-title">For the<br><em>Girl</em></h1>
+    <p class="hero-subtitle">Who Forgives Too Easily</p>
+    <div class="hero-rule"></div>
+    <p class="hero-meta">6 min read &nbsp;·&nbsp; March 2026</p>
+
+    <div class="scroll-hint">
+      <span>Read</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ── OPENING PARAGRAPH ── -->
+  <div class="opener">
+    <p>You forgive too easily.</p>
+    <p>And you know it. Everyone tells you. Your friends, your family, the voice in your own head that knows better but can't seem to stop.</p>
+    <p>They hurt you. They lie to you. They betray you. They cross your boundaries. They treat you like you're disposable.</p>
+    <p>And you forgive them. Every single time.</p>
+    <p>Not because you're weak. Not because you're naive. Not because you don't know better.</p>
+  </div>
+
+  <!-- ── MAIN ARTICLE ── -->
+  <main class="article-wrapper">
+
+    <p class="reveal">But because you were taught that forgiveness is virtue. That holding grudges is wrong. That being angry makes you a bad person. That giving people second chances is what good people do.</p>
+
+    <p class="reveal">You were taught to see the best in people. To understand their perspective. To make excuses for their behavior. To prioritize their feelings over your own boundaries.</p>
+
+    <div class="whisper-block reveal">
+      <p>"Maybe they didn't mean it."</p>
+      <p>"Maybe they were going through something."</p>
+      <p>"Maybe I'm being too sensitive."</p>
+      <p>"Maybe I'm overreacting."</p>
+      <p>"Maybe they deserve another chance."</p>
+    </div>
+
+    <p class="reveal">So you forgive. You give them another chance. And another. And another. Until you've given so many chances that you've lost count and they've lost respect for you.</p>
+
+    <p class="reveal">Because people learn how to treat you. And you've taught them that they can hurt you and you'll forgive them. That they can cross your boundaries and you'll let it slide. That they can take advantage of your kindness and you'll still be there.</p>
+
+    <p class="reveal">You've taught them that your forgiveness is free. That it costs them nothing. That they don't have to change, don't have to apologize properly, don't have to earn their way back into your life.</p>
+
+    <p class="reveal">They just have to wait. Wait for you to forgive them. Which you always do.</p>
+
+    <p class="reveal">And they know it. They count on it. They use it.</p>
+
+    <p class="reveal">They know they can hurt you and you'll take them back. They know they can betray you and you'll understand. They know they can disrespect you and you'll forgive them.</p>
+
+    <p class="reveal">So they keep doing it. Over and over. Because why would they stop? There are no consequences. No real boundaries. No actual accountability.</p>
+
+    <p class="reveal">Just your endless forgiveness. Your infinite second chances. Your constant willingness to see the best in them even when they keep showing you their worst.</p>
+
+    <p class="reveal">And you're exhausted. You're tired of being the understanding one. The forgiving one. The one who always gives people the benefit of the doubt even when they've proven they don't deserve it.</p>
+
+    <p class="reveal">You're tired of being hurt by the same people in the same ways over and over again.</p>
+
+    <p class="reveal">But you don't know how to stop. Because forgiveness is so deeply ingrained in you. It's who you are. It's what you do.</p>
+
+    <p class="reveal">You think that not forgiving makes you bitter. That holding people accountable makes you harsh. That protecting yourself makes you cold.</p>
+
+    <p class="reveal">So you keep forgiving. Keep accepting less than you deserve. Keep letting people back in who never should have been let back in.</p>
+
+    <div class="divider reveal"><span class="divider-glyph">✦</span></div>
+
+    <div class="pull reveal">
+      Forgiveness without boundaries isn't forgiveness.<br>It's self-betrayal.
+    </div>
+
+    <p class="reveal">Real forgiveness doesn't mean pretending it didn't hurt. It doesn't mean forgetting what happened. It doesn't mean giving unlimited chances to people who keep hurting you.</p>
+
+    <p class="reveal">Real forgiveness means releasing the anger for your own peace. But it doesn't mean releasing the lesson. It doesn't mean ignoring the pattern. It doesn't mean opening the door to be hurt again.</p>
+
+    <p class="reveal">You can forgive someone and still close the door. You can wish them well and still want them far away from you. You can release the bitterness and still refuse to let them back into your life.</p>
+
+    <p class="reveal">Forgiveness is for you. Boundaries are also for you. And sometimes the most loving thing you can do for yourself is to forgive someone from a distance.</p>
+
+    <p class="reveal">You don't have to keep people in your life who consistently hurt you just because you've forgiven them. You don't have to keep giving chances to people who keep proving they'll waste them.</p>
+
+    <p class="reveal">You're not a bad person for protecting yourself. You're not being unforgiving for having standards. You're not being harsh for refusing to be a doormat.</p>
+
+    <p class="reveal">You're being wise. You're being healthy. You're being someone who values themselves enough to say "I forgive you, but I won't forget. I release the anger, but I'm keeping the lesson. I wish you well, but I'm done being hurt by you."</p>
+
+    <div class="divider reveal"><span class="divider-glyph">✦</span></div>
+
+    <p class="reveal">Some people don't deserve your forgiveness. Not because you're holding a grudge, but because they keep doing the thing you're forgiving them for.</p>
+
+    <p class="reveal">Some people see your forgiveness as permission. Permission to keep hurting you. Permission to keep crossing lines. Permission to treat you poorly because they know you'll always take them back.</p>
+
+    <p class="reveal">And those people? They don't need your forgiveness. They need your boundaries.</p>
+
+    <p class="reveal">They need to learn that hurting you has consequences. That betraying your trust means losing access to you. That taking advantage of your kindness means losing the privilege of being in your life.</p>
+
+    <p class="reveal">You can be forgiving and still have standards. You can be understanding and still have boundaries. You can be compassionate and still protect yourself.</p>
+
+    <p class="reveal">You can forgive people and never speak to them again. You can wish them healing and still block their number. You can release the anger and still refuse to give them another chance.</p>
+
+    <div class="statement reveal">
+      Because <em>you matter.</em><br>Your peace matters.<br>Your boundaries matter.
+    </div>
+
+    <p class="reveal">And protecting those things doesn't make you unforgiving. It makes you wise.</p>
+
+    <p class="reveal">Stop forgiving people who haven't even acknowledged what they did. Stop giving chances to people who keep wasting them. Stop making excuses for people who keep hurting you.</p>
+
+    <p class="reveal">Not every relationship deserves to be saved. Not every person deserves to be in your life. Not every apology deserves to be accepted.</p>
+
+    <p class="reveal">You deserve people who don't keep hurting you in the first place. People who respect your boundaries. People who value you enough to not need constant forgiveness because they're not constantly crossing you.</p>
+
+    <p class="reveal">You deserve people who earn your trust, not people who repeatedly break it while counting on your forgiveness to glue it back together.</p>
+
+    <div class="pull reveal">
+      Your forgiveness is valuable. It's precious.<br>It's not something to be handed out freely<br>to people who treat it like it's worthless.
+    </div>
+
+    <p class="reveal">So stop forgiving too easily. Start requiring change. Start protecting yourself. Start valuing yourself enough to say "not this time."</p>
+
+    <p class="reveal">Forgiveness doesn't mean staying. It doesn't mean giving unlimited chances. It doesn't mean accepting unacceptable behavior over and over again.</p>
+
+    <p class="reveal">Sometimes forgiveness looks like letting go. Letting go of the person. Letting go of the relationship. Letting go of the hope that they'll change when they've shown you repeatedly that they won't.</p>
+
+    <p class="reveal">Let go. Not with bitterness. Not with revenge. But with peace. With boundaries. With self-respect.</p>
+
+    <p class="reveal">You can forgive them for being who they are. And you can protect yourself from who they are. Both things can be true.</p>
+
+    <p class="reveal">You're not being mean. You're not being unforgiving. You're not being cold.</p>
+
+    <p class="reveal">You're being someone who values themselves. Someone who has learned that some people don't deserve unlimited access to you. Someone who knows that forgiving doesn't mean forgetting, and it definitely doesn't mean allowing the same hurt again.</p>
+
+    <div class="divider reveal"><span class="divider-glyph">✦</span></div>
+
+    <p class="reveal">So forgive if you need to. For your own peace. For your own healing. For your own closure.</p>
+
+    <p class="reveal">But don't forget. Don't go back. Don't give another chance to someone who's already wasted a dozen.</p>
+
+    <p class="reveal">Forgive from a distance. Wish them well from afar. Release the anger without reopening the door.</p>
+
+    <p class="reveal">You deserve better than being repeatedly hurt by the same people. You deserve people who don't need constant forgiveness because they're not constantly hurting you.</p>
+
+    <p class="reveal">And those people exist. But you won't find them if you're still giving all your energy to people who keep proving they don't deserve it.</p>
+
+    <div class="statement reveal">
+      Stop forgiving too easily.<br>Start <em>protecting yourself</em> fiercely.
+    </div>
+
+    <p class="reveal">You're not being unforgiving. You're being wise.</p>
+
+    <p class="reveal">And that wisdom? It's going to save you.</p>
+
+    <p class="reveal">From heartbreak. From betrayal. From wasting your precious time and energy on people who don't deserve it.</p>
+
+    <p class="reveal">You're allowed to close the door. You're allowed to say "no more chances." You're allowed to protect yourself.</p>
+
+    <p class="reveal">Even if it means not forgiving this time. Even if it means being done. Even if it means walking away.</p>
+
+    <p class="reveal">You're allowed. You deserve it. You're worth protecting.</p>
+
+    <div class="divider reveal"><span class="divider-glyph">✦</span></div>
+
+    <p class="reveal">Stop forgiving too easily. Start valuing yourself properly.</p>
+
+    <p class="reveal">Because you are worth so much more than repeated hurt from the same people.</p>
+
+    <p class="reveal">And it's time you started believing that.</p>
+
+    <p class="reveal">It's time you started treating yourself like you matter. Because you do.</p>
+
+    <p class="reveal">More than any relationship. More than any person. More than being seen as "the forgiving one."</p>
+
+    <p class="reveal">You matter most. Your peace matters most. Your wellbeing matters most.</p>
+
+    <p class="reveal">Protect it. Even if it means not forgiving this time.</p>
+
+    <p class="reveal">Even if it means finally saying enough.</p>
+
+    <div class="closing reveal">
+      <p>You've forgiven enough.</p>
+      <p>You've given enough chances.</p>
+      <p>You've been hurt enough.</p>
+    </div>
+
+    <p class="reveal">Now it's time to protect yourself. To choose you. To say no more.</p>
+
+    <p class="reveal">Not with anger. Not with bitterness. But with love. Love for yourself.</p>
+
+    <p class="reveal">The girl who forgives too easily deserves to learn how to protect herself just as easily.</p>
+
+    <div class="statement reveal">
+      Start now. Start today.<br><em>You deserve it.</em>
+    </div>
+
+    <p class="reveal" style="text-align:center; font-family:'Playfair Display',serif; font-style:italic; font-size:1.1rem; color:var(--muted);">You've always deserved it.</p>
+
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="hero-rule" style="opacity:1; margin: 0;"></div>
+    <p class="author-sig">— Princess</p>
+    <p style="font-family:'DM Sans',sans-serif; font-size:0.85rem; color:var(--muted); font-style:italic; max-width:380px;">
+      Just a girl named Princess… dreaming of that one soul who stumbles upon her words and finally feels less alone.
+    </p>
+    <a class="medium-link" href="https://medium.com/@prvaxis" target="_blank" rel="noopener">
+      Originally published on <span>Medium</span>
+    </a>
+  </footer>
+
+  <script>
+    // ── PROGRESS BAR ──
+    const bar = document.getElementById('progress');
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (scrolled / max * 100) + '%';
+    });
+
+    // ── SCROLL REVEAL ──
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+
+    // ── AMBIENT GLOW FOLLOWS SCROLL ──
+    const ambient = document.getElementById('ambient');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY * 0.3;
+      ambient.style.transform = `translateX(-50%) translateY(${y}px)`;
+    });
+
+    // ── FLOATING PARTICLES ──
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.width = p.style.height = (Math.random() * 2 + 1) + 'px';
+      p.style.animationDuration = (Math.random() * 20 + 15) + 's';
+      p.style.animationDelay = (Math.random() * 20) + 's';
+      p.style.opacity = Math.random() * 0.5;
+      container.appendChild(p);
+    }
+  </script>
+</body>
+</html>

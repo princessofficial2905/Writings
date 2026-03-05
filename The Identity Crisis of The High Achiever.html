@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Identity Crisis of the High Achiever</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0c0b09;
+      --surface: #131210;
+      --amber: #c8883a;
+      --amber-light: #e5a855;
+      --amber-dim: #7a5022;
+      --text: #d4cfc8;
+      --text-muted: #7a756e;
+      --text-soft: #a09890;
+      --white: #f0ebe3;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.85;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+    }
+
+    /* ── READING PROGRESS ── */
+    #progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--amber-dim), var(--amber), var(--amber-light));
+      width: 0%;
+      z-index: 100;
+      transition: width 0.1s linear;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(200,136,58,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.12;
+      animation: drift 18s ease-in-out infinite alternate;
+    }
+    .orb1 { width: 500px; height: 500px; background: var(--amber); top: -100px; left: -150px; animation-delay: 0s; }
+    .orb2 { width: 300px; height: 300px; background: #8b4513; bottom: -80px; right: -80px; animation-delay: -6s; }
+    .orb3 { width: 200px; height: 200px; background: var(--amber-light); top: 50%; left: 60%; animation-delay: -12s; }
+
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(30px, 40px) scale(1.08); }
+    }
+
+    .hero-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 8vw, 6.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--white);
+      max-width: 900px;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.5s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--amber-light);
+    }
+
+    .hero-sub {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--text-soft);
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.7s forwards;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      opacity: 0;
+      animation: fadeUp 1s 0.9s forwards;
+    }
+
+    .hero-meta span { color: var(--amber-dim); }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeIn 1s 1.5s forwards;
+    }
+
+    .scroll-hint-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, var(--amber), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollLine {
+      0%, 100% { transform: scaleY(1); opacity: 1; }
+      50% { transform: scaleY(0.5); opacity: 0.4; }
+    }
+
+    .scroll-hint-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--amber), transparent);
+      margin: 3rem auto;
+    }
+
+    /* ── ARTICLE ── */
+    article {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    /* Drop cap */
+    .drop-cap::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 5.5rem;
+      font-weight: 900;
+      line-height: 0.75;
+      float: left;
+      margin-right: 0.12em;
+      margin-top: 0.08em;
+      color: var(--amber);
+    }
+
+    p {
+      margin-bottom: 1.6rem;
+      color: var(--text);
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 3px solid var(--amber);
+      margin: 3rem 0;
+      padding: 1.5rem 0 1.5rem 2rem;
+    }
+
+    .pull-quote p {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-style: italic;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--white);
+      margin: 0;
+    }
+
+    /* Triad lines */
+    .triad {
+      margin: 2.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .triad p {
+      font-family: 'EB Garamond', serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--text-soft);
+      margin: 0;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .triad p::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 1px;
+      background: var(--amber-dim);
+    }
+
+    /* Section break ornament */
+    .ornament {
+      text-align: center;
+      color: var(--amber-dim);
+      font-size: 1.2rem;
+      letter-spacing: 1rem;
+      margin: 3rem 0;
+      opacity: 0.6;
+    }
+
+    /* Highlight text */
+    .amber { color: var(--amber-light); }
+
+    /* ── CLOSING ── */
+    .closing {
+      margin-top: 4rem;
+      padding-top: 3rem;
+      border-top: 1px solid rgba(200,136,58,0.15);
+    }
+
+    .closing-signature {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--amber);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 4rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    footer p {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    footer a {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid var(--amber-dim);
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    footer a:hover {
+      color: var(--amber-light);
+      border-color: var(--amber-light);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── AMBIENT CANDLE FLICKER ── */
+    .candle {
+      position: fixed;
+      bottom: 3rem;
+      right: 3rem;
+      width: 2px;
+      height: 40px;
+      background: linear-gradient(to top, var(--amber-dim), var(--amber), var(--amber-light));
+      border-radius: 2px;
+      opacity: 0.4;
+      animation: flicker 3s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .candle::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 12px;
+      background: radial-gradient(ellipse, var(--amber-light) 0%, var(--amber) 40%, transparent 80%);
+      border-radius: 50% 50% 30% 30%;
+      animation: flickerFlame 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.25; }
+    }
+
+    @keyframes flickerFlame {
+      from { transform: translateX(-50%) scaleX(1) scaleY(1); }
+      to   { transform: translateX(-50%) scaleX(0.8) scaleY(1.2); }
+    }
+
+    @media (max-width: 600px) {
+      .hero-title { font-size: 2.5rem; }
+      article { padding: 3rem 1.25rem 5rem; }
+      .pull-quote p { font-size: 1.2rem; }
+      .candle { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div class="candle"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <p class="hero-eyebrow">An Essay by Princess</p>
+  <h1 class="hero-title">The Identity Crisis of the <em>&ldquo;High Achiever&rdquo;</em></h1>
+  <p class="hero-sub">On the exhaustion of becoming everything except yourself</p>
+  <div class="hero-meta">
+    <span>February 2026</span>
+    <span style="color: var(--amber-dim)">&#183;</span>
+    <span>6 min read</span>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-hint-line"></div>
+    <span class="scroll-hint-label">Read</span>
+  </div>
+</section>
+
+<!-- ARTICLE -->
+<article>
+
+  <p class="drop-cap reveal">You've been the "successful one" your entire life.</p>
+
+  <p class="reveal">The one who got straight A's. The one who won awards. The one everyone was proud of. The one who always had it together.</p>
+
+  <p class="reveal">The achiever. The star. The one who made it look easy.</p>
+
+  <p class="reveal">And for a long time, that felt good. That felt like enough. That felt like who you were.</p>
+
+  <p class="reveal">Until one day, it didn't.</p>
+
+  <div class="pull-quote reveal">
+    <p>One day, you woke up exhausted. Not just tired in your body. Exhausted in your soul.</p>
+  </div>
+
+  <p class="reveal">From the constant achieving. The endless working. The relentless need to do more, be more, accomplish more.</p>
+
+  <p class="reveal">And you asked yourself a question you'd never let yourself ask before:</p>
+
+  <p class="reveal" style="font-family:'Playfair Display',serif; font-style:italic; font-size:1.15rem; color:var(--white); padding-left:1rem; border-left:2px solid var(--amber-dim);">Who am I when I'm not achieving anything?</p>
+
+  <p class="reveal">And the silence that followed that question was deafening.</p>
+
+  <p class="reveal">Because you don't know. You genuinely don't know who you are without the achievements, the accolades, the productivity, the success.</p>
+
+  <p class="reveal">Your entire identity has been built on what you do. Not who you are.</p>
+
+  <div class="triad reveal">
+    <p>You're the person who gets promoted.</p>
+    <p>The person who finishes first.</p>
+    <p>The person who exceeds expectations.</p>
+    <p>The person who never fails.</p>
+    <p>The person everyone can count on.</p>
+  </div>
+
+  <p class="reveal">But who are you when you're just&hellip; you?</p>
+
+  <p class="reveal">When you're not working. Not winning. Not being useful to anyone.</p>
+
+  <p class="reveal">Just existing. Just being. Just alive without a purpose or goal or achievement to show for it.</p>
+
+  <p class="reveal">You don't know. And that's terrifying.</p>
+
+  <p class="reveal">Because your worth has always been tied to your productivity. Your value has always been measured by your accomplishments. Your identity has always been defined by what you can do.</p>
+
+  <p class="reveal">Not by who you are underneath all of that.</p>
+
+  <p class="reveal">And now you're realizing: there might not be anything underneath. Or if there is, you don't know what it looks like. You've been so busy achieving that you forgot to become a person.</p>
+
+  <div class="ornament">&#8725; &#8725; &#8725;</div>
+
+  <div class="triad reveal">
+    <p>You know how to work. You don't know how to rest.</p>
+    <p>You know how to succeed. You don't know how to simply exist.</p>
+    <p>You know how to be useful. You don't know how to just be.</p>
+  </div>
+
+  <p class="reveal">And it's not just that you don't know how. It's that you don't feel like you're allowed to.</p>
+
+  <p class="reveal">Rest feels like laziness. Relaxation feels like wasting time. Doing nothing feels like failing.</p>
+
+  <p class="reveal">Even when you try to take a break, your mind races. What should I be doing? What am I missing? What could I be accomplishing right now?</p>
+
+  <p class="reveal">You can't enjoy a vacation because you're worried about falling behind. You can't watch a movie without feeling guilty. You can't spend a day doing nothing without anxiety creeping in.</p>
+
+  <p class="reveal">Because if you're not achieving, who are you? What's your purpose? What's your worth?</p>
+
+  <div class="pull-quote reveal">
+    <p>This is the identity crisis of the high achiever. The realization that you've spent your entire life building a resume instead of building a self.</p>
+  </div>
+
+  <p class="reveal">You've collected accomplishments like they're proof of your value. Degrees, promotions, awards, recognition. Each one a confirmation that you matter. That you're enough. That you deserve to exist.</p>
+
+  <p class="reveal">But deep down, you know the truth: You never feel like it's enough.</p>
+
+  <p class="reveal">No matter how much you achieve, there's always more. Always another goal. Always another level. Always someone doing better. Always something you haven't accomplished yet.</p>
+
+  <p class="reveal">The finish line keeps moving. And you keep running. Exhausted, empty, but unable to stop.</p>
+
+  <p class="reveal">Because stopping means facing the question: What if I'm not actually special? What if all I am is what I achieve? What if people only value me for what I can do for them?</p>
+
+  <p class="reveal"><span class="amber">What if, without my achievements, I'm nothing?</span></p>
+
+  <p class="reveal">And that fear? That fear keeps you running. Keeps you working. Keeps you achieving. Even when it's destroying you.</p>
+
+  <p class="reveal">Even when you can't remember the last time you did something just because it made you happy. Even when you've forgotten what makes you happy at all.</p>
+
+  <p class="reveal">Even when your relationships are suffering because you're always working. Even when your health is declining because you never rest. Even when your soul is screaming for you to stop.</p>
+
+  <p class="reveal">You can't stop. Because you don't know who you'd be if you did.</p>
+
+  <div class="ornament">&#8725; &#8725; &#8725;</div>
+
+  <p class="reveal">You look at people who seem content just existing. People who have hobbies they're not trying to monetize. People who can waste a Sunday doing nothing and feel fine about it. People whose worth isn't tied to their productivity.</p>
+
+  <p class="reveal">And you don't understand them. Or maybe you envy them. Or maybe you judge them, because that's easier than admitting you wish you could be like them.</p>
+
+  <p class="reveal">People tell you to slow down. To take care of yourself. To stop working so hard.</p>
+
+  <p class="reveal">And you smile and say "I know, I will." But you don't. You can't.</p>
+
+  <p class="reveal">Because they don't understand. This isn't just about work. This is about survival.</p>
+
+  <p class="reveal">You learned early that your value was conditional. That love and approval came with achievement. That you had to earn your place. That being good wasn't enough, you had to be the best.</p>
+
+  <p class="reveal">Maybe your parents only praised you when you succeeded. Maybe love felt like it had to be earned. Maybe the only time you felt seen was when you were winning.</p>
+
+  <p class="reveal">Or maybe you were just naturally good at things, and people's pride in you felt so good that you made it your identity. You became the person everyone was proud of. And then you couldn't let them down.</p>
+
+  <p class="reveal">So you kept achieving. Kept excelling. Kept pushing. Because that's who you were. That's what made you valuable. That's what made you lovable.</p>
+
+  <p class="reveal">And now? Now you're an adult. Successful on paper. Accomplished. Respected.</p>
+
+  <p class="reveal">And completely empty inside.</p>
+
+  <p class="reveal">Because you achieved everything you were supposed to achieve. You did everything right. You became everything they wanted you to become.</p>
+
+  <p class="reveal">But you don't know who you wanted to become. You don't know what you actually like. You don't know what brings you joy outside of accomplishment.</p>
+
+  <p class="reveal">You don't know yourself at all.</p>
+
+  <div class="pull-quote reveal">
+    <p>I've been so busy becoming successful that I forgot to become myself.</p>
+  </div>
+
+  <div class="ornament">&#8725; &#8725; &#8725;</div>
+
+  <p class="reveal">So what now? How do you find yourself when you've spent your entire life being what others needed you to be?</p>
+
+  <p class="reveal">How do you learn to just exist when you've only known how to achieve?</p>
+
+  <p class="reveal">How do you discover your worth when it's been tied to productivity for so long?</p>
+
+  <p class="reveal">It starts with stopping. Really stopping. Not "taking a break to be more productive later." But actually stopping.</p>
+
+  <p class="reveal">Sitting with the discomfort of doing nothing. Feeling the anxiety of not achieving. Facing the fear that you might not matter without accomplishments.</p>
+
+  <p class="reveal">And breathing through it. Not fixing it. Not solving it. Just being with it.</p>
+
+  <p class="reveal">It starts with asking different questions.</p>
+
+  <div class="triad reveal">
+    <p>Not "What should I accomplish today?" But "What would make me happy today?"</p>
+    <p>Not "How can I be useful?" But "What do I enjoy?"</p>
+    <p>Not "What will impress people?" But "What feels meaningful to me?"</p>
+  </div>
+
+  <p class="reveal">It starts with separating your identity from your achievements.</p>
+
+  <div class="triad reveal">
+    <p>You are not your job.</p>
+    <p>You are not your success.</p>
+    <p>You are not your productivity.</p>
+    <p>You are not what you've accomplished.</p>
+  </div>
+
+  <p class="reveal">Those are things you've done. They're not who you are.</p>
+
+  <p class="reveal">Who you are is the person underneath all of that. The one with thoughts and feelings and preferences and quirks. The one who exists even when they're not achieving anything.</p>
+
+  <p class="reveal">That person is there. You've just been ignoring them for so long that you forgot they existed.</p>
+
+  <p class="reveal">It starts with giving yourself permission to be ordinary. To have a day where you accomplish nothing. To try something you're bad at. To exist without earning it.</p>
+
+  <p class="reveal" style="font-family:'Playfair Display',serif; font-style:italic; font-size:1.15rem; color:var(--amber-light);">To be a human being, not a human doing.</p>
+
+  <p class="reveal">And yes, it's scary. Yes, it feels wrong. Yes, every part of you will resist it.</p>
+
+  <p class="reveal">But you have to try. Because this path you're on, the endless achieving, the constant productivity, the relentless pursuit of more, it's not sustainable.</p>
+
+  <p class="reveal">It will break you eventually. If it hasn't already.</p>
+
+  <p class="reveal">And when it does, you'll be forced to face that question anyway: Who am I without my achievements?</p>
+
+  <p class="reveal">So maybe it's time to face it now. On your terms. Before you burn out completely.</p>
+
+  <div class="ornament">&#8725; &#8725; &#8725;</div>
+
+  <p class="reveal">Who are you when you're not winning, working, or being useful?</p>
+
+  <p class="reveal">You're a person. A whole, complete, valuable person.</p>
+
+  <p class="reveal">Who deserves to exist just because you exist. Not because of what you've done or what you might do.</p>
+
+  <p class="reveal">Just because you're here. Just because you're you.</p>
+
+  <p class="reveal">And that? That is more than enough.</p>
+
+  <p class="reveal">Even if it doesn't feel like it yet.</p>
+
+  <p class="reveal">Even if it takes time to believe it.</p>
+
+  <p class="reveal">It's true.</p>
+
+  <div class="pull-quote reveal" style="border-left-color: var(--amber-light);">
+    <p style="font-size:1.8rem;">You are enough.<br/>Without the achievements. Without the success. Without the productivity.<br/>Just you. As you are. Right now.</p>
+  </div>
+
+  <p class="reveal" style="text-align:center; font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--white);">That's enough.</p>
+  <p class="reveal" style="text-align:center; font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--amber-light); margin-top:0.5rem;">You are enough.</p>
+
+  <div class="closing reveal">
+    <p class="closing-signature">With understanding and compassion,</p>
+    <p class="closing-signature" style="margin-top:0.4rem; font-size:1.2rem;">A recovering high achiever</p>
+  </div>
+
+</article>
+
+<!-- FOOTER -->
+<footer>
+  <div class="divider"></div>
+  <p>Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a> &nbsp;&middot;&nbsp; Written by Princess</p>
+</footer>
+
+<script>
+  // Reading progress bar
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    document.getElementById('progress').style.width = pct + '%';
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

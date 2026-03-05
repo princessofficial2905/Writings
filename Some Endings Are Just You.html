@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Some Endings Are Just You — Princess</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600&family=Cormorant+Infant:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --bg:        #060e08;
+      --bg2:       #091209;
+      --panel:     #0c1a0e;
+      --green:     #1a3320;
+      --green-mid: #254d2e;
+      --gold:      #b8912a;
+      --gold-soft: #d4a94a;
+      --gold-glow: #f0cc7a;
+      --cream:     #f0ead8;
+      --muted:     #6b7c6d;
+      --faint:     #162018;
+      --border:    #1e3323;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Libre Baskerville', serif;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLLING BACKGROUND ── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── LOADER ── */
+    #loader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 24px;
+      transition: opacity 1s ease, visibility 1s ease;
+    }
+    #loader.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .loader-logo {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-size: 2.4rem;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      opacity: 0;
+      animation: fadeIn 0.6s 0.2s forwards;
+    }
+    .loader-track {
+      width: 160px; height: 1px;
+      background: var(--faint);
+      overflow: hidden;
+      position: relative;
+    }
+    .loader-track::after {
+      content: '';
+      position: absolute; top:0; left:-100%; width:100%; height:100%;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      animation: trackFill 1.6s 0.4s ease forwards;
+    }
+    @keyframes trackFill { 0% { left:-100%; } 100% { left:100%; } }
+
+    .loader-sub {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.5em;
+      color: var(--muted);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeIn 0.6s 0.5s forwards;
+    }
+
+    /* ── MASTHEAD ── */
+    .masthead {
+      position: relative; z-index: 2;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 28px 80px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(6,14,8,0.92);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      animation: fadeIn 0.8s 1.8s forwards;
+    }
+    .masthead-brand {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+    }
+    .masthead-tag {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 8px;
+      letter-spacing: 0.45em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .masthead-date {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 8px;
+      letter-spacing: 0.35em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── HERO MAGAZINE COVER ── */
+    .hero {
+      position: relative; z-index: 2;
+      min-height: 92vh;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    /* left: big title column */
+    .hero-title-col {
+      padding: 80px 60px 80px 80px;
+      display: flex; flex-direction: column; justify-content: center;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+
+    .hero-issue {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 8px;
+      letter-spacing: 0.55em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 0.7s 2s forwards;
+    }
+
+    .hero-headline {
+      font-family: 'Cormorant Infant', serif;
+      font-weight: 600;
+      font-size: clamp(3.8rem, 6vw, 7.5rem);
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+      color: var(--cream);
+      opacity: 0;
+      animation: fadeUp 0.9s 2.2s forwards;
+    }
+    .hero-headline em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--gold-soft);
+      display: block;
+    }
+
+    .hero-rule {
+      width: 0; height: 2px;
+      background: var(--gold);
+      margin: 40px 0;
+      animation: growRule 1s 2.8s ease forwards;
+    }
+    @keyframes growRule { to { width: 80px; } }
+
+    .hero-deck {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 300;
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      line-height: 1.9;
+      color: var(--muted);
+      text-transform: uppercase;
+      max-width: 360px;
+      opacity: 0;
+      animation: fadeUp 0.8s 3s forwards;
+    }
+
+    /* right: pull quote + meta column */
+    .hero-meta-col {
+      display: flex; flex-direction: column;
+      position: relative;
+    }
+
+    .hero-meta-top {
+      flex: 1;
+      padding: 80px 60px 40px 60px;
+      display: flex; flex-direction: column; justify-content: center;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    /* typing animation area */
+    #typed-quote {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+      line-height: 1.55;
+      color: var(--cream);
+      min-height: 160px;
+    }
+    .typed-cursor {
+      display: inline-block;
+      width: 2px; height: 1.1em;
+      background: var(--gold);
+      margin-left: 3px;
+      vertical-align: middle;
+      animation: cursorBlink 0.9s infinite;
+    }
+    @keyframes cursorBlink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+    .hero-meta-attr {
+      margin-top: 32px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
+    .hero-meta-bottom {
+      padding: 36px 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .meta-block {
+      padding: 20px 0;
+      border-right: 1px solid var(--border);
+      padding-right: 28px;
+    }
+    .meta-block:last-child { border-right: none; padding-left: 28px; padding-right: 0; }
+
+    .meta-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 7px;
+      letter-spacing: 0.5em;
+      color: var(--muted);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .meta-value {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 1.3rem;
+      color: var(--gold-soft);
+    }
+
+    /* ── ARTICLE GRID ── */
+    .article-grid {
+      position: relative; z-index: 2;
+      display: grid;
+      grid-template-columns: 200px 1fr 1fr;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 100px 80px;
+      gap: 0 60px;
+    }
+
+    /* sidebar */
+    .sidebar {
+      position: relative;
+      padding-top: 8px;
+    }
+    .sidebar-line {
+      width: 1px;
+      position: absolute;
+      top: 0; bottom: 0; right: 0;
+      background: var(--border);
+    }
+    .sidebar-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 7px;
+      letter-spacing: 0.55em;
+      color: var(--gold);
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      margin-bottom: 32px;
+    }
+    .chapter-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: sticky;
+      top: 100px;
+    }
+    .chapter-list li {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 8px;
+      letter-spacing: 0.35em;
+      color: var(--muted);
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.3s;
+      padding-left: 16px;
+      border-left: 1px solid transparent;
+      transition: all 0.3s;
+    }
+    .chapter-list li:hover,
+    .chapter-list li.active {
+      color: var(--gold);
+      border-left-color: var(--gold);
+    }
+
+    /* columns */
+    .col-left, .col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* section header */
+    .section-head {
+      border-top: 2px solid var(--gold);
+      padding-top: 20px;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s, transform 0.8s;
+    }
+    .section-head.visible { opacity:1; transform:none; }
+
+    .section-head-num {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 7px;
+      letter-spacing: 0.55em;
+      color: var(--gold);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 10px;
+    }
+    .section-head-title {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 1.9rem;
+      font-weight: 600;
+      color: var(--cream);
+      line-height: 1.1;
+    }
+
+    .para {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 15.5px;
+      font-weight: 400;
+      line-height: 1.95;
+      color: rgba(240,234,216,0.85);
+      margin-bottom: 36px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s, transform 0.9s;
+    }
+    .para.visible { opacity:1; transform:none; }
+
+    .para.dropcap::first-letter {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 5.5em;
+      font-weight: 600;
+      float: left;
+      line-height: 0.73;
+      margin-right: 10px;
+      margin-top: 8px;
+      color: var(--gold);
+    }
+
+    /* stanza */
+    .stanza {
+      margin: 40px 0 48px;
+      padding: 36px 40px;
+      background: var(--green);
+      border-top: 1px solid var(--gold);
+      border-bottom: 1px solid var(--gold);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s, transform 0.9s;
+    }
+    .stanza.visible { opacity:1; transform:none; }
+
+    .stanza p {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 2.1;
+      color: var(--gold-soft);
+    }
+
+    /* col-right has the pullquote & closing */
+    .pullquote {
+      background: var(--green);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      padding: 48px 40px;
+      margin-bottom: 40px;
+      position: sticky;
+      top: 100px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s, transform 1s;
+    }
+    .pullquote.visible { opacity:1; transform:none; }
+
+    .pullquote-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 7px;
+      letter-spacing: 0.55em;
+      color: var(--gold);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 20px;
+    }
+    .pullquote p {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-size: clamp(1.3rem, 1.8vw, 1.75rem);
+      line-height: 1.55;
+      color: var(--cream);
+    }
+
+    .col-right-lower {
+      margin-top: 40px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s 0.2s, transform 1s 0.2s;
+    }
+    .col-right-lower.visible { opacity:1; transform:none; }
+
+    .closing-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 7px;
+      letter-spacing: 0.55em;
+      color: var(--gold);
+      text-transform: uppercase;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      display: block;
+      margin-bottom: 28px;
+    }
+    .closing-text {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 1.3rem;
+      line-height: 1.8;
+      color: rgba(240,234,216,0.9);
+    }
+    .closing-text strong {
+      font-style: italic;
+      font-weight: 600;
+      color: var(--gold-soft);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 2;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      padding: 60px 80px;
+      gap: 40px;
+      align-items: center;
+      background: var(--panel);
+    }
+
+    .footer-left {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 8px;
+      letter-spacing: 0.4em;
+      color: var(--muted);
+      text-transform: uppercase;
+      line-height: 2;
+    }
+
+    .footer-center {
+      text-align: center;
+    }
+    .footer-name {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-size: 2.5rem;
+      color: var(--gold-soft);
+      display: block;
+      margin-bottom: 10px;
+    }
+    .footer-pub {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 8px;
+      letter-spacing: 0.4em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .footer-pub a {
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(184,145,42,0.3);
+      padding-bottom: 1px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .footer-pub a:hover { color: var(--gold-glow); border-color: var(--gold-glow); }
+
+    .footer-right {
+      text-align: right;
+    }
+    .footer-ornament {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 4rem;
+      color: var(--gold);
+      opacity: 0.15;
+      line-height: 1;
+    }
+
+    /* ── UTILS ── */
+    @keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
+    @keyframes fadeUp  { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .masthead { padding: 24px 32px; }
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-meta-col { border-top: 1px solid var(--border); }
+      .hero-title-col { padding: 60px 32px; border-right: none; }
+      .hero-meta-top { padding: 40px 32px 28px; }
+      .hero-meta-bottom { padding: 24px 32px; }
+      .article-grid { grid-template-columns: 1fr; padding: 60px 32px; gap: 0; }
+      .sidebar { display: none; }
+      .pullquote { position: static; }
+      footer { grid-template-columns: 1fr; padding: 48px 32px; text-align: center; }
+      .footer-right { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Scroll-reactive canvas background -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- Loader -->
+<div id="loader">
+  <p class="loader-logo">Princess</p>
+  <div class="loader-track"></div>
+  <p class="loader-sub">Preparing your story</p>
+</div>
+
+<!-- Masthead -->
+<header class="masthead">
+  <span class="masthead-brand">Princess</span>
+  <span class="masthead-tag">Personal Essay &nbsp;·&nbsp; Healing &nbsp;·&nbsp; Love</span>
+  <span class="masthead-date">February 14, 2026</span>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-title-col">
+    <p class="hero-issue">Vol. I &nbsp;·&nbsp; On Healing</p>
+    <h1 class="hero-headline">
+      Some<br>endings<br>are just<br><em>you</em>
+    </h1>
+    <div class="hero-rule"></div>
+    <p class="hero-deck">finding the pieces<br>you gave away</p>
+  </div>
+
+  <div class="hero-meta-col">
+    <div class="hero-meta-top">
+      <div id="typed-quote"><span class="typed-cursor"></span></div>
+      <p class="hero-meta-attr">— Princess</p>
+    </div>
+    <div class="hero-meta-bottom">
+      <div class="meta-block">
+        <span class="meta-label">Read Time</span>
+        <span class="meta-value">3 min</span>
+      </div>
+      <div class="meta-block">
+        <span class="meta-label">Published</span>
+        <span class="meta-value">Feb 14</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Article -->
+<div class="article-grid">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-line"></div>
+    <ul class="chapter-list" id="chapterList">
+      <li data-target="ch1" class="active">The Pieces</li>
+      <li data-target="ch2">What Love Costs</li>
+      <li data-target="ch3">God Saw</li>
+      <li data-target="ch4">Coming Home</li>
+    </ul>
+  </aside>
+
+  <!-- Left column: main prose -->
+  <div class="col-left">
+
+    <div class="section-head" id="ch1">
+      <span class="section-head-num">01 &nbsp;/&nbsp; The Pieces We Lose</span>
+      <h2 class="section-head-title">There comes<br>a moment</h2>
+    </div>
+
+    <p class="para dropcap" id="ch1-text">
+      There comes a moment in your healing when you look back at the love you tried so hard to hold onto and finally see the truth you couldn't see back then, you didn't just lose a person, you lost pieces of yourself trying to keep them. You lost your peace trying to understand their silence. You lost your confidence trying to earn their attention. You lost your sleep over someone who didn't lose a moment over you. You lost your voice while trying not to upset them. You lost your joy trying to decode mixed signals. And the saddest part is that you didn't even realize you were losing these pieces, because you were too busy trying not to lose them.
+    </p>
+
+    <div class="stanza" id="ch2">
+      <p>You convinced yourself that if you loved them harder, they would love you back.</p>
+      <p>If you understood them more, they would finally understand you.</p>
+      <p>If you stayed loyal, they would eventually stay consistent.</p>
+      <p>But love doesn't work like that.</p>
+      <p>Love is not supposed to cost you the parts of yourself that make you who you are.</p>
+      <p>And any love that demands your emotional sacrifice, your self-worth, your identity, or your peace…</p>
+      <p>is not love, it's self-destruction disguised as devotion.</p>
+    </div>
+
+    <div class="section-head" id="ch3">
+      <span class="section-head-num">02 &nbsp;/&nbsp; What God Saw</span>
+      <h2 class="section-head-title">But God saw<br>everything</h2>
+    </div>
+
+    <p class="para">
+      There were moments you stayed even when your heart whispered, "You're hurting yourself." Moments you bent until you broke, moments you lowered your standards even though your soul knew better, moments you accepted treatment far below what your heart deserved. But you stayed because you loved honestly. You stayed because you saw potential. You stayed because you hoped they would rise to meet you. And that hope, as beautiful and sincere as it was, became the very thing that kept you tied to a love that was slowly draining you.
+    </p>
+
+    <p class="para">
+      But God saw everything you lost. He saw the tears you cried to protect someone who wouldn't protect you. He saw the pieces of yourself scattered every time you tried to make things work. He saw the way your spirit dimmed trying to brighten someone else's. And He knew you deserved more, far more, than a love that only grew when it was convenient and faded when it required effort. So He began removing them, softening your attachment, nudging you gently toward a truth you weren't ready to accept.
+    </p>
+
+    <div class="section-head" id="ch4">
+      <span class="section-head-num">03 &nbsp;/&nbsp; Coming Home</span>
+      <h2 class="section-head-title">One day,<br>My friend</h2>
+    </div>
+
+    <p class="para">
+      One day, My friend, you will look back and realize that everything you lost was not taken, it was returned to you. Your peace will return. Your confidence will return. Your voice will return. Your joy will return. Your worth will feel like yours again. And when the right love enters your life, a love that doesn't drain you, doesn't confuse you, doesn't make you shrink, you will understand why you had to lose the wrong person to find the right version of yourself.
+    </p>
+
+  </div>
+
+  <!-- Right column: pullquote + closing -->
+  <div class="col-right">
+
+    <div class="pullquote">
+      <span class="pullquote-label">Key Passage</span>
+      <p>You cannot lose yourself trying to keep someone who was never meant to stay.</p>
+    </div>
+
+    <div class="col-right-lower">
+      <span class="closing-label">Closing</span>
+      <p class="closing-text">
+        You didn't lose them.<br>
+        You lost pieces of yourself trying to keep them.<br><br>
+        And now, God is bringing you into a chapter where you finally get those pieces back,
+        <strong>whole, healed, and glowing</strong>
+        with a love that feels like coming home.
+      </p>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-left">
+    Personal Essay<br>
+    Healing &amp; Love<br>
+    February 2026
+  </div>
+  <div class="footer-center">
+    <span class="footer-name">Princess</span>
+    <p class="footer-pub">Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+  </div>
+  <div class="footer-right">
+    <p class="footer-ornament">∞</p>
+  </div>
+</footer>
+
+<script>
+  /* ── LOADER ── */
+  window.addEventListener('load', () => {
+    setTimeout(() => document.getElementById('loader').classList.add('hide'), 2000);
+  });
+
+  /* ── SCROLL-REACTIVE CANVAS BACKGROUND ── */
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, scrollY = 0;
+
+  function resizeCanvas() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  // Nodes
+  const NODE_COUNT = 38;
+  const nodes = Array.from({ length: NODE_COUNT }, () => ({
+    x: Math.random() * 1.2 - 0.1,
+    y: Math.random() * 1.2 - 0.1,
+    vx: (Math.random() - 0.5) * 0.0003,
+    vy: (Math.random() - 0.5) * 0.0003,
+    r: 0.8 + Math.random() * 1.8,
+  }));
+
+  function drawBg() {
+    const scroll = window.scrollY;
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    const p = maxScroll > 0 ? scroll / maxScroll : 0;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Gradient shifts with scroll
+    const grd = ctx.createRadialGradient(
+      W * (0.3 + p * 0.4), H * (0.2 + p * 0.6), 0,
+      W * 0.5, H * 0.5, W * 0.9
+    );
+    grd.addColorStop(0, `rgba(26,51,32,${0.55 + p * 0.25})`);
+    grd.addColorStop(0.5, `rgba(9,18,9,0.7)`);
+    grd.addColorStop(1, `rgba(6,14,8,0.95)`);
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, W, H);
+
+    // Gold accent glow that moves with scroll
+    const gx = ctx.createRadialGradient(
+      W * (0.7 - p * 0.3), H * (0.8 - p * 0.5), 0,
+      W * (0.7 - p * 0.3), H * 0.5, W * 0.5
+    );
+    gx.addColorStop(0, `rgba(184,145,42,${0.06 + p * 0.06})`);
+    gx.addColorStop(1, 'rgba(184,145,42,0)');
+    ctx.fillStyle = gx;
+    ctx.fillRect(0, 0, W, H);
+
+    // Animated nodes
+    nodes.forEach(n => {
+      n.x += n.vx;
+      n.y += n.vy;
+      if (n.x < -0.1 || n.x > 1.1) n.vx *= -1;
+      if (n.y < -0.1 || n.y > 1.1) n.vy *= -1;
+    });
+
+    // Connection lines
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = (nodes[i].x - nodes[j].x) * W;
+        const dy = (nodes[i].y - nodes[j].y) * H;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < W * 0.18) {
+          const a = (1 - dist / (W * 0.18)) * 0.09;
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x * W, nodes[i].y * H);
+          ctx.lineTo(nodes[j].x * W, nodes[j].y * H);
+          ctx.strokeStyle = `rgba(184,145,42,${a})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Dots
+    nodes.forEach(n => {
+      ctx.beginPath();
+      ctx.arc(n.x * W, n.y * H, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(184,145,42,0.18)`;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(drawBg);
+  }
+  drawBg();
+
+  /* ── TYPING ANIMATION ── */
+  const QUOTE = "You didn't just lose a person. You lost pieces of yourself trying to keep them.";
+  const typedEl = document.getElementById('typed-quote');
+  let charIndex = 0;
+  let typingStarted = false;
+
+  function typeNext() {
+    if (charIndex <= QUOTE.length) {
+      typedEl.innerHTML =
+        QUOTE.slice(0, charIndex) +
+        '<span class="typed-cursor"></span>';
+      charIndex++;
+      setTimeout(typeNext, 42 + Math.random() * 30);
+    } else {
+      // Keep blinking cursor
+      typedEl.innerHTML = QUOTE + '<span class="typed-cursor"></span>';
+    }
+  }
+
+  // Start typing after loader fades
+  setTimeout(() => { if (!typingStarted) { typingStarted = true; typeNext(); } }, 2200);
+
+  /* ── SCROLL REVEAL ── */
+  const revealEls = document.querySelectorAll('.para, .stanza, .pullquote, .section-head, .col-right-lower');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => obs.observe(el));
+
+  /* ── ACTIVE CHAPTER in sidebar ── */
+  const chapters = ['ch1','ch2','ch3','ch4'];
+  const listItems = document.querySelectorAll('#chapterList li');
+
+  window.addEventListener('scroll', () => {
+    let current = chapters[0];
+    chapters.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && window.scrollY >= el.offsetTop - 200) current = id;
+    });
+    listItems.forEach(li => {
+      li.classList.toggle('active', li.dataset.target === current);
+    });
+  });
+
+  listItems.forEach(li => {
+    li.addEventListener('click', () => {
+      const target = document.getElementById(li.dataset.target);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

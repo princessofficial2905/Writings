@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Weight of Relationships — Princess</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0d0b09;
+      --paper: #f5f0e8;
+      --amber: #c8873a;
+      --amber-dim: #9e6629;
+      --amber-glow: rgba(200, 135, 58, 0.12);
+      --amber-line: rgba(200, 135, 58, 0.35);
+      --dust: rgba(200, 135, 58, 0.06);
+      --white-dim: rgba(245, 240, 232, 0.55);
+      --white-faint: rgba(245, 240, 232, 0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--ink);
+      color: var(--paper);
+      font-family: 'Cormorant Infant', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.85;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ─── GRAIN OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.45;
+    }
+
+    /* ─── AMBIENT GLOW ─── */
+    .ambient {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .ambient-1 {
+      width: 600px; height: 600px;
+      top: -200px; left: -200px;
+      background: radial-gradient(circle, rgba(200,135,58,0.07) 0%, transparent 70%);
+      animation: drift1 18s ease-in-out infinite alternate;
+    }
+    .ambient-2 {
+      width: 500px; height: 500px;
+      bottom: 10%; right: -150px;
+      background: radial-gradient(circle, rgba(200,135,58,0.05) 0%, transparent 70%);
+      animation: drift2 22s ease-in-out infinite alternate;
+    }
+    @keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(60px, 80px); } }
+    @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-50px, -60px); } }
+
+    /* ─── SCROLL PROGRESS ─── */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--amber-dim), var(--amber), var(--amber-dim));
+      z-index: 1000;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 12px var(--amber);
+    }
+
+    /* ─── HEADER / HERO ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 40px 80px;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 1px; height: 120px;
+      background: linear-gradient(to bottom, var(--amber-line), transparent);
+    }
+
+    .eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--amber);
+      opacity: 0;
+      animation: fadeUp 1s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.2rem, 8vw, 7.5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      color: var(--paper);
+      margin: 28px 0 18px;
+      opacity: 0;
+      animation: fadeUp 1s 0.55s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--amber);
+    }
+
+    .hero-sub {
+      font-family: 'Cormorant Infant', serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.55rem);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--white-dim);
+      letter-spacing: 0.05em;
+      max-width: 540px;
+      opacity: 0;
+      animation: fadeUp 1s 0.8s forwards;
+    }
+
+    .hero-meta {
+      margin-top: 52px;
+      display: flex;
+      gap: 40px;
+      align-items: center;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.35);
+      opacity: 0;
+      animation: fadeUp 1s 1.05s forwards;
+    }
+    .hero-meta span { position: relative; }
+    .hero-meta span + span::before {
+      content: '·';
+      position: absolute;
+      left: -22px;
+      color: var(--amber);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── DECORATIVE RULE ─── */
+    .ornament {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin: 80px auto;
+      max-width: 200px;
+    }
+    .ornament::before, .ornament::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--amber-line));
+    }
+    .ornament::after { background: linear-gradient(90deg, var(--amber-line), transparent); }
+    .ornament-diamond {
+      width: 6px; height: 6px;
+      background: var(--amber);
+      transform: rotate(45deg);
+      box-shadow: 0 0 8px var(--amber);
+    }
+
+    /* ─── ARTICLE BODY ─── */
+    .article-wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 32px 160px;
+    }
+
+    /* Opening large cap */
+    .article-wrapper p:first-child::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 5.5rem;
+      font-weight: 900;
+      line-height: 0.75;
+      float: left;
+      margin-right: 14px;
+      margin-top: 10px;
+      color: var(--amber);
+      text-shadow: 0 0 40px rgba(200,135,58,0.4);
+    }
+
+    p {
+      font-size: clamp(1.05rem, 1.8vw, 1.22rem);
+      line-height: 1.95;
+      color: rgba(245, 240, 232, 0.82);
+      margin-bottom: 1.8em;
+      font-weight: 300;
+    }
+
+    /* Pull quotes */
+    .pull-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--paper);
+      line-height: 1.45;
+      padding: 48px 0 48px 40px;
+      margin: 60px 0;
+      border-left: 2px solid var(--amber);
+      position: relative;
+    }
+    .pull-quote::before {
+      content: '"';
+      font-size: 6rem;
+      line-height: 0;
+      color: var(--amber);
+      opacity: 0.3;
+      position: absolute;
+      top: 42px;
+      left: -12px;
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* Section break text */
+    .section-marker {
+      font-family: 'Cinzel', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--amber);
+      text-align: center;
+      display: block;
+      margin: 70px 0 60px;
+      opacity: 0.7;
+    }
+
+    /* Emphasis inline */
+    em-amber {
+      color: var(--amber);
+      font-style: italic;
+    }
+
+    /* ─── FLOATING WORDS EFFECT ─── */
+    .floating-word {
+      position: fixed;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(0.6rem, 1.5vw, 0.9rem);
+      color: rgba(200, 135, 58, 0.12);
+      pointer-events: none;
+      z-index: 2;
+      animation: floatWord linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes floatWord {
+      from { transform: translateY(100vh) rotate(-3deg); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      to   { transform: translateY(-100px) rotate(3deg); opacity: 0; }
+    }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 80px 40px 100px;
+      border-top: 1px solid var(--white-faint);
+    }
+
+    .footer-author {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--white-dim);
+      margin-bottom: 20px;
+      letter-spacing: 0.05em;
+    }
+
+    .footer-medium {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.3);
+    }
+
+    .footer-medium a {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid var(--amber-line);
+      padding-bottom: 1px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .footer-medium a:hover {
+      color: var(--paper);
+      border-color: var(--paper);
+    }
+
+    .footer-line {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to top, transparent, var(--amber-line));
+      margin: 40px auto 0;
+    }
+
+    /* ─── CURSOR DOT ─── */
+    .cursor-dot {
+      position: fixed;
+      width: 6px; height: 6px;
+      background: var(--amber);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10000;
+      transition: transform 0.15s ease, opacity 0.3s ease;
+      box-shadow: 0 0 12px var(--amber);
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 32px; height: 32px;
+      border: 1px solid rgba(200,135,58,0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.4s ease, width 0.3s, height 0.3s;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 640px) {
+      .hero { padding: 100px 24px 80px; }
+      .article-wrapper { padding: 0 20px 100px; }
+      .pull-quote { padding: 36px 0 36px 28px; }
+      .hero-meta { gap: 24px; flex-wrap: wrap; justify-content: center; }
+      .cursor-dot, .cursor-ring { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Custom cursor -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Ambient glow -->
+  <div class="ambient ambient-1"></div>
+  <div class="ambient ambient-2"></div>
+
+  <!-- ── HERO ── -->
+  <header class="hero">
+    <span class="eyebrow">An Essay on Human Connection</span>
+    <h1 class="hero-title">The Weight of<br><em>Relationships</em></h1>
+    <p class="hero-sub">That Never Were Quite Right</p>
+    <div class="hero-meta">
+      <span>Princess</span>
+      <span>March 2026</span>
+      <span>6 min read</span>
+    </div>
+  </header>
+
+  <!-- ── ARTICLE ── -->
+  <main class="article-wrapper">
+
+    <p class="reveal">There are relationships in your life that never felt quite right.</p>
+
+    <p class="reveal">Not dramatically wrong. Not obviously toxic. Not clearly broken. Just… off. Slightly misaligned. Never quite fitting the way you thought they should.</p>
+
+    <p class="reveal">Maybe it's with someone you've known your whole life. Family. A sibling. A childhood friend. Someone who should be close but never really was.</p>
+
+    <p class="reveal">You have history together. Shared memories. Years of knowing each other. But somehow you're still strangers in all the ways that matter.</p>
+
+    <div class="pull-quote reveal">
+      You talk, but you don't really talk. You're in each other's lives, but you're not really in each other's lives.
+    </div>
+
+    <p class="reveal">You're connected by circumstance, by obligation, by the past, but not by genuine understanding or connection.</p>
+
+    <p class="reveal">And it hurts. In a quiet way. In a way that's hard to explain to anyone else.</p>
+
+    <p class="reveal">Because on paper, the relationship looks fine. You're not fighting. You're not estranged. You still see each other at holidays. You still text occasionally. It's civil. It's functional. It's… fine.</p>
+
+    <p class="reveal">But it's not what you wanted. It's not what you hoped for. It's not what you thought this relationship would be.</p>
+
+    <p class="reveal">You thought you'd be close. You thought you'd understand each other. You thought you'd be the kind of people who talk about real things, who support each other, who actually know each other.</p>
+
+    <p class="reveal">But you're not. And you don't know how it happened. Or maybe you do, and that makes it worse.</p>
+
+    <div class="ornament reveal"><div class="ornament-diamond"></div></div>
+
+    <span class="section-marker reveal">On distance</span>
+
+    <p class="reveal">Maybe it's because you're too different. You grew up in the same house but became completely different people. You don't understand their choices. They don't understand yours. You're speaking different languages now.</p>
+
+    <p class="reveal">Maybe it's because of something that happened. A hurt that was never addressed. A resentment that built over time. A betrayal that was forgiven but never forgotten. A wound that scarred over but never really healed.</p>
+
+    <p class="reveal">Maybe it's because you were always compared. Always competing. Always in each other's shadow. And now you can't separate the relationship from the comparison.</p>
+
+    <p class="reveal">Maybe it's because they chose differently than you. They stayed when you left. They conformed when you rebelled. They followed the path you rejected. And now there's a distance that feels impossible to bridge.</p>
+
+    <p class="reveal">Maybe it's because life took you in different directions. Different cities. Different lifestyles. Different priorities. And you grew apart without meaning to. Without deciding to. You just woke up one day and realized you don't really know each other anymore.</p>
+
+    <p class="reveal">Maybe it's because one of you needed the other in ways that couldn't be met. You needed protection and they couldn't protect you. You needed support and they were too young, too broken, too wrapped up in their own survival to give it.</p>
+
+    <p class="reveal">Maybe it's because you see each other's pain and don't know what to do with it. You recognize the hurt, the struggle, the damage. But you don't know how to talk about it. Don't know how to help. Don't know how to be there without making it worse.</p>
+
+    <p class="reveal">So you stay surface level. You keep it light. You talk about safe things, weather, work, basic life updates, and avoid anything real.</p>
+
+    <div class="pull-quote reveal">
+      And every time you interact, there's this weight. This sadness. This knowledge that you're missing something.
+    </div>
+
+    <p class="reveal">That there's supposed to be more here. That this relationship is supposed to mean more, feel more, be more.</p>
+
+    <p class="reveal">But it isn't. And you don't know how to fix it.</p>
+
+    <div class="ornament reveal"><div class="ornament-diamond"></div></div>
+
+    <span class="section-marker reveal">On trying</span>
+
+    <p class="reveal">You've tried. Maybe. You've reached out. You've attempted real conversations. You've tried to bridge the gap. But it didn't work. It felt forced. Uncomfortable. Like trying to fit puzzle pieces that don't match.</p>
+
+    <p class="reveal">Or maybe you haven't tried. Maybe you've accepted the distance. Maybe you've decided it's not worth the effort. Maybe you're tired of being the only one trying. Maybe you're protecting yourself from more disappointment.</p>
+
+    <p class="reveal">And you feel guilty about that. Guilty for not trying harder. Guilty for accepting the distance. Guilty for not being closer. Guilty for not being who you're supposed to be to each other.</p>
+
+    <p class="reveal">Because society tells you that certain relationships should be sacred. Should be close. Should be unbreakable. Family is family. Childhood friends are forever. Some bonds are supposed to transcend everything.</p>
+
+    <p class="reveal">But they don't always. Sometimes they just… exist. Lukewarm. Distant. Neither fully there nor fully gone.</p>
+
+    <div class="pull-quote reveal">
+      And that's its own kind of grief. The grief of a relationship that never died but never really lived either.
+    </div>
+
+    <p class="reveal">The grief of knowing someone your whole life but never really knowing them. The grief of being connected but never really connecting.</p>
+
+    <p class="reveal">You can't mourn it the way you'd mourn a relationship that ended. Because it didn't end. It's still there. Still functional. Still happening.</p>
+
+    <p class="reveal">But you can mourn what it never was. What it could have been. What you hoped it would be.</p>
+
+    <p class="reveal">You can acknowledge that this relationship, despite all the history, despite all the should-be closeness, just never felt right. And that's sad. And it's okay to be sad about it.</p>
+
+    <div class="ornament reveal"><div class="ornament-diamond"></div></div>
+
+    <span class="section-marker reveal">On letting go</span>
+
+    <p class="reveal">You can love someone and still feel distant from them. You can care about someone and still not feel connected to them. You can have history with someone and still feel like strangers.</p>
+
+    <p class="reveal">And maybe that's just how some relationships are. Not everyone we're supposed to be close to will actually be close to us. Not every family bond is strong. Not every childhood connection survives adulthood. Not every relationship that should work actually does.</p>
+
+    <p class="reveal">And that's not your fault. It's not their fault. It's just the reality of human connection. Sometimes people don't fit. Sometimes relationships don't work. Sometimes the connection just isn't there, no matter how much you want it to be.</p>
+
+    <p class="reveal">You can stop forcing it. Stop feeling guilty about it. Stop pretending it's something it's not.</p>
+
+    <p class="reveal">You can accept that this relationship is what it is. Not what it should be. Not what you hoped it would be. Just what it actually is.</p>
+
+    <p class="reveal">Surface level. Distant. Functional but not fulfilling. Present but not connected.</p>
+
+    <p class="reveal">And you can be okay with that. You can stop waiting for it to magically become what you wanted. You can release the hope that one day you'll suddenly be close. You can let go of the guilt that you're not.</p>
+
+    <p class="reveal">Some relationships are just like this. And that's okay. It doesn't mean you failed. It doesn't mean they failed. It just means this is what this relationship is.</p>
+
+    <p class="reveal">And you get to decide what to do with that. You can keep the relationship as it is, surface level, occasional, civil. You can try one more time to deepen it. Or you can let it drift even further and be at peace with that.</p>
+
+    <p class="reveal">There's no right answer. No obligation. No rule that says certain relationships have to be a certain way.</p>
+
+    <p class="reveal">You get to decide what works for you. What feels right for you. What you have the energy for.</p>
+
+    <p class="reveal">And if that means accepting that some relationships in your life will never be what you hoped they'd be, that's okay.</p>
+
+    <div class="pull-quote reveal">
+      You can grieve it. You can wish it were different. And you can move forward anyway.
+    </div>
+
+    <p class="reveal">Because you deserve relationships that feel right. That feel easy. That feel connected. That feel real.</p>
+
+    <p class="reveal">And if some of the relationships that "should" be those things aren't, that's not a failing. That's just life.</p>
+
+    <p class="reveal">Not everyone stays close. Not every bond survives. Not every connection works.</p>
+
+    <p class="reveal">And that's sad. But it's also okay.</p>
+
+    <p class="reveal">You're okay. They're okay. The relationship is what it is.</p>
+
+    <p class="reveal">And you don't have to keep carrying the weight of what it never was.</p>
+
+    <div class="ornament reveal"><div class="ornament-diamond"></div></div>
+
+    <p class="reveal">Let it be what it is. And let yourself be at peace with that.</p>
+
+    <p class="reveal">Some relationships just never quite fit. And that's one of those painful truths that nobody really talks about.</p>
+
+    <p class="reveal">But it's true. And accepting it might be the freedom you didn't know you needed.</p>
+
+    <p class="reveal">It's okay. You're okay. This is okay.</p>
+
+    <p class="reveal">Even when it's sad. Even when it's disappointing. Even when it's not what you wanted.</p>
+
+    <p class="reveal">It's okay to let it be what it is. And nothing more.</p>
+
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <p class="footer-author">Written by Princess</p>
+    <p class="footer-medium">
+      Originally published on&nbsp;
+      <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+    </p>
+    <div class="footer-line"></div>
+  </footer>
+
+  <!-- Floating ambient words -->
+  <div id="floatingWords"></div>
+
+  <script>
+    // ── PROGRESS BAR ──
+    const bar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const total = document.body.scrollHeight - window.innerHeight;
+      bar.style.width = (scrolled / total * 100) + '%';
+    });
+
+    // ── SCROLL REVEAL ──
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => io.observe(el));
+
+    // ── CUSTOM CURSOR ──
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx - 3 + 'px';
+      dot.style.top  = my - 3 + 'px';
+    });
+    function animRing() {
+      rx += (mx - rx) * 0.1;
+      ry += (my - ry) * 0.1;
+      ring.style.left = rx - 16 + 'px';
+      ring.style.top  = ry - 16 + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    // ── FLOATING WORDS ──
+    const words = ['distance','grief','connection','silence','weight','forgiveness','belonging','drift','ache','memory','hollow','grace','tender','lost','close','far','still','present','gone'];
+    const container = document.getElementById('floatingWords');
+    function spawnWord() {
+      const el = document.createElement('div');
+      el.className = 'floating-word';
+      el.textContent = words[Math.floor(Math.random() * words.length)];
+      el.style.left = Math.random() * 95 + '%';
+      const dur = 18 + Math.random() * 22;
+      el.style.animationDuration = dur + 's';
+      el.style.animationDelay = '0s';
+      el.style.fontSize = (0.55 + Math.random() * 0.5) + 'rem';
+      container.appendChild(el);
+      setTimeout(() => el.remove(), dur * 1000);
+    }
+    for (let i = 0; i < 5; i++) {
+      setTimeout(spawnWord, i * 2400);
+    }
+    setInterval(spawnWord, 3200);
+  </script>
+</body>
+</html>

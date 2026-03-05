@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Things Your Sister Never Told You — Princess</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cinzel:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void:      #080c0a;
+      --deep:      #0d1410;
+      --forest:    #1a2e22;
+      --green:     #2d5a3d;
+      --gold:      #c4962a;
+      --gold-soft: #a07820;
+      --gold-glow: rgba(196, 150, 42, 0.14);
+      --gold-line: rgba(196, 150, 42, 0.28);
+      --parchment: #f0ead8;
+      --parchment-dim: rgba(240, 234, 216, 0.62);
+      --parchment-ghost: rgba(240, 234, 216, 0.14);
+      --green-dim: rgba(45, 90, 61, 0.22);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--parchment);
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.9;
+      overflow-x: hidden;
+    }
+
+    /* ── GRAIN ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.5;
+    }
+
+    /* ── PROGRESS ── */
+    #bar {
+      position: fixed; top: 0; left: 0;
+      height: 1px; width: 0%;
+      background: linear-gradient(90deg, var(--green), var(--gold), var(--green));
+      z-index: 1000;
+      box-shadow: 0 0 8px var(--gold);
+      transition: width 0.08s linear;
+    }
+
+    /* ── AMBIENT LIGHT ── */
+    .glow {
+      position: fixed; border-radius: 50%;
+      filter: blur(130px); pointer-events: none; z-index: 0;
+    }
+    .glow-1 {
+      width: 700px; height: 500px;
+      top: -100px; left: -200px;
+      background: radial-gradient(ellipse, rgba(45,90,61,0.09) 0%, transparent 70%);
+      animation: g1 20s ease-in-out infinite alternate;
+    }
+    .glow-2 {
+      width: 500px; height: 500px;
+      bottom: 0; right: -100px;
+      background: radial-gradient(ellipse, rgba(196,150,42,0.06) 0%, transparent 70%);
+      animation: g2 25s ease-in-out infinite alternate;
+    }
+    @keyframes g1 { to { transform: translate(40px, 60px); } }
+    @keyframes g2 { to { transform: translate(-30px, -50px); } }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 120px 40px 100px;
+      overflow: hidden;
+    }
+
+    /* vertical rule */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 1px; height: 90px;
+      background: linear-gradient(to bottom, transparent, var(--gold-line));
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 1px; height: 90px;
+      background: linear-gradient(to bottom, var(--gold-line), transparent);
+    }
+
+    .hero-inner { max-width: 760px; }
+
+    .label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0;
+      animation: up 0.9s 0.2s forwards;
+    }
+
+    .hero-title {
+      font-family: 'EB Garamond', serif;
+      font-size: clamp(3rem, 7.5vw, 6.8rem);
+      font-weight: 500;
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+      color: var(--parchment);
+      margin: 26px 0 10px;
+      opacity: 0;
+      animation: up 0.9s 0.45s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-subtitle {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+      font-weight: 400;
+      color: var(--parchment-dim);
+      letter-spacing: 0.04em;
+      margin-bottom: 0;
+      opacity: 0;
+      animation: up 0.9s 0.7s forwards;
+    }
+
+    .hero-meta {
+      margin-top: 48px;
+      display: flex; gap: 36px;
+      justify-content: center;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(240,234,216,0.3);
+      opacity: 0;
+      animation: up 0.9s 0.95s forwards;
+    }
+    .hero-meta span + span { position: relative; padding-left: 36px; }
+    .hero-meta span + span::before {
+      content: '';
+      position: absolute; left: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 14px; height: 1px;
+      background: var(--gold-line);
+    }
+
+    @keyframes up {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── TYPEWRITER OPENER ── */
+    .typewriter-block {
+      max-width: 680px;
+      margin: 0 auto 60px;
+      padding: 0 32px;
+      text-align: center;
+      position: relative; z-index: 1;
+    }
+    .typewriter-text {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 400;
+      color: var(--parchment);
+      letter-spacing: 0.01em;
+      line-height: 1.5;
+      border-right: 2px solid var(--gold);
+      white-space: nowrap;
+      overflow: hidden;
+      width: 0;
+      animation: type 2.2s steps(38) 1.4s forwards, blink 0.75s step-end 3.6s 4;
+    }
+    @keyframes type  { to { width: 100%; } }
+    @keyframes blink { 50% { border-color: transparent; } }
+
+    /* ── ARTICLE ── */
+    .wrap {
+      position: relative; z-index: 1;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px 32px 180px;
+    }
+
+    /* Never told you = refrain paragraphs */
+    p {
+      font-size: clamp(1.05rem, 1.75vw, 1.22rem);
+      line-height: 1.95;
+      color: rgba(240, 234, 216, 0.78);
+      margin-bottom: 1.9em;
+      font-weight: 400;
+    }
+
+    /* First-letter drop cap */
+    p.opener::first-letter {
+      font-family: 'Cinzel', serif;
+      font-size: 4.8rem;
+      font-weight: 600;
+      float: left;
+      line-height: 0.78;
+      margin-right: 10px;
+      margin-top: 14px;
+      color: var(--gold);
+      text-shadow: 0 0 30px rgba(196,150,42,0.35);
+    }
+
+    /* Refrain highlight — "She never told you" lines */
+    .refrain {
+      font-style: italic;
+      color: var(--parchment);
+      font-size: clamp(1.08rem, 1.8vw, 1.25rem);
+    }
+
+    /* Pull quotes */
+    blockquote {
+      margin: 64px 0;
+      padding: 0 0 0 32px;
+      border-left: 1px solid var(--gold);
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+      font-weight: 400;
+      color: var(--parchment);
+      line-height: 1.5;
+      position: relative;
+    }
+    blockquote::before {
+      content: '\201C';
+      position: absolute;
+      top: -28px; left: 24px;
+      font-size: 5rem;
+      line-height: 1;
+      color: var(--gold);
+      opacity: 0.22;
+      font-family: 'EB Garamond', serif;
+    }
+
+    /* Section dividers */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 72px 0;
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+    }
+    .divider::before { background: linear-gradient(to right, transparent, var(--gold-line)); }
+    .divider::after  { background: linear-gradient(to left,  transparent, var(--gold-line)); }
+    .divider-center {
+      display: flex; gap: 12px; align-items: center;
+      padding: 0 20px;
+    }
+    .divider-leaf {
+      width: 5px; height: 5px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      box-shadow: 0 0 8px rgba(196,150,42,0.6);
+    }
+
+    /* Section label */
+    .section-tag {
+      display: block;
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: 0.52rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.65;
+      margin: 0 0 58px;
+    }
+
+    /* Closing affirmation block */
+    .affirmation {
+      background: linear-gradient(135deg, rgba(45,90,61,0.12), rgba(196,150,42,0.06));
+      border: 1px solid var(--gold-line);
+      border-radius: 2px;
+      padding: 52px 48px;
+      margin: 80px 0;
+      text-align: center;
+    }
+    .affirmation p {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+      color: var(--parchment);
+      margin-bottom: 0.6em;
+      opacity: 0.9;
+    }
+    .affirmation p:last-child { margin-bottom: 0; }
+    .affirmation p strong {
+      font-style: normal;
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .r {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.85s ease, transform 0.85s ease;
+    }
+    .r.on { opacity: 1; transform: translateY(0); }
+
+    /* ── FLOATING PETALS / LEAVES ── */
+    .petal {
+      position: fixed;
+      pointer-events: none;
+      z-index: 2;
+      font-size: 0.7rem;
+      color: rgba(196,150,42,0.13);
+      animation: fallPetal linear infinite;
+    }
+    @keyframes fallPetal {
+      0%   { transform: translateY(-60px) rotate(0deg);   opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.7; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ── CURSOR ── */
+    .c-dot {
+      position: fixed; width: 5px; height: 5px;
+      background: var(--gold); border-radius: 50%;
+      pointer-events: none; z-index: 10000;
+      box-shadow: 0 0 10px var(--gold);
+      transition: transform 0.12s ease;
+    }
+    .c-ring {
+      position: fixed; width: 28px; height: 28px;
+      border: 1px solid rgba(196,150,42,0.35);
+      border-radius: 50%; pointer-events: none; z-index: 9998;
+      transition: left 0.35s ease, top 0.35s ease;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 80px 40px 100px;
+      border-top: 1px solid rgba(240,234,216,0.07);
+    }
+    footer .by {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--parchment-dim);
+      margin-bottom: 18px;
+    }
+    footer .med {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.66rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(240,234,216,0.25);
+    }
+    footer .med a {
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold-line);
+      padding-bottom: 1px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    footer .med a:hover { color: var(--parchment); border-color: var(--parchment); }
+    .f-stem {
+      width: 1px; height: 56px;
+      margin: 38px auto 0;
+      background: linear-gradient(to top, transparent, var(--gold-line));
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 100px 24px 80px; }
+      .wrap { padding: 0 20px 100px; }
+      .hero-meta { gap: 20px; flex-wrap: wrap; }
+      blockquote { padding-left: 22px; }
+      .affirmation { padding: 38px 28px; }
+      .typewriter-text { font-size: 1.1rem; white-space: normal; overflow: visible; width: auto; border-right: none; animation: none; opacity: 1; }
+      .c-dot, .c-ring { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="bar"></div>
+  <div class="c-dot" id="cd"></div>
+  <div class="c-ring" id="cr"></div>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div id="petals"></div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="label">An Essay on Sisterhood</span>
+      <h1 class="hero-title">The Things Your <em>Sister</em></h1>
+      <p class="hero-subtitle">Never Told You</p>
+      <div class="hero-meta">
+        <span>Princess</span>
+        <span>March 2026</span>
+        <span>7 min read</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- TYPEWRITER -->
+  <div class="typewriter-block">
+    <p class="typewriter-text">She never told you she was jealous of you.</p>
+  </div>
+
+  <!-- ARTICLE -->
+  <main class="wrap">
+
+    <p class="opener r">She never said it out loud, but you felt it. In the way she competed with you. In the way she compared herself to you. In the way your successes seemed to hurt her instead of making her happy for you.</p>
+
+    <p class="r">She never told you why. Maybe because you were the favorite. Or she thought you were. Maybe because things came easier to you. Or seemed to. Maybe because you got something she wanted, attention, approval, freedom, love.</p>
+
+    <p class="r">She never told you that she resented you. For being born. For taking her place as the youngest or the only girl or the baby of the family. For existing in a way that changed her world without asking permission.</p>
+
+    <p class="r">She never told you she loved you. Not in words. Not directly. Maybe she showed it in other ways, defending you to others, sharing her things, being there when it mattered. But she never said the actual words.</p>
+
+    <blockquote class="r">
+      And you needed to hear them. You needed to know that underneath the fighting and the rivalry and the distance, there was love. That you mattered to her. That you were more than competition or obligation.
+    </blockquote>
+
+    <p class="r">She never told you she needed you. That she looked up to you. That she watched how you handled things and tried to learn from you. That your opinion mattered to her more than she let on.</p>
+
+    <p class="r">She never told you she was proud of you. When you succeeded, when you grew, when you became someone. She stayed silent. Maybe because she didn't know how to celebrate you without diminishing herself. Maybe because she was still figuring out who she was in relation to who you were.</p>
+
+    <p class="r">She never told you she was sorry. For the fights. For the cruel words. For the times she hurt you on purpose because she was hurting and didn't know how else to express it. For making your childhood harder than it needed to be.</p>
+
+    <p class="r">She never told you she was struggling. That behind whatever role she played, the perfect one, the rebellious one, the responsible one, the mess, she was fighting her own battles. Carrying her own pain. Trying to survive the same family dynamics that were damaging you both.</p>
+
+    <div class="divider r"><div class="divider-center"><div class="divider-leaf"></div><div class="divider-leaf"></div><div class="divider-leaf"></div></div></div>
+
+    <span class="section-tag r">On Wounds</span>
+
+    <p class="r">She never told you she understood. That she saw what you went through. That she knew the specific pain of growing up in your family because she was right there too. That you weren't alone, even when you felt most alone.</p>
+
+    <p class="r">She never told you she wished things were different between you. That she wanted to be close but didn't know how. That the pattern was set so early, rivalry, distance, competition, and now neither of you knows how to break it.</p>
+
+    <p class="r">She never told you about her own wounds. The ones that made her build walls. The ones that made her push you away. The ones that made it impossible for her to be the sister you both needed.</p>
+
+    <p class="r">Maybe she was hurt by the same parents who hurt you, just in different ways. Maybe she was fighting for the same love, the same approval, the same sense of mattering. Maybe she was just as lost as you were.</p>
+
+    <p class="r">She never told you she compared herself to you constantly. Every achievement, every relationship, every choice. She measured her life against yours and always felt like she came up short. Or like you came up short. Either way, it created distance.</p>
+
+    <p class="r">She never told you she was afraid. Afraid of being vulnerable with you. Afraid you'd reject her. Afraid you'd see her as weak. Afraid that if she let you in, you'd hurt her the way she'd hurt you.</p>
+
+    <blockquote class="r">
+      She never told you she missed you. When you grew up and grew apart. When geography or choices or unresolved hurt created distance between you.
+    </blockquote>
+
+    <p class="r">When you became people who talk occasionally but don't really talk about anything that matters.</p>
+
+    <p class="r">She never told you she thinks about you. Wonders how you're doing. Wishes sometimes that she could call you and just talk. Really talk. The way sisters are supposed to talk.</p>
+
+    <p class="r">She never told you she sees your kids and aches a little. Wishing she knew them better. Wishing they could have what you two never had, close aunt relationships, cousins who are friends, family that feels like family.</p>
+
+    <div class="divider r"><div class="divider-center"><div class="divider-leaf"></div><div class="divider-leaf"></div><div class="divider-leaf"></div></div></div>
+
+    <span class="section-tag r">On Regret</span>
+
+    <p class="r">She never told you she regrets the lost time. The years of rivalry. The years of distance. The years of being strangers who share DNA and a childhood but not much else.</p>
+
+    <p class="r">She never told you she doesn't know how to fix it. Doesn't know how to bridge the gap. Doesn't know how to reach out without it feeling awkward or forced or too little too late.</p>
+
+    <p class="r">She never told you she's scared you don't care. That you've moved on. That you're fine without her. That the sister relationship she wishes she had doesn't matter to you the way it matters to her.</p>
+
+    <p class="r">She never told you that she's proud of who you became. That she sees your strength. That she respects your choices even if she didn't understand them. That she thinks you're doing better than she is, and maybe that's still hard for her, but she's proud anyway.</p>
+
+    <p class="r">She never told you that she needs to hear from you too. That she needs to know you don't hate her. That she needs to know there's still a chance for something more than surface-level politeness at family gatherings.</p>
+
+    <p class="r">She never told you she's sorry for the role she played in your pain. For not protecting you when she could have. For not being your ally when you needed one. For sometimes being part of the problem instead of part of the solution.</p>
+
+    <p class="r">She never told you she's sorry for not being the sister you needed. The protector. The confidant. The best friend. The person who had your back no matter what.</p>
+
+    <p class="r">Maybe she wanted to be that person. Maybe she tried. Maybe she just didn't know how. Maybe her own survival took everything she had and there was nothing left to give.</p>
+
+    <blockquote class="r">
+      She never told you about the times she wanted to reach out but didn't. The times she picked up the phone and put it down. The times she typed messages and deleted them.
+    </blockquote>
+
+    <p class="r">She never told you she watches your life from a distance and feels happy for you and sad for herself at the same time. Happy that you're okay. Sad that she's not part of it in any meaningful way.</p>
+
+    <p class="r">She never told you she wishes she could start over. Be different. Do better. Be the sister she should have been from the beginning.</p>
+
+    <p class="r">But she doesn't know if it's too late. Doesn't know if you'd want that. Doesn't know if the damage can be undone.</p>
+
+    <div class="divider r"><div class="divider-center"><div class="divider-leaf"></div><div class="divider-leaf"></div><div class="divider-leaf"></div></div></div>
+
+    <span class="section-tag r">On Silence</span>
+
+    <p class="r">She never told you any of this. Maybe because she doesn't know how. Maybe because pride won't let her. Maybe because she's still stuck in old patterns. Maybe because she's waiting for you to reach out first.</p>
+
+    <p class="r">Or maybe she never told you because you never told her either. Because you're both waiting. Both hoping. Both hurting. Both stuck in a relationship that never quite worked but never quite died.</p>
+
+    <p class="r">Maybe she's reading this right now and nodding. Crying. Wishing she could send it to you. Wishing she knew how to say what needs to be said.</p>
+
+    <p class="r">Or maybe she's gone. Moved away. Cut off. Estranged. Dead. And you'll never get to hear these things from her. And that's its own kind of grief.</p>
+
+    <p class="r">But whether she tells you or not, whether she can or not, whether she will or not, you deserve to know:</p>
+
+    <p class="r">It wasn't all your fault. The distance. The rivalry. The pain. It took both of you. And it took the family dynamics that pitted you against each other. And it took circumstances beyond either of your control.</p>
+
+    <p class="r">You deserved a better sister relationship. You both did. You deserved to be allies, not rivals. Friends, not competitors. Safe places for each other, not sources of pain.</p>
+
+    <p class="r">And maybe it's not too late. Maybe one of you can break the pattern. Reach out. Say the hard things. Be vulnerable. Try.</p>
+
+    <p class="r">Or maybe it is too late. Maybe the distance is too great. Maybe the hurt is too deep. Maybe you're both too different now or too damaged or too tired.</p>
+
+    <p class="r">Either way, you can make peace with it. You can grieve what it wasn't. You can wish it had been different. And you can let go of the guilt and the hope and the waiting.</p>
+
+    <p class="r">The things your sister never told you? Maybe you'll never hear them. But you can tell yourself.</p>
+
+    <blockquote class="r">
+      It wasn't all my fault. I deserved better. She deserved better. We were both just kids trying to survive. And now we're adults trying to make sense of a relationship that never quite worked.
+    </blockquote>
+
+    <p class="r">You can forgive her if you want to. Or not. You can reach out if you want to. Or not. You can try again if you want to. Or not.</p>
+
+    <p class="r">Whatever you choose, it's okay. Because this is your life. Your healing. Your choice.</p>
+
+    <p class="r">The things your sister never told you don't define your worth. Don't determine your value. Don't mean you're unlovable or unwanted.</p>
+
+    <p class="r">They just mean she's human. Flawed. Hurting in her own ways. Unable to give what you needed because maybe she didn't have it to give.</p>
+
+    <!-- Affirmation block -->
+    <div class="affirmation r">
+      <p>And you can be okay anyway. With or without her telling you.</p>
+      <p>You can be okay. <strong>You are okay.</strong></p>
+      <p>Even without hearing the things she never told you.</p>
+      <p>Even without the sister relationship you deserved.</p>
+      <p><strong>You're okay. You've always been okay.</strong></p>
+      <p>And maybe that's what she should have told you all along.</p>
+      <p><strong>You're okay. You matter. You're loved. You're worthy.</strong></p>
+      <p>With or without her. With or without her words.</p>
+      <p>You always were. You always will be.</p>
+      <p>And maybe somewhere, in her own way, she knows that too.</p>
+      <p>Even if she never told you.</p>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="by">Written by Princess</p>
+    <p class="med">Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+    <div class="f-stem"></div>
+  </footer>
+
+  <script>
+    // Progress bar
+    const bar = document.getElementById('bar');
+    window.addEventListener('scroll', () => {
+      const pct = window.scrollY / (document.body.scrollHeight - innerHeight);
+      bar.style.width = (pct * 100) + '%';
+    });
+
+    // Scroll reveal
+    const els = document.querySelectorAll('.r');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+    els.forEach(el => obs.observe(el));
+
+    // Cursor
+    const cd = document.getElementById('cd'), cr = document.getElementById('cr');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cd.style.left = mx - 2.5 + 'px';
+      cd.style.top  = my - 2.5 + 'px';
+    });
+    (function animCr() {
+      rx += (mx - rx) * 0.09; ry += (my - ry) * 0.09;
+      cr.style.left = rx - 14 + 'px'; cr.style.top = ry - 14 + 'px';
+      requestAnimationFrame(animCr);
+    })();
+
+    // Floating petals (tiny ✦ and · symbols)
+    const symbols = ['✦','·','✧','◦','·','✦','◦'];
+    const pCont = document.getElementById('petals');
+    function spawnPetal() {
+      const el = document.createElement('div');
+      el.className = 'petal';
+      el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      el.style.left = (Math.random() * 100) + '%';
+      el.style.fontSize = (0.5 + Math.random() * 0.6) + 'rem';
+      const dur = 20 + Math.random() * 25;
+      el.style.animationDuration = dur + 's';
+      el.style.animationDelay = '0s';
+      pCont.appendChild(el);
+      setTimeout(() => el.remove(), dur * 1000 + 500);
+    }
+    for (let i = 0; i < 6; i++) setTimeout(spawnPetal, i * 1800);
+    setInterval(spawnPetal, 2800);
+  </script>
+</body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Forgiveness I Gave — Princess</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0906;
+      --bg2: #0f0d0a;
+      --amber: #c8922a;
+      --amber-light: #e8b96a;
+      --amber-pale: #f5dba0;
+      --cream: #f0e8d8;
+      --muted: #6b5e48;
+      --faint: #2a2318;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'EB Garamond', Georgia, serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 8px; height: 8px;
+      background: var(--amber);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(200,146,42,0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease, width 0.3s ease, height 0.3s ease;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.6;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 6vw 8vh;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 30%, rgba(200,146,42,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(200,146,42,0.04) 0%, transparent 60%),
+        linear-gradient(180deg, #0a0906 0%, #0d0b08 60%, #0a0906 100%);
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      animation: orb-drift 18s ease-in-out infinite alternate;
+    }
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: rgba(200,146,42,0.06);
+      top: -100px; left: -100px;
+      animation-delay: 0s;
+    }
+    .orb-2 {
+      width: 300px; height: 300px;
+      background: rgba(200,146,42,0.04);
+      bottom: 0; right: 10%;
+      animation-delay: -9s;
+    }
+    @keyframes orb-drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(40px, 60px) scale(1.1); }
+    }
+
+    /* Vertical rule left */
+    .hero-rule {
+      position: absolute;
+      left: 6vw;
+      top: 8vh;
+      bottom: 8vh;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--amber) 30%, var(--amber) 70%, transparent);
+      opacity: 0.3;
+      animation: rule-reveal 2s ease forwards;
+    }
+    @keyframes rule-reveal {
+      from { transform: scaleY(0); transform-origin: top; opacity: 0; }
+      to   { transform: scaleY(1); transform-origin: top; opacity: 0.3; }
+    }
+
+    .hero-eyebrow {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: clamp(9px, 1vw, 11px);
+      font-weight: 200;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--amber);
+      opacity: 0;
+      animation: fade-up 1s ease 0.3s forwards;
+      margin-bottom: 2rem;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Infant', serif;
+      font-size: clamp(52px, 9vw, 140px);
+      font-weight: 300;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      opacity: 0;
+      animation: fade-up 1.2s ease 0.5s forwards;
+      max-width: 800px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--amber-light);
+    }
+
+    .hero-sub {
+      font-family: 'Cormorant Infant', serif;
+      font-size: clamp(20px, 2.5vw, 32px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--muted);
+      margin-top: 1.5rem;
+      opacity: 0;
+      animation: fade-up 1.2s ease 0.8s forwards;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-top: 3rem;
+      opacity: 0;
+      animation: fade-up 1s ease 1.1s forwards;
+    }
+
+    .hero-meta-line {
+      width: 40px; height: 1px;
+      background: var(--amber);
+      opacity: 0.6;
+    }
+
+    .hero-meta-text {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 200;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 4vh;
+      right: 6vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fade-in 1s ease 1.8s forwards;
+    }
+    .scroll-hint span {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 8px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--muted);
+      writing-mode: vertical-lr;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--amber), transparent);
+      animation: scroll-pulse 2s ease-in-out infinite;
+    }
+    @keyframes scroll-pulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 0.8; transform: scaleY(1.1); }
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--amber) 20%, var(--amber) 80%, transparent);
+      opacity: 0.15;
+    }
+
+    /* ─── ARTICLE BODY ─── */
+    .article-wrapper {
+      position: relative;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 10vh 6vw 4vh;
+    }
+
+    /* Ambient glow behind text */
+    .article-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(ellipse, rgba(200,146,42,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .drop-cap-para {
+      position: relative;
+    }
+
+    .drop-cap-para::first-letter {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 6.5em;
+      font-weight: 600;
+      color: var(--amber);
+      float: left;
+      line-height: 0.75;
+      margin: 0.08em 0.12em 0 0;
+      text-shadow: 0 0 40px rgba(200,146,42,0.3);
+    }
+
+    .article-p {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: clamp(17px, 2vw, 21px);
+      line-height: 1.9;
+      color: rgba(240, 232, 216, 0.85);
+      letter-spacing: 0.01em;
+      margin-bottom: 2.5em;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .article-p.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      margin: 4em -4vw;
+      padding: 3em 4vw;
+      border-left: 2px solid var(--amber);
+      background: linear-gradient(135deg, rgba(200,146,42,0.06) 0%, transparent 60%);
+      position: relative;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 1.1s ease, transform 1.1s ease;
+    }
+    .pull-quote.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .pull-quote::before {
+      content: '"';
+      font-family: 'Cormorant Infant', serif;
+      font-size: 120px;
+      color: var(--amber);
+      opacity: 0.15;
+      position: absolute;
+      top: -20px;
+      left: 20px;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Infant', serif;
+      font-size: clamp(22px, 3vw, 36px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--amber-pale);
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+
+    /* Section break ornament */
+    .ornament {
+      text-align: center;
+      margin: 3em 0;
+      color: var(--amber);
+      opacity: 0.4;
+      font-size: 20px;
+      letter-spacing: 1.5em;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    .ornament.visible { opacity: 0.4; }
+
+    /* ─── CLOSING ─── */
+    .closing-section {
+      padding: 6vh 6vw 10vh;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .closing-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(200,146,42,0.05) 0%, transparent 70%);
+    }
+
+    .closing-line {
+      font-family: 'Cormorant Infant', serif;
+      font-size: clamp(28px, 5vw, 64px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--amber-light);
+      line-height: 1.3;
+      max-width: 680px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
+    .closing-line.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      border-top: 1px solid rgba(200,146,42,0.1);
+      padding: 4vh 6vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .footer-brand {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--cream);
+      opacity: 0.7;
+      letter-spacing: 0.05em;
+    }
+
+    .footer-medium {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 200;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .footer-medium a {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200,146,42,0.3);
+      padding-bottom: 1px;
+      transition: color 0.3s ease, border-color 0.3s ease;
+    }
+    .footer-medium a:hover {
+      color: var(--amber-light);
+      border-color: var(--amber-light);
+    }
+
+    .footer-right {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--faint);
+      color: rgba(107,94,72,0.5);
+    }
+
+    /* ─── Parallax stars ─── */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      width: 1px; height: 1px;
+      background: var(--amber);
+      border-radius: 50%;
+      opacity: 0;
+      animation: twinkle var(--d) ease-in-out var(--delay) infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(1); }
+      50% { opacity: var(--o); transform: scale(1.5); }
+    }
+
+    /* ─── responsive ─── */
+    @media (max-width: 600px) {
+      .hero { padding: 0 5vw 8vh; }
+      .hero-rule { left: 5vw; }
+      .article-wrapper { padding: 8vh 5vw 4vh; }
+      .pull-quote { margin: 3em 0; }
+      .footer { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Stars -->
+  <div class="stars" id="stars"></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="hero-rule"></div>
+
+    <p class="hero-eyebrow">A Personal Essay &nbsp;·&nbsp; Princess &nbsp;·&nbsp; February 2026</p>
+
+    <h1 class="hero-title">
+      The <em>Forgiveness</em><br>I Gave
+    </h1>
+
+    <p class="hero-sub">Without Being Asked.</p>
+
+    <div class="hero-meta">
+      <div class="hero-meta-line"></div>
+      <span class="hero-meta-text">2 min read &nbsp;·&nbsp; healing &nbsp;·&nbsp; faith &nbsp;·&nbsp; self</span>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Read</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- BODY -->
+  <article class="article-wrapper">
+
+    <p class="article-p drop-cap-para">
+      There comes a moment in your healing when you finally understand how much forgiveness you gave away long before anyone ever asked for it. You forgave people who never apologized, people who never acknowledged your pain, people who never understood the weight of their actions.
+    </p>
+
+    <p class="article-p">
+      You forgave quietly, privately, inwardly, not because they deserved that grace, but because your heart could not carry resentment any longer. You forgave because holding onto anger felt heavier than letting go. You forgave because you wanted peace more than you wanted revenge, clarity more than explanation, and freedom more than closure.
+    </p>
+
+    <div class="pull-quote">
+      <p>You held forgiveness like a soft prayer inside your chest, offering it even when no one earned it, even when no one noticed it.</p>
+    </div>
+
+    <p class="article-p">
+      And though it sometimes made you feel weak, it was actually the greatest proof of your strength. They will never know the emotional work you did. They will never know the nights you cried and still chose to release them in the morning. They will never know how deeply they hurt you because you carried your wounds with quiet grace.
+    </p>
+
+    <p class="article-p">
+      They will never know how many conversations you had with God, asking Him to help you let go without bitterness. But God knows. He saw the burden on your heart. He saw the struggle between wanting justice and wanting peace. He saw your desire to heal even when your pain felt justified. And He is proud of you, not for excusing their behavior, but for refusing to allow it to poison your spirit.
+    </p>
+
+    <div class="ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <p class="article-p">
+      Forgiveness did not mean you wanted them back. It did not mean you trusted them again. It did not mean what they did was acceptable. Forgiveness simply meant you chose yourself. You chose to free your heart from the emotional chains someone else locked around it. You chose to close a chapter without waiting for their permission. You chose your future over the pain of your past.
+    </p>
+
+    <p class="article-p">
+      One day, my friend, you will see how powerful this quiet forgiveness really was. You will feel lighter. You will breathe deeper. You will love again without fear. You will realize that healing did not come from their apology, it came from your release.
+    </p>
+
+    <div class="pull-quote">
+      <p>And when God brings the right people into your life, you will notice something beautiful: you will not have to forgive them for wounds they never inflict.</p>
+    </div>
+
+    <p class="article-p">
+      You will not have to heal from love they never break. You will not have to carry pain they never cause. The forgiveness you gave without being asked is the forgiveness that freed you, and God will honor that by giving you relationships where your heart can finally rest.
+    </p>
+
+  </article>
+
+  <!-- CLOSING STATEMENT -->
+  <div class="closing-section">
+    <div class="closing-bg"></div>
+    <p class="closing-line">
+      God will honor that by giving you relationships<br>where your heart can finally rest.
+    </p>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <span class="footer-brand">Princess</span>
+
+    <p class="footer-medium">
+      Originally published on&nbsp;
+      <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+    </p>
+
+    <span class="footer-right">© 2026 &nbsp;·&nbsp; All rights reserved</span>
+  </footer>
+
+  <script>
+    // ── Custom cursor ──
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = -100, my = -100, rx = -100, ry = -100;
+
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+    function animateCursor() {
+      cursor.style.left = mx + 'px';
+      cursor.style.top  = my + 'px';
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // ── Generate stars ──
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 60; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.style.setProperty('--d', (4 + Math.random() * 8) + 's');
+      s.style.setProperty('--delay', (Math.random() * 10) + 's');
+      s.style.setProperty('--o', (0.1 + Math.random() * 0.4).toFixed(2));
+      s.style.left = Math.random() * 100 + '%';
+      s.style.top  = Math.random() * 100 + '%';
+      starsEl.appendChild(s);
+    }
+
+    // ── Scroll reveal ──
+    const revealEls = document.querySelectorAll('.article-p, .pull-quote, .ornament, .closing-line');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    revealEls.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

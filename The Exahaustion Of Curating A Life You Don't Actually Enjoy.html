@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Exhaustion of Curating a Life You Don't Actually Enjoy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cinzel:wght@400;500&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0906;
+    --bg2: #0f0d0a;
+    --amber: #c8922a;
+    --amber-dim: #8a6018;
+    --amber-glow: rgba(200, 146, 42, 0.12);
+    --text: #d4c4a8;
+    --text-dim: #7a6e5e;
+    --text-bright: #ede0c8;
+    --border: rgba(200, 146, 42, 0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 20px;
+    line-height: 1.9;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* Scroll progress */
+  #progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--amber-dim), var(--amber));
+    z-index: 999;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 8px var(--amber);
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 clamp(1.5rem, 8vw, 10rem) clamp(4rem, 8vh, 7rem);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(200, 146, 42, 0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(200, 146, 42, 0.04) 0%, transparent 50%);
+  }
+
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.3s;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(2.8rem, 7vw, 6.5rem);
+    line-height: 1.1;
+    color: var(--text-bright);
+    max-width: 14ch;
+    opacity: 0;
+    animation: fadeUp 1.2s ease forwards 0.5s;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--amber);
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 3rem;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.9s;
+  }
+
+  .hero-meta-line {
+    width: 3rem;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .hero-meta-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* Phone animation container */
+  .phone-scene {
+    position: absolute;
+    right: clamp(2rem, 8vw, 8rem);
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    animation: phoneReveal 1.5s ease forwards 1.2s;
+  }
+
+  .phone {
+    width: 120px;
+    height: 240px;
+    border: 1.5px solid rgba(200, 146, 42, 0.3);
+    border-radius: 18px;
+    background: #111009;
+    position: relative;
+    box-shadow:
+      0 0 40px rgba(200, 146, 42, 0.05),
+      inset 0 0 20px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 3px;
+    background: rgba(200, 146, 42, 0.3);
+    border-radius: 2px;
+  }
+
+  .phone-screen {
+    position: absolute;
+    top: 22px;
+    left: 6px;
+    right: 6px;
+    bottom: 8px;
+    overflow: hidden;
+    border-radius: 12px;
+  }
+
+  .phone-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    animation: scrollFeed 8s linear infinite;
+  }
+
+  .feed-item {
+    background: rgba(200, 146, 42, 0.06);
+    border-radius: 4px;
+    border: 1px solid rgba(200, 146, 42, 0.1);
+    padding: 6px;
+  }
+
+  .feed-img {
+    width: 100%;
+    height: 55px;
+    background: linear-gradient(135deg, rgba(200,146,42,0.15), rgba(200,146,42,0.05));
+    border-radius: 3px;
+    margin-bottom: 4px;
+  }
+
+  .feed-line {
+    height: 3px;
+    background: rgba(200, 146, 42, 0.15);
+    border-radius: 2px;
+    margin-bottom: 3px;
+  }
+
+  .feed-line:last-child { width: 60%; }
+
+  .phone-glow {
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(ellipse at center, rgba(200, 146, 42, 0.08), transparent 70%);
+    border-radius: 50%;
+    animation: pulseGlow 4s ease-in-out infinite;
+  }
+
+  /* Divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0 clamp(1.5rem, 8vw, 10rem);
+    margin: 3rem 0;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards 1.4s;
+  }
+
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+  .divider-diamond {
+    width: 5px;
+    height: 5px;
+    background: var(--amber);
+    transform: rotate(45deg);
+    box-shadow: 0 0 8px var(--amber);
+  }
+
+  /* Article */
+  article {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 5vw, 3rem) 8rem;
+  }
+
+  .opener {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-style: italic;
+    color: var(--text-bright);
+    line-height: 1.6;
+    margin-bottom: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.2s;
+    animation-play-state: paused;
+  }
+
+  .opener.visible { animation-play-state: running; }
+
+  p {
+    margin-bottom: 1.6rem;
+    color: var(--text);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  p.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .pull-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--amber);
+    text-align: center;
+    padding: 3rem 2rem;
+    margin: 3rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+    position: relative;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .pull-quote.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .pull-quote::before {
+    content: '\201C';
+    position: absolute;
+    top: -0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 5rem;
+    color: var(--amber-dim);
+    font-family: 'Cormorant Garamond', serif;
+    line-height: 1;
+    opacity: 0.4;
+  }
+
+  /* Closing section */
+  .closing {
+    margin-top: 4rem;
+    padding-top: 4rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .closing p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    font-style: italic;
+    color: var(--text-bright);
+    line-height: 1.8;
+  }
+
+  .signature {
+    margin-top: 3rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .signature.visible { opacity: 1; transform: translateY(0); }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 4rem 2rem 5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  footer p {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    opacity: 0;
+    transform: none;
+    transition: opacity 0.7s ease;
+  }
+
+  footer p.visible { opacity: 1; }
+
+  footer a {
+    color: var(--amber);
+    text-decoration: none;
+    border-bottom: 1px solid var(--amber-dim);
+    padding-bottom: 1px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  footer a:hover {
+    color: var(--text-bright);
+    border-color: var(--text-bright);
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes phoneReveal {
+    from { opacity: 0; transform: translateY(-45%) translateX(20px); }
+    to { opacity: 0.7; transform: translateY(-50%) translateX(0); }
+  }
+
+  @keyframes scrollFeed {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-55%); }
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .phone-scene { display: none; }
+    .hero { min-height: 85vh; }
+  }
+
+  /* Selection */
+  ::selection {
+    background: rgba(200, 146, 42, 0.25);
+    color: var(--text-bright);
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="phone-scene">
+    <div class="phone-glow"></div>
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="phone-feed">
+          <div class="feed-item"><div class="feed-img"></div><div class="feed-line"></div><div class="feed-line"></div></div>
+          <div class="feed-item"><div class="feed-img"></div><div class="feed-line"></div><div class="feed-line"></div></div>
+          <div class="feed-item"><div class="feed-img"></div><div class="feed-line"></div><div class="feed-line"></div></div>
+          <div class="feed-item"><div class="feed-img"></div><div class="feed-line"></div><div class="feed-line"></div></div>
+          <div class="feed-item"><div class="feed-img"></div><div class="feed-line"></div><div class="feed-line"></div></div>
+          <div class="feed-item"><div class="feed-img"></div><div class="feed-line"></div><div class="feed-line"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <span class="hero-eyebrow">Essay &nbsp;·&nbsp; Princess &nbsp;·&nbsp; February 2026</span>
+  <h1 class="hero-title">The Exhaustion of Curating a Life You Don't <em>Actually</em> Enjoy</h1>
+  <div class="hero-meta">
+    <div class="hero-meta-line"></div>
+    <span class="hero-meta-text">6 min read</span>
+    <div class="hero-meta-line"></div>
+  </div>
+</header>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-diamond"></div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- Article Body -->
+<article>
+
+  <p class="opener">Your Instagram looks perfect.</p>
+
+  <p>The aesthetically pleasing photos. The carefully crafted captions. The enviable moments. The life that everyone wants.</p>
+
+  <p>Your feed tells a story of someone who has it all figured out. Someone living their best life. Someone happy, successful, fulfilled.</p>
+
+  <p>But then you close the app and look around at your actual life.</p>
+
+  <p>And it feels nothing like what you just posted.</p>
+
+  <div class="pull-quote">You're exhausted. Not from living. From performing. From curating. From maintaining this image of a life that looks better than it feels.</div>
+
+  <p>You spent thirty minutes getting the perfect shot of your coffee this morning. But you didn't even taste it. You were too busy adjusting the lighting, finding the right angle, writing the caption.</p>
+
+  <p>You went to that trendy restaurant not because you wanted to, but because it would look good. You barely remember what the food tasted like. You were too focused on getting the shot before it got cold.</p>
+
+  <p>You bought that outfit not because you loved it, but because it fit the aesthetic. It's uncomfortable. You can't wait to take it off. But it photographed well, and that's what mattered.</p>
+
+  <p>You went to that event not because it interested you, but because being there meant something. It showed you were relevant, connected, living the life.</p>
+
+  <p>But you felt alone the entire time. Surrounded by people but disconnected. Taking photos with strangers who will make you look popular to other strangers.</p>
+
+  <p>This is your life now. A carefully curated performance. A highlight reel. A brand.</p>
+
+  <p>And you're so tired.</p>
+
+  <p>Tired of choosing experiences based on how they'll look rather than how they'll feel. Tired of editing your life before you live it. Tired of documenting moments instead of experiencing them.</p>
+
+  <p>Tired of chasing aesthetics instead of authenticity.</p>
+
+  <div class="pull-quote">You're at a beautiful place, and instead of being present, you're thinking about captions. Angles. Hashtags. Engagement.</div>
+
+  <p>You're with people you care about, and instead of connecting with them, you're directing the photo shoot. "Let's take another one. That one didn't look natural enough."</p>
+
+  <p>Natural. That's funny. Because nothing about this feels natural anymore.</p>
+
+  <p>You've forgotten how to do things without thinking about how they'll look online. How to go somewhere without checking if it's "Instagrammable." How to have an experience without wondering if it's worth posting.</p>
+
+  <p>You've started measuring the value of your life in likes and comments and followers. And some days, when the post doesn't perform well, you feel like the experience wasn't worth it.</p>
+
+  <p>You went to that beautiful place. You saw that amazing thing. You had that experience. But if it only got 47 likes, was it even real? Did it even matter?</p>
+
+  <p>You've started to believe that if you didn't post it, it didn't happen. That if others don't see it, it has no value.</p>
+
+  <p>And that's when you realize: You're not living for yourself anymore. You're living for the audience. For the feed. For the image.</p>
+
+  <div class="pull-quote">You're the director, cinematographer, and editor of your own life. But you forgot to be the person actually living it.</div>
+
+  <p>And the saddest part? The life you're showing everyone isn't even the life you want.</p>
+
+  <p>You post about being busy, grinding, hustling. But you're burned out. You want rest.</p>
+
+  <p>You post about adventures and travel. But you're exhausted. You want to stay home.</p>
+
+  <p>You post about being social, going out, living it up. But you're lonely. You want real connection, not more acquaintances.</p>
+
+  <p>You post about success and achievement. But you're empty. You want meaning, not more accomplishments.</p>
+
+  <p>The life you're curating is someone else's dream. Not yours. Maybe it was never yours.</p>
+
+  <p>You built this image because that's what success looks like. That's what happiness looks like. That's what people admire.</p>
+
+  <p>But you're learning a painful truth: You can have a life that looks perfect to everyone else and still feel completely empty inside.</p>
+
+  <div class="pull-quote">You can be envied and still be miserable. You can be admired and still feel invisible. You can have everything look right and still feel like something is deeply wrong.</div>
+
+  <p>Because the performance is exhausting. The curation is draining. The constant comparison is killing you.</p>
+
+  <p>You see someone else's perfect post and you think: I need to do better. Post more. Look happier. Be more interesting.</p>
+
+  <p>You forget that they're probably just as exhausted as you are. Just as empty. Just as busy performing their own life instead of living it.</p>
+
+  <p>We're all curating. We're all performing. We're all pretending our lives are better than they feel.</p>
+
+  <p>And we're all exhausted.</p>
+
+  <p>You can't remember the last time you did something without photographing it. The last time you had a thought you didn't consider turning into a caption. The last time you made a choice based purely on what you wanted, not on how it would look.</p>
+
+  <p>You can't remember who you were before you became your own brand. Before every moment became content. Before your life became a performance.</p>
+
+  <p>And late at night, when the posts are scheduled and the editing is done and you're alone with yourself, you feel it.</p>
+
+  <p>The emptiness. The exhaustion. The question: Is this really what life is supposed to be?</p>
+
+  <p>Living for likes? Measuring worth in engagement? Editing reality until it's unrecognizable? Performing happiness instead of feeling it?</p>
+
+  <p>When did this happen? When did you stop living and start curating?</p>
+
+  <div class="pull-quote">And more importantly: How do you stop?</div>
+
+  <p>How do you unlearn the habit of seeing your life through a camera lens? How do you start experiencing moments instead of capturing them? How do you remember what you actually like when you've spent so long doing what looks good?</p>
+
+  <p>It starts with permission. Permission to have experiences that no one sees. Permission to do things that aren't aesthetic. Permission to live a life that doesn't translate well to social media.</p>
+
+  <p>It starts with one un-posted moment. One experience you keep for yourself. One day where you don't document anything.</p>
+
+  <p>And it feels weird at first. Wrong, even. Like if you didn't post it, it didn't count. Like the experience is wasted if others don't see it.</p>
+
+  <p>But then something happens. Something quiet. Something real.</p>
+
+  <p>You start actually tasting your coffee instead of photographing it.</p>
+
+  <p>You start actually enjoying the sunset instead of finding the perfect angle.</p>
+
+  <p>You start actually connecting with people instead of posing with them.</p>
+
+  <p>You start living your life instead of proving it.</p>
+
+  <div class="pull-quote">And slowly, you remember: Life isn't meant to be a highlight reel. It's meant to be lived. Messy, imperfect, ordinary, real.</div>
+
+  <p>Most of life isn't Instagram-worthy. And that's okay. That's actually where the real stuff happens.</p>
+
+  <p>In the quiet moments. The boring days. The unglamorous routines. The unphotogenic experiences that somehow mean more than all the curated ones combined.</p>
+
+  <p>You start choosing things because you want them, not because they'll look good. You start going places because they interest you, not because they're trendy. You start being yourself instead of your brand.</p>
+
+  <p>And your feed becomes less perfect. Less curated. Less impressive.</p>
+
+  <p>But your life? Your actual life?</p>
+
+  <p>It starts feeling like yours again.</p>
+
+  <p>You stop performing and start being. You stop curating and start living. You stop proving and start experiencing.</p>
+
+  <p>And the strangest thing happens: You care less about the likes. Less about the followers. Less about how it all looks.</p>
+
+  <p>Because you're too busy actually living to worry about documenting it.</p>
+
+  <p>You're too busy being happy to perform happiness.</p>
+
+  <p>You're too busy having a life to curate one.</p>
+
+  <p>And that life, the one no one sees, the one that isn't perfect, the one that's just real, that life is the one you've been missing.</p>
+
+  <p>That life is the one worth living.</p>
+
+  <div class="divider" style="margin: 3rem 0; padding: 0;">
+    <div class="divider-line"></div>
+    <div class="divider-diamond"></div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="closing">
+    <p>So close the app. Put down the phone. Stop directing your life like it's a photoshoot.</p>
+    <p>And just live it.</p>
+    <p>Messy. Imperfect. Undocumented. Real.</p>
+    <p>Live the life you actually want, not the one that looks good.</p>
+    <p>Because you only get one life. And it's too short to spend it curating an image instead of living the reality.</p>
+    <p>Your real life, the one behind the filter, beneath the caption, beyond the performance, that's the life that matters.</p>
+    <p>That's the life waiting for you to start living it.</p>
+    <p>So start today. Right now. This moment.</p>
+    <p>Live it for yourself. Not for the feed.</p>
+    <p>You deserve a life that feels as good as it looks.</p>
+    <p>Actually, you deserve a life that feels even better.</p>
+    <p>And that life doesn't exist on a screen. It exists in the real, messy, beautiful moments you've been too busy photographing to notice.</p>
+    <p>Start noticing.</p>
+    <p>Start living.</p>
+    <p>You'll be amazed at what you've been missing.</p>
+    <br>
+    <p style="margin-top: 2rem;">With understanding,<br>Someone who remembers what living without performing feels like</p>
+  </div>
+
+  <div class="signature">Princess &nbsp;·&nbsp; February 2026</div>
+
+</article>
+
+<!-- Footer -->
+<footer>
+  <p>Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+</footer>
+
+<script>
+  // Scroll progress bar
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('progress').style.width = (scrolled / total * 100) + '%';
+  });
+
+  // Intersection observer for fade-in paragraphs
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('p, .pull-quote, .opener, .signature').forEach(el => {
+    observer.observe(el);
+  });
+
+  // Stagger paragraphs that appear close together
+  document.querySelectorAll('p').forEach((el, i) => {
+    el.style.transitionDelay = '0ms';
+  });
+</script>
+
+</body>
+</html>

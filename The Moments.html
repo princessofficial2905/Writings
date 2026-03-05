@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Moments I Pretended Not to Care — Princess</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=IM+Fell+English:ital@0;1&family=Crimson+Pro:ital,wght@0,200;0,300;0,400;1,200;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0804;
+      --bg2: #100d08;
+      --amber: #c8922a;
+      --amber-soft: #e8b86d;
+      --amber-pale: #f5dfa8;
+      --cream: #f0e6d0;
+      --muted: #6b5c42;
+      --muted2: #4a3f2e;
+      --text: #d9c9ae;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 19px;
+      font-weight: 300;
+      line-height: 1.85;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* ─── CURTAIN INTRO ─── */
+    #curtain {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: curtainFade 2.8s ease forwards;
+    }
+    #curtain span {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--muted);
+      animation: curtainText 2.8s ease forwards;
+    }
+    @keyframes curtainFade {
+      0%, 60% { opacity: 1; }
+      100% { opacity: 0; pointer-events: none; }
+    }
+    @keyframes curtainText {
+      0% { opacity: 0; transform: translateY(6px); }
+      30% { opacity: 1; transform: translateY(0); }
+      80% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, var(--amber), transparent);
+      opacity: 0.6;
+    }
+
+    /* Ambient glow behind title */
+    .hero-glow {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 300px;
+      background: radial-gradient(ellipse, rgba(200, 146, 42, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      font-family: 'Crimson Pro', serif;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 1s ease 2s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(52px, 10vw, 110px);
+      line-height: 1.0;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeUp 1s ease 2.2s forwards;
+    }
+
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(18px, 3vw, 28px);
+      color: var(--amber-soft);
+      letter-spacing: 0.08em;
+      margin-bottom: 56px;
+      opacity: 0;
+      animation: fadeUp 1s ease 2.5s forwards;
+    }
+
+    .hero-meta {
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeUp 1s ease 2.8s forwards;
+    }
+    .hero-meta span { color: var(--muted2); margin: 0 12px; }
+
+    /* ─── DECORATIVE RULE ─── */
+    .ornament {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 60px auto;
+      width: fit-content;
+      opacity: 0;
+      animation: fadeIn 1s ease 3.2s forwards;
+    }
+    .ornament-line {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--amber));
+    }
+    .ornament-line.right {
+      background: linear-gradient(to left, transparent, var(--amber));
+    }
+    .ornament-diamond {
+      width: 6px;
+      height: 6px;
+      background: var(--amber);
+      transform: rotate(45deg);
+    }
+
+    /* ─── ARTICLE BODY ─── */
+    .article-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 32px 100px;
+    }
+
+    .prose {
+      opacity: 0;
+      animation: fadeUp 1.2s ease 3s forwards;
+    }
+
+    .prose p {
+      margin-bottom: 2.2em;
+      color: var(--text);
+      font-size: 19px;
+      font-weight: 300;
+    }
+
+    .prose p.opening {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(22px, 3.2vw, 28px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.7;
+      border-left: 2px solid var(--amber);
+      padding-left: 28px;
+      margin-bottom: 3em;
+    }
+
+    .prose em {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      color: var(--amber-pale);
+    }
+
+    /* Verse-style lines */
+    .verse {
+      margin: 2.5em 0;
+      padding: 0 0 0 20px;
+      border-left: 1px solid var(--muted2);
+    }
+    .verse p {
+      margin-bottom: 0.4em !important;
+      font-style: italic;
+      color: #bfad94 !important;
+      line-height: 1.6 !important;
+      font-size: 17px !important;
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      margin: 3.5em 0;
+      text-align: center;
+      position: relative;
+    }
+    .pull-quote::before {
+      content: '\201C';
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 120px;
+      color: var(--amber);
+      opacity: 0.12;
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      line-height: 1;
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(20px, 3vw, 26px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--amber-pale);
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Section divider */
+    .section-break {
+      text-align: center;
+      margin: 3em 0;
+      color: var(--amber);
+      font-size: 13px;
+      letter-spacing: 0.6em;
+      opacity: 0.5;
+    }
+
+    /* ─── CLOSING ─── */
+    .closing-line {
+      border-top: 1px solid var(--muted2);
+      margin: 60px 0 40px;
+      padding-top: 40px;
+      text-align: center;
+    }
+    .closing-line p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .closing-line a {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200,146,42,0.3);
+      padding-bottom: 1px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .closing-line a:hover {
+      color: var(--amber-pale);
+      border-color: var(--amber-pale);
+    }
+
+    /* Author block */
+    .author-block {
+      text-align: center;
+      margin: 40px 0 60px;
+    }
+    .author-block .author-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .author-block .author-bio {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--muted);
+      max-width: 380px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ─── FLOATING CANDLE SPARKS ─── */
+    .spark {
+      position: fixed;
+      width: 2px;
+      height: 2px;
+      background: var(--amber);
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+      animation: sparkFloat var(--dur) ease-in var(--delay) infinite;
+    }
+    @keyframes sparkFloat {
+      0%   { opacity: 0; transform: translateY(0) translateX(0); }
+      20%  { opacity: 0.7; }
+      80%  { opacity: 0.2; }
+      100% { opacity: 0; transform: translateY(-120px) translateX(var(--dx)); }
+    }
+
+    /* ─── SCROLL PROGRESS ─── */
+    #progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 1px;
+      background: linear-gradient(to right, var(--amber), var(--amber-pale));
+      width: 0%;
+      z-index: 500;
+      transition: width 0.1s linear;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      .article-wrap { padding: 0 20px 80px; }
+      .prose p { font-size: 17px; }
+      .ornament-line { width: 48px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Curtain -->
+  <div id="curtain"><span>a confession in letters</span></div>
+
+  <!-- Progress bar -->
+  <div id="progress"></div>
+
+  <!-- Floating sparks -->
+  <div class="spark" style="left:15%;bottom:10%;--dur:7s;--delay:0s;--dx:12px;"></div>
+  <div class="spark" style="left:82%;bottom:5%;--dur:9s;--delay:2s;--dx:-8px;"></div>
+  <div class="spark" style="left:50%;bottom:8%;--dur:6s;--delay:4s;--dx:5px;"></div>
+  <div class="spark" style="left:30%;bottom:3%;--dur:11s;--delay:1s;--dx:-14px;"></div>
+  <div class="spark" style="left:67%;bottom:12%;--dur:8s;--delay:3s;--dx:9px;"></div>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-glow"></div>
+    <p class="eyebrow">an essay on feeling everything</p>
+    <h1 class="hero-title">The Moments</h1>
+    <p class="hero-subtitle">I Pretended Not to Care.</p>
+    <p class="hero-meta">Princess <span>·</span> February 2026 <span>·</span> 2 min read</p>
+  </header>
+
+  <!-- Article -->
+  <main class="article-wrap">
+
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line right"></div>
+    </div>
+
+    <article class="prose">
+
+      <p class="opening">
+        There comes a moment when you finally face the truth you hid even from yourself, you pretended not to care, not because you didn't feel anything, but because you felt <em>too much.</em>
+      </p>
+
+      <p>
+        You acted unbothered when your heart was aching. You stayed silent when you wanted to scream. You shrugged things off because you didn't want to seem sensitive. You told yourself, <em>"It's fine,"</em> even when your spirit was cracking. You played it cool because you were afraid that showing how deeply you cared would make you look weak, needy, or easy to hurt. But pretending not to care never protected you… it only isolated your heart further.
+      </p>
+
+      <div class="verse">
+        <p>There were moments you acted like their inconsistency didn't affect you,</p>
+        <p>moments you laughed off their distance,</p>
+        <p>moments you pretended their mixed signals didn't confuse you,</p>
+        <p>moments you tried to look unaffected when, inside, you were unraveling.</p>
+        <p>You hid your disappointment behind jokes.</p>
+        <p>You hid your longing behind busyness.</p>
+        <p>You hid your heartbreak behind a calm face you mastered so well.</p>
+        <p>And though the world couldn't see it, God always could.</p>
+      </div>
+
+      <p>
+        He saw the way you held tears behind your eyes so no one would think you were fragile. He saw the way you kept choosing strength when all you really wanted was honesty and love. He saw the way you minimized your emotions just to keep someone close, the way you convinced yourself that your feelings were "too much," the way you hid your heart so nobody could mishandle it again. And gently, He whispers:
+      </p>
+
+      <div class="pull-quote">
+        <p><em>"Your emotions were never the problem, the people you gave them to were."</em></p>
+      </div>
+
+      <p>
+        Pretending not to care didn't make you stronger. It only taught you how much of yourself you were willing to hide to feel safe. But you're healing now. And healing means learning to honor your emotions instead of burying them. Healing means embracing your softness instead of apologizing for it. Healing means acknowledging the things that hurt, the things that made you anxious, the things that disappointed you, and giving your heart permission to feel without shame.
+      </p>
+
+      <div class="section-break">✦</div>
+
+      <div class="verse">
+        <p>One day, My friend, you will meet someone who makes you feel safe enough to stop pretending.</p>
+        <p>Someone who listens when you speak,</p>
+        <p>who notices when something is wrong,</p>
+        <p>who asks instead of assuming,</p>
+        <p>who stays instead of pulling away.</p>
+        <p>And with them, caring will not feel like a risk,</p>
+        <p>it will feel like a home.</p>
+        <p>Your feelings will be met, not ignored.</p>
+        <p>Your emotions will be honored, not judged.</p>
+        <p>Your heart will be held, not dismissed.</p>
+      </div>
+
+      <p>
+        The moments you pretended not to care were the moments you protected yourself the only way you knew how. But soon, you'll discover a love where you won't ever have to pretend again.
+      </p>
+
+    </article>
+
+    <div class="ornament" style="margin-top:0;">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line right"></div>
+    </div>
+
+    <div class="author-block">
+      <p class="author-name">Written by Princess</p>
+      <p class="author-bio">Just a girl named Princess… dreaming of that one soul who stumbles upon her words and finally feels less alone.</p>
+    </div>
+
+    <div class="closing-line">
+      <p>Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+    </div>
+
+  </main>
+
+  <script>
+    // Kill curtain after animation
+    setTimeout(() => {
+      const c = document.getElementById('curtain');
+      if (c) c.style.display = 'none';
+    }, 3000);
+
+    // Scroll progress bar
+    window.addEventListener('scroll', () => {
+      const doc = document.documentElement;
+      const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+      document.getElementById('progress').style.width = (scrolled * 100) + '%';
+    });
+
+    // Scroll-triggered fade for prose paragraphs
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(el => {
+        if (el.isIntersecting) {
+          el.target.style.transition = 'opacity 0.9s ease, transform 0.9s ease';
+          el.target.style.opacity = '1';
+          el.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.prose p, .verse, .pull-quote, .section-break').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(18px)';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

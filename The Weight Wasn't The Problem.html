@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Weight Wasn't the Problem</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0805;
+    --bg2: #0f0c08;
+    --amber: #c8832a;
+    --amber-light: #e8a84a;
+    --amber-glow: #f0b85a;
+    --text: #d4c4a8;
+    --text-muted: #8a7a60;
+    --text-faint: #4a3e2c;
+    --cream: #f0e8d4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 20px;
+    line-height: 1.85;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 8px;
+    height: 8px;
+    background: var(--amber);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--amber);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.4s ease, left 0.1s ease, top 0.1s ease;
+    opacity: 0.5;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9000;
+    opacity: 0.35;
+  }
+
+  /* Vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+    z-index: 8999;
+  }
+
+  /* ====== HERO ====== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 6rem 2rem;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-bg-lines {
+    position: absolute;
+    inset: 0;
+    background: 
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 79px,
+        rgba(200,131,42,0.04) 79px,
+        rgba(200,131,42,0.04) 80px
+      );
+    pointer-events: none;
+  }
+
+  .amber-orb {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,131,42,0.12) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: breathe 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes breathe {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  }
+
+  .eyeline {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.5em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'IM Fell English', Georgia, serif;
+    font-size: clamp(3rem, 9vw, 7rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.6s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--amber-light);
+  }
+
+  .hero-divider {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, var(--amber), transparent);
+    margin: 3rem auto;
+    opacity: 0;
+    animation: fadeUp 1s ease 1s forwards;
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+
+  .hero-meta {
+    position: absolute;
+    bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    font-size: 0.7rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.3em;
+    color: var(--text-faint);
+    opacity: 0;
+    animation: fadeIn 1.5s ease 1.8s forwards;
+  }
+
+  .hero-meta span { color: var(--amber); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ====== SCROLL CUE ====== */
+  .scroll-cue {
+    position: absolute;
+    bottom: 2.5rem;
+    right: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeIn 2s ease 2.5s forwards;
+  }
+  .scroll-cue span {
+    font-family: 'Cinzel', serif;
+    font-size: 0.5rem;
+    letter-spacing: 0.4em;
+    color: var(--text-faint);
+    writing-mode: vertical-rl;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--amber), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+  @keyframes scrollLine {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* ====== ARTICLE ====== */
+  .article-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+  }
+
+  /* Floating side number */
+  .section-marker {
+    position: absolute;
+    left: -3rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--text-faint);
+    writing-mode: vertical-rl;
+    user-select: none;
+  }
+
+  .drop-cap-para {
+    position: relative;
+    margin-bottom: 3.5rem;
+  }
+
+  .drop-cap-para::first-letter {
+    font-family: 'IM Fell English', serif;
+    font-size: 5.5rem;
+    font-weight: 400;
+    line-height: 0.8;
+    float: left;
+    margin-right: 0.15em;
+    margin-top: 0.05em;
+    color: var(--amber-glow);
+    text-shadow: 0 0 40px rgba(200,131,42,0.5);
+  }
+
+  .stanza {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+    border-left: 1px solid var(--text-faint);
+    font-style: italic;
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 2;
+  }
+
+  .body-para {
+    margin-bottom: 3rem;
+    font-size: 1.05rem;
+    color: var(--text);
+    position: relative;
+  }
+
+  /* ====== PULL QUOTE ====== */
+  .pull-quote {
+    margin: 5rem -4rem;
+    padding: 3rem 4rem;
+    border-top: 1px solid rgba(200,131,42,0.3);
+    border-bottom: 1px solid rgba(200,131,42,0.3);
+    text-align: center;
+    position: relative;
+    background: linear-gradient(to right, transparent, rgba(200,131,42,0.04), transparent);
+  }
+
+  .pull-quote p {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    color: var(--cream);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+
+  .pull-quote::before {
+    content: '\201C';
+    font-family: 'IM Fell English', serif;
+    font-size: 8rem;
+    color: var(--amber);
+    opacity: 0.15;
+    position: absolute;
+    top: -1rem;
+    left: 2rem;
+    line-height: 1;
+  }
+
+  /* ====== POEM BLOCK ====== */
+  .poem-block {
+    margin: 5rem 0;
+    padding: 3.5rem 3rem;
+    background: rgba(200,131,42,0.03);
+    border: 1px solid rgba(200,131,42,0.12);
+    position: relative;
+    text-align: center;
+  }
+
+  .poem-block::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--amber), transparent);
+  }
+
+  .poem-block p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    line-height: 2.2;
+    letter-spacing: 0.05em;
+  }
+
+  .poem-block p span {
+    display: block;
+  }
+
+  /* ====== SECTION BREAK ====== */
+  .section-break {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 4rem 0;
+  }
+  .section-break::before, .section-break::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--text-faint));
+  }
+  .section-break::after {
+    background: linear-gradient(to left, transparent, var(--text-faint));
+  }
+  .section-break span {
+    color: var(--amber);
+    font-size: 1rem;
+  }
+
+  /* ====== SIGNATURE / FOOTER ====== */
+  .article-footer {
+    margin-top: 7rem;
+    padding-top: 4rem;
+    border-top: 1px solid var(--text-faint);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+    padding-bottom: 6rem;
+  }
+
+  .author-name {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.8rem;
+    font-style: italic;
+    color: var(--cream);
+    letter-spacing: 0.05em;
+  }
+
+  .author-tagline {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-style: italic;
+    max-width: 400px;
+    line-height: 1.6;
+  }
+
+  .medium-credit {
+    margin-top: 2rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.5em;
+    color: var(--text-faint);
+    text-transform: uppercase;
+  }
+
+  .medium-credit a {
+    color: var(--amber);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(200,131,42,0.3);
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .medium-credit a:hover {
+    color: var(--amber-glow);
+    border-color: var(--amber-glow);
+  }
+
+  /* ====== READING PROGRESS ====== */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 1px;
+    background: linear-gradient(to right, var(--amber), var(--amber-glow));
+    z-index: 9997;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 10px var(--amber);
+  }
+
+  /* ====== REVEAL ANIMATIONS ====== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    .pull-quote { margin: 4rem 0; }
+    .section-marker { display: none; }
+    .drop-cap-para::first-letter { font-size: 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="progress-bar" id="progress"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-lines"></div>
+  <div class="amber-orb"></div>
+  
+  <div class="eyeline">A Personal Essay</div>
+
+  <h1 class="hero-title">
+    The Weight<br>Wasn't the<br><em>Problem</em>
+  </h1>
+
+  <div class="hero-divider"></div>
+  <p class="hero-subtitle">The Silence Was.</p>
+
+  <div class="hero-meta">
+    <span>Princess</span>
+    &nbsp;&middot;&nbsp;
+    Feb 16, 2026
+    &nbsp;&middot;&nbsp;
+    3 min read
+  </div>
+
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    <span>scroll</span>
+  </div>
+</section>
+
+<!-- ARTICLE -->
+<main class="article-wrap">
+
+  <p class="drop-cap-para reveal">
+    There comes a moment in your life when you finally feel the weight of everything you kept inside, the emotions you swallowed, the truths you silenced, the tears you blinked back, the questions you never asked, the pain you never admitted, the longing you hid behind strength. You didn't hold it all in because you wanted to suffer. You held it in because you didn't feel safe enough to let it out. Because you didn't want to be a burden. Because you didn't want to seem dramatic. Because you didn't want to lose people by showing how deeply you feel. And so, piece by piece, year by year, moment by moment, you carried emotional weight no one ever knew about, and it changed you.
+  </p>
+
+  <div class="section-break reveal"><span>&#10022;</span></div>
+
+  <div class="body-para reveal">
+    <div class="stanza">
+      You got used to being the strong one, even when strength felt like a costume you put on every morning.<br>
+      You got used to saying "I'm okay," even when your chest felt tight.<br>
+      You got used to comforting others while secretly praying for someone to comfort you.<br>
+      You got used to being the listener because no one ever asked you how you were really doing.<br>
+      You held so much inside that the silence began to feel safer than vulnerability.<br>
+      But deep down, you knew, your heart wasn't meant to hold this much alone.
+    </div>
+  </div>
+
+  <div class="pull-quote reveal">
+    <p>your heart wasn't meant to hold this much alone.</p>
+  </div>
+
+  <div class="body-para reveal">
+    <div class="stanza">
+      And God? He saw everything you hid from the world.<br>
+      He saw the nights you cried quietly into your pillow.<br>
+      He heard the prayers you whispered with a shaky voice.<br>
+      He watched you carry burdens that were never meant to be carried alone.<br>
+      And while you thought no one noticed your pain, God held every unspoken word, every suppressed emotion, every deep ache you tucked away.<br>
+      He knew you weren't weak for holding it all in, you were scared, you were tired, you were trying.<br>
+      And He never judged you for that.
+    </div>
+  </div>
+
+  <div class="section-break reveal"><span>&#10022;</span></div>
+
+  <p class="body-para reveal">
+    Slowly, without you realizing it, He began softening the tightness around your heart. He began creating space for healing you didn't even know you needed. He sent you moments that forced you to release what you'd been storing for years, through tears, through realizations, through endings, through prayers. It didn't all come out at once. But little by little, the emotional load you carried began to lift. And you started to breathe again, fully, honestly, freely.
+  </p>
+
+  <p class="body-para reveal">
+    One day, My friend, you will look back and wonder how you ever carried so much in silence. You will feel proud of the woman who survived emotional storms without letting them break her. You will be grateful for the version of yourself who held everything together even when she was falling apart inside. And most beautifully, you will learn to live in a way where you don't have to hold everything in anymore, where your emotions have space, where your voice matters, where your heart is understood, and where love feels safe instead of heavy.
+  </p>
+
+  <div class="poem-block reveal">
+    <p>
+      <span>What you held inside for too long</span>
+      <span>is finally being released,</span>
+      <span>not through force,</span>
+      <span>but through God's gentle, healing love.</span>
+    </p>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="article-footer reveal">
+    <div class="author-name">Princess</div>
+    <p class="author-tagline">Just a girl named Princess… dreaming of that one soul who stumbles upon her words and finally feels less alone.</p>
+    <p class="medium-credit">Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+  </footer>
+
+</main>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 4 + 'px';
+    cursor.style.top = my - 4 + 'px';
+  });
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx - 16 + 'px';
+    ring.style.top = ry - 16 + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Reading progress
+  const bar = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = pct + '%';
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+  reveals.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

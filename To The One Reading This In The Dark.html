@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To the One Reading This in the Dark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0d0b09;
+    --parchment: #f5efe6;
+    --amber: #c8882a;
+    --amber-soft: #e8a84a;
+    --amber-glow: rgba(200, 136, 42, 0.12);
+    --amber-dim: rgba(200, 136, 42, 0.04);
+    --text: #d4c4a8;
+    --text-dim: #8a7a62;
+    --text-bright: #ede0c8;
+    --line: rgba(200, 136, 42, 0.2);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 20px;
+    line-height: 1.85;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 6px; height: 6px;
+    background: var(--amber);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, opacity 0.3s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 28px; height: 28px;
+    border: 1px solid rgba(200,136,42,0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), opacity 0.3s;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+
+  /* Ambient glow */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(200,136,42,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ---- INTRO SCREEN ---- */
+  #intro {
+    position: fixed;
+    inset: 0;
+    background: #080604;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    transition: opacity 1.4s ease, visibility 1.4s;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  #intro.hidden { opacity: 0; visibility: hidden; }
+
+  .intro-text {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    color: var(--amber);
+    letter-spacing: 0.04em;
+    opacity: 0;
+    animation: fadeInSlow 2s ease 0.5s forwards;
+  }
+  .intro-sub {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeInSlow 2s ease 1.8s forwards;
+  }
+  .intro-line {
+    width: 1px;
+    height: 0;
+    background: var(--amber);
+    animation: growLine 1.5s ease 1s forwards;
+  }
+
+  @keyframes growLine { to { height: 60px; } }
+  @keyframes fadeInSlow { to { opacity: 1; } }
+
+  /* ---- PHONE ANIMATION ---- */
+  #phone-scene {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .phone-wrap {
+    position: relative;
+    opacity: 0;
+    animation: phoneReveal 1.5s cubic-bezier(0.16,1,0.3,1) 3.5s forwards;
+  }
+
+  @keyframes phoneReveal {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .phone {
+    width: 220px;
+    height: 440px;
+    background: #0f0d0a;
+    border-radius: 36px;
+    border: 1.5px solid rgba(200,136,42,0.25);
+    box-shadow:
+      0 0 0 6px rgba(0,0,0,0.8),
+      0 0 60px rgba(200,136,42,0.08),
+      0 40px 80px rgba(0,0,0,0.7),
+      inset 0 0 30px rgba(200,136,42,0.03);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .phone-screen {
+    position: absolute;
+    inset: 8px;
+    border-radius: 28px;
+    background: #0a0806;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .phone-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 30%, rgba(200,136,42,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .screen-content {
+    padding: 20px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: scrollUp 12s linear 4s infinite;
+  }
+
+  @keyframes scrollUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-55%); }
+  }
+
+  .screen-line {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(200,136,42,0.12);
+  }
+  .screen-line.short { width: 60%; }
+  .screen-line.medium { width: 80%; }
+  .screen-line.full { width: 100%; }
+  .screen-line.bright { background: rgba(200,136,42,0.22); height: 10px; }
+
+  .screen-time {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    color: rgba(200,136,42,0.5);
+    letter-spacing: 0.1em;
+    padding: 10px 0 16px;
+    font-weight: 300;
+  }
+
+  .phone-notch {
+    width: 70px;
+    height: 18px;
+    background: #0a0806;
+    border-radius: 0 0 14px 14px;
+    margin: 0 auto;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+
+  .phone-btn {
+    width: 3px;
+    height: 50px;
+    background: rgba(200,136,42,0.2);
+    border-radius: 2px;
+    position: absolute;
+    right: -4px;
+    top: 120px;
+  }
+
+  .phone-label {
+    position: absolute;
+    bottom: -3.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeInSlow 1s ease 5s forwards;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    opacity: 0;
+    animation: fadeInSlow 1s ease 5.5s forwards;
+    color: var(--text-dim);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .scroll-arrow {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--amber), transparent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+  /* ---- MAIN ARTICLE ---- */
+  main {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 8vh 2rem 12vh;
+  }
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: riseUp 1s ease 0.2s forwards;
+  }
+
+  .eyebrow-line { flex: 1; height: 1px; background: var(--line); }
+  .eyebrow-text {
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--amber);
+    white-space: nowrap;
+  }
+
+  h1 {
+    font-family: 'IM Fell English', serif;
+    font-weight: 400;
+    font-size: clamp(2.4rem, 7vw, 4.2rem);
+    line-height: 1.15;
+    color: var(--text-bright);
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: riseUp 1.2s ease 0.4s forwards;
+    letter-spacing: -0.01em;
+  }
+
+  h1 em {
+    color: var(--amber-soft);
+    font-style: italic;
+  }
+
+  .byline {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 4rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+    opacity: 0;
+    animation: riseUp 1.2s ease 0.6s forwards;
+  }
+
+  .byline-dot {
+    width: 8px; height: 8px;
+    background: var(--amber);
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px var(--amber);
+  }
+
+  .byline-text {
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .byline-text span { color: var(--amber-soft); }
+
+  @keyframes riseUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  article {
+    opacity: 0;
+    animation: riseUp 1.4s ease 0.8s forwards;
+  }
+
+  .opener {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+    color: var(--amber-soft);
+    line-height: 1.5;
+    margin-bottom: 2.5rem;
+    display: block;
+    border-left: 2px solid var(--amber);
+    padding-left: 1.5rem;
+  }
+
+  p {
+    margin-bottom: 1.8rem;
+    font-weight: 300;
+    color: var(--text);
+    font-size: 1.15rem;
+    line-height: 1.9;
+  }
+
+  p strong {
+    color: var(--text-bright);
+    font-weight: 600;
+  }
+
+  .highlight-block {
+    margin: 3.5rem 0;
+    padding: 2rem 2.5rem;
+    border-left: 2px solid var(--amber);
+    background: var(--amber-dim);
+    position: relative;
+  }
+
+  .highlight-block::before {
+    content: '\201C';
+    position: absolute;
+    top: -0.5rem;
+    left: 1.5rem;
+    font-size: 5rem;
+    color: var(--amber);
+    opacity: 0.15;
+    font-family: 'IM Fell English', serif;
+    line-height: 1;
+  }
+
+  .highlight-block p {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+    color: var(--text-bright);
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  .stanza {
+    margin: 2.5rem 0 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .stanza-line {
+    font-size: 1.05rem;
+    color: var(--text);
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+
+  .stanza-line::before {
+    content: '';
+    width: 16px;
+    height: 1px;
+    background: var(--amber);
+    flex-shrink: 0;
+    margin-top: 0.5rem;
+  }
+
+  .section-break {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 4rem 0;
+  }
+
+  .section-break .line { flex: 1; height: 1px; background: var(--line); }
+  .section-break .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 8px var(--amber);
+  }
+
+  .closing {
+    margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--line);
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+  }
+
+  .closing p {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+  }
+
+  .closing .signature {
+    margin-top: 1.5rem;
+    color: var(--amber-soft);
+    font-size: 1.1rem;
+  }
+
+  /* ---- FOOTER ---- */
+  footer {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 4rem 2rem 6rem;
+    border-top: 1px solid var(--line);
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .footer-glyph {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--amber), transparent);
+    margin: 0 auto 2rem;
+  }
+
+  .published {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .published a {
+    color: var(--amber);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(200,136,42,0.3);
+    padding-bottom: 1px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .published a:hover {
+    color: var(--amber-soft);
+    border-color: var(--amber-soft);
+  }
+
+  /* ---- SCROLL ANIMATIONS ---- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Side ambient glow that follows scroll */
+  .side-glow {
+    position: fixed;
+    left: -100px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 300px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(200,136,42,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="side-glow"></div>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="intro-text">To the One Reading This in the Dark</div>
+  <div class="intro-line"></div>
+  <div class="intro-sub">by Princess</div>
+</div>
+
+<!-- PHONE SCENE -->
+<section id="phone-scene">
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <div class="phone-btn"></div>
+      <div class="phone-screen">
+        <div class="phone-glow"></div>
+        <div class="screen-time">3:00</div>
+        <div class="screen-content">
+          <div class="screen-line bright full"></div>
+          <div class="screen-line medium"></div>
+          <div class="screen-line short"></div>
+          <div class="screen-line full"></div>
+          <div class="screen-line medium"></div>
+          <div class="screen-line full"></div>
+          <div class="screen-line short"></div>
+          <div class="screen-line bright medium"></div>
+          <div class="screen-line full"></div>
+          <div class="screen-line short"></div>
+          <div class="screen-line full"></div>
+          <div class="screen-line medium"></div>
+          <div class="screen-line bright full"></div>
+          <div class="screen-line short"></div>
+          <div class="screen-line full"></div>
+          <div class="screen-line medium"></div>
+          <div class="screen-line short"></div>
+          <div class="screen-line full"></div>
+          <div class="screen-line medium"></div>
+        </div>
+      </div>
+    </div>
+    <div class="phone-label">it's late, isn't it</div>
+  </div>
+  <div class="scroll-hint">
+    <span>scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ARTICLE -->
+<main>
+  <div class="eyebrow">
+    <div class="eyebrow-line"></div>
+    <span class="eyebrow-text">A letter to you</span>
+    <div class="eyebrow-line"></div>
+  </div>
+
+  <h1>To the One Reading This<br><em>in the Dark</em></h1>
+
+  <div class="byline">
+    <div class="byline-dot"></div>
+    <div class="byline-text">By <span>Princess</span> &nbsp;&middot;&nbsp; February 2026 &nbsp;&middot;&nbsp; 3 min read</div>
+  </div>
+
+  <article>
+
+    <span class="opener reveal">I see you.</span>
+
+    <p class="reveal">It's late, isn't it? Everyone else is asleep. The world is quiet. And here you are, alone with your thoughts, scrolling through your phone because sleep won't come. Or maybe it will come, but you're afraid of what you'll dream about.</p>
+
+    <p class="reveal">You're reading this in the dark, not just the darkness of your room, but the darkness you've been carrying inside. The kind nobody sees. The kind you hide behind smiles and "I'm fine" and "I'm just tired."</p>
+
+    <div class="highlight-block reveal">
+      <p>I want you to know something: you're not alone in this darkness.</p>
+    </div>
+
+    <p class="reveal">I know it feels like it. I know it feels like everyone else has their life figured out while you're barely holding yours together. I know it feels like you're the only one awake at 2 AM with a heart full of worries and a mind that won't stop racing.</p>
+
+    <p class="reveal">But you're not.</p>
+
+    <p class="reveal">Right now, somewhere in the world, someone else is reading these words feeling exactly what you're feeling. Someone else is crying quietly so nobody hears. Someone else is wondering if tomorrow will be easier or just another day to survive.</p>
+
+    <div class="section-break reveal"><div class="line"></div><div class="dot"></div><div class="line"></div></div>
+
+    <p class="reveal">You're not weak for feeling this way. You're not broken. You're not too much or not enough.</p>
+
+    <p class="reveal">You're human. And being human means sometimes the weight gets heavy. Sometimes the light feels far away. Sometimes you don't recognize yourself anymore.</p>
+
+    <p class="reveal">I don't know what brought you to this moment. Maybe it was a loss that shattered you. Maybe it was words that cut deeper than any wound. Maybe it was a dream that died, a person who left, or a version of yourself you can't find anymore.</p>
+
+    <p class="reveal">Maybe it's nothing you can name. Maybe it's just this heavy, tired feeling that's been following you around, and you don't know how to shake it off.</p>
+
+    <div class="highlight-block reveal">
+      <p>Whatever it is, I need you to hear this: You are still here. And that matters.</p>
+    </div>
+
+    <p class="reveal">I know you don't feel strong right now. I know you feel like you're barely making it. But do you know what strength really is? It's not about being unbreakable. It's about breaking and still showing up the next day.</p>
+
+    <div class="stanza reveal">
+      <div class="stanza-line">It's reading these words at 3 AM when you could have given up hours ago.</div>
+      <div class="stanza-line">It's getting out of bed when staying there feels safer.</div>
+      <div class="stanza-line">It's surviving another day when your heart feels too tired to beat.</div>
+    </div>
+
+    <p class="reveal"><strong>That's you. That's what you're doing. Even in the dark, especially in the dark, you're still here.</strong></p>
+
+    <div class="section-break reveal"><div class="line"></div><div class="dot"></div><div class="line"></div></div>
+
+    <p class="reveal">And I know you're tired of being told "it gets better." Because right now, in this moment, better feels impossible. It feels like a lie people tell to make themselves feel helpful.</p>
+
+    <div class="highlight-block reveal">
+      <p>But here's what I can promise you: this moment will pass. Not the pain, maybe. Not the sadness. But this exact moment, this heaviness, this loneliness, this 3 AM feeling, it will pass.</p>
+    </div>
+
+    <p class="reveal">The sun will come up. It always does. Not because you asked it to, not because you deserve it, but because that's what the sun does. It rises. Again and again. Even after the darkest nights.</p>
+
+    <p class="reveal"><strong>And so will you.</strong></p>
+
+    <p class="reveal">You've done it before. Every single dark night you've ever had, you've survived. Every moment you thought would break you, you're still here after. You might be tired. You might be different. But you're still here.</p>
+
+    <div class="section-break reveal"><div class="line"></div><div class="dot"></div><div class="line"></div></div>
+
+    <p class="reveal">So tonight, right now, be gentle with yourself. Stop punishing yourself for not being okay. Stop comparing your darkness to someone else's light. Stop thinking you should be further along, happier, better, fixed.</p>
+
+    <p class="reveal">You're exactly where you need to be. Even if where you are hurts.</p>
+
+    <p class="reveal">Put your phone down soon. Close your eyes. Breathe slowly. And know that tomorrow, when you wake up, you don't have to be perfect. You don't have to be happy. You just have to be.</p>
+
+    <p class="reveal"><strong>And that will be enough.</strong></p>
+
+    <div class="highlight-block reveal">
+      <p>You will be enough. You always have been. Even in the dark. Especially in the dark.</p>
+    </div>
+
+    <p class="reveal">I see you. And you're going to be okay.</p>
+
+    <p class="reveal">Maybe not tonight. Maybe not tomorrow.</p>
+
+    <p class="reveal">But you will be.</p>
+
+    <p class="reveal">Keep going, dear one. The world needs your light, even when you can't see it yourself.</p>
+
+    <div class="closing reveal">
+      <p>With hope for your tomorrow,</p>
+      <p class="signature">Someone who's been in the dark too</p>
+    </div>
+
+  </article>
+</main>
+
+<footer>
+  <div class="footer-glyph"></div>
+  <p class="published">
+    Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+  </p>
+</footer>
+
+<script>
+  // Hide intro after delay
+  setTimeout(() => {
+    document.getElementById('intro').classList.add('hidden');
+  }, 3200);
+
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        e.target.style.transitionDelay = (i * 0.05) + 's';
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Side glow follows scroll
+  const sideGlow = document.querySelector('.side-glow');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    sideGlow.style.top = (20 + pct * 60) + '%';
+  });
+</script>
+</body>
+</html>

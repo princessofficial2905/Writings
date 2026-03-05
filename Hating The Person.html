@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hating the Person You've Had to Become to Survive</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0806;
+    --bg2: #110e0a;
+    --amber: #c8922a;
+    --amber-light: #e8b84b;
+    --amber-dim: #7a5518;
+    --text: #d4c9b8;
+    --text-muted: #7a7060;
+    --text-bright: #ede4d3;
+    --crack: rgba(200,146,42,0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 20px;
+    line-height: 1.85;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(200,146,42,0.07) 0%, transparent 70%);
+  }
+
+  .hero-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(52px, 9vw, 110px);
+    font-weight: 900;
+    line-height: 0.95;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--amber-light);
+    display: block;
+  }
+
+  .hero-subtitle {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(18px, 3vw, 28px);
+    font-style: italic;
+    color: var(--text-muted);
+    margin-top: 24px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.7s forwards;
+  }
+
+  .hero-author {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber-dim);
+    margin-top: 56px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
+
+  .hero-divider {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--amber), transparent);
+    margin: 48px auto 0;
+    opacity: 0;
+    animation: fadeIn 1.5s ease 1.2s forwards;
+  }
+
+  /* ── MIRROR ANIMATION ── */
+  .mirror-scene {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto 100px;
+    padding: 80px 24px 0;
+    opacity: 0;
+    animation: fadeIn 1.5s ease 1.5s forwards;
+  }
+
+  .mirror-frame {
+    width: 200px;
+    height: 280px;
+    margin: 0 auto;
+    border: 2px solid var(--amber-dim);
+    border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+    position: relative;
+    box-shadow: 0 0 60px rgba(200,146,42,0.08), inset 0 0 40px rgba(0,0,0,0.5);
+    background: linear-gradient(135deg, #1a1410 0%, #0d0b08 50%, #1a1410 100%);
+    overflow: hidden;
+  }
+
+  .mirror-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(200,146,42,0.05) 0%, transparent 60%);
+  }
+
+  .mirror-crack {
+    position: absolute;
+    background: var(--amber);
+    opacity: 0.4;
+  }
+
+  .crack-1 { width: 1px; height: 60px; top: 30%; left: 55%; transform: rotate(15deg); }
+  .crack-2 { width: 1px; height: 35px; top: 45%; left: 58%; transform: rotate(-20deg); }
+  .crack-3 { width: 1px; height: 45px; top: 20%; left: 40%; transform: rotate(8deg); }
+
+  .mirror-reflection {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    font-style: italic;
+    color: var(--amber-dim);
+    letter-spacing: 0.1em;
+    text-align: center;
+    width: 160px;
+    line-height: 1.6;
+  }
+
+  .mirror-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(200,146,42,0.06) 0%, transparent 70%);
+    animation: breathe 4s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+  }
+
+  /* ── ARTICLE BODY ── */
+  article {
+    position: relative;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 24px 120px;
+  }
+
+  .drop-cap::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 5.5em;
+    font-weight: 900;
+    float: left;
+    line-height: 0.75;
+    margin: 8px 12px -4px 0;
+    color: var(--amber);
+  }
+
+  p {
+    margin-bottom: 1.7em;
+    color: var(--text);
+  }
+
+  /* ── PULL QUOTES ── */
+  .pull-quote {
+    margin: 60px -40px;
+    padding: 40px 48px;
+    border-left: 3px solid var(--amber);
+    background: linear-gradient(to right, rgba(200,146,42,0.05), transparent);
+    position: relative;
+  }
+
+  .pull-quote::before {
+    content: '\201C';
+    font-family: 'Playfair Display', serif;
+    font-size: 120px;
+    color: var(--amber);
+    opacity: 0.15;
+    position: absolute;
+    top: -20px;
+    left: 16px;
+    line-height: 1;
+  }
+
+  .pull-quote p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 2.5vw, 24px);
+    font-style: italic;
+    color: var(--text-bright);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ── SECTION BREAK ── */
+  .section-break {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 60px 0;
+  }
+
+  .section-break::before,
+  .section-break::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--amber-dim), transparent);
+  }
+
+  .section-break span {
+    color: var(--amber);
+    font-size: 18px;
+  }
+
+  /* ── CLOSING SIGNATURE ── */
+  .signature {
+    margin-top: 80px;
+    padding: 48px;
+    background: linear-gradient(135deg, rgba(200,146,42,0.06) 0%, rgba(200,146,42,0.02) 100%);
+    border: 1px solid rgba(200,146,42,0.2);
+    border-radius: 2px;
+    text-align: center;
+  }
+
+  .signature p {
+    font-style: italic;
+    color: var(--amber-light);
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .signature .sig-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--amber);
+    margin-top: 12px;
+    display: block;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid rgba(200,146,42,0.1);
+    padding: 48px 24px;
+    text-align: center;
+  }
+
+  .medium-credit {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .medium-credit a {
+    color: var(--amber);
+    text-decoration: none;
+    border-bottom: 1px solid var(--amber-dim);
+    padding-bottom: 1px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .medium-credit a:hover {
+    color: var(--amber-light);
+    border-color: var(--amber-light);
+  }
+
+  /* ── SCROLL PROGRESS ── */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--amber-dim), var(--amber-light));
+    z-index: 100;
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* ── FLOATING AMBIENT ORBS ── */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.04;
+  }
+
+  .orb-1 {
+    width: 500px;
+    height: 500px;
+    background: var(--amber);
+    top: -100px;
+    right: -100px;
+    animation: drift 12s ease-in-out infinite;
+  }
+
+  .orb-2 {
+    width: 400px;
+    height: 400px;
+    background: var(--amber);
+    bottom: 20%;
+    left: -150px;
+    animation: drift 16s ease-in-out infinite reverse;
+  }
+
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, 40px); }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── DECORATIVE WORD HIGHLIGHT ── */
+  .amber { color: var(--amber-light); }
+  .em { font-style: italic; }
+
+  @media (max-width: 600px) {
+    .pull-quote { margin: 40px 0; padding: 28px 24px; }
+    .hero-title { letter-spacing: -0.01em; }
+    .mirror-frame { width: 160px; height: 224px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- HERO -->
+<header class="hero">
+  <p class="hero-eyebrow">An Essay on Survival &amp; Selfhood</p>
+  <h1 class="hero-title">
+    Hating the<br><em>Person</em>
+  </h1>
+  <p class="hero-subtitle">You've Had to Become to Survive</p>
+  <p class="hero-author">By Princess &nbsp;&middot;&nbsp; February 2026 &nbsp;&middot;&nbsp; 5 min read</p>
+  <div class="hero-divider"></div>
+</header>
+
+<!-- MIRROR VISUAL -->
+<div class="mirror-scene">
+  <div class="mirror-frame">
+    <div class="mirror-glow"></div>
+    <div class="mirror-crack crack-1"></div>
+    <div class="mirror-crack crack-2"></div>
+    <div class="mirror-crack crack-3"></div>
+    <div class="mirror-reflection">tired eyes<br>&amp; a<br>guarded heart</div>
+  </div>
+</div>
+
+<!-- ARTICLE -->
+<article>
+
+  <p class="drop-cap reveal">You look in the mirror and you don't like what you see.</p>
+
+  <p class="reveal">Not your face. Not your body. But the person behind the eyes. The one staring back at you with tired eyes and a guarded heart.</p>
+
+  <p class="reveal">You hate this person. This version of yourself that life forced you to become.</p>
+
+  <p class="reveal">And I know that sounds harsh. I know you're not supposed to say things like that. Everyone tells you to love yourself, be kind to yourself, accept yourself.</p>
+
+  <div class="pull-quote reveal">
+    <p>But how do you love someone you don't even recognize anymore?</p>
+  </div>
+
+  <p class="reveal">You used to be soft. Now you're hard. Cold, even.</p>
+
+  <p class="reveal">You used to trust people. Now you assume the worst. You look for the lie, the angle, the betrayal before it happens.</p>
+
+  <p class="reveal">You used to be open. Now you're closed off. Walls so high that even people who genuinely care about you can't get through.</p>
+
+  <p class="reveal">You used to believe in good. Now you expect bad.</p>
+
+  <p class="reveal">You used to give freely. Now you calculate every interaction. What do they want? What will this cost me? How will this hurt me later?</p>
+
+  <p class="reveal">And you hate it. You hate that you think this way now. You hate that you've become cynical, suspicious, protective.</p>
+
+  <div class="section-break reveal"><span>&#10022;</span></div>
+
+  <p class="reveal">But here's the truth nobody talks about: You didn't become this person because you wanted to. You became this person because you <span class="em">had</span> to.</p>
+
+  <p class="reveal">Life taught you to be this way.</p>
+
+  <p class="reveal">Every time you trusted someone and they betrayed you, you learned to trust less.</p>
+
+  <p class="reveal">Every time you opened your heart and someone broke it, you learned to guard it better.</p>
+
+  <p class="reveal">Every time you were kind and people took advantage of you, you learned to be more careful.</p>
+
+  <p class="reveal">Every time you showed vulnerability and it was used against you, you learned to hide your soft parts.</p>
+
+  <div class="pull-quote reveal">
+    <p>This version of you, the one you hate, wasn't born from cruelty. It was born from survival.</p>
+  </div>
+
+  <p class="reveal">You built these walls because people kept hurting you. You became cold because warmth kept getting you burned. You stopped trusting because trust kept getting you betrayed.</p>
+
+  <p class="reveal">This person you've become? It's armor. Protection. A defense mechanism.</p>
+
+  <p class="reveal">And yes, it's kept you safe. It's helped you survive. It's stopped you from getting hurt as badly as you used to.</p>
+
+  <div class="section-break reveal"><span>&#10022;</span></div>
+
+  <p class="reveal">But now you're realizing something painful: the armor that protected you is also isolating you.</p>
+
+  <p class="reveal">The walls that keep pain out also keep love out. The hardness that shields you from hurt also stops you from feeling joy. The suspicion that protects you from betrayal also prevents you from connecting with people who might actually be good for you.</p>
+
+  <p class="reveal">You're safe now. But you're also alone. And lonely. And exhausted from carrying all this weight. From being so guarded all the time. From never letting anyone in. From never letting yourself be soft.</p>
+
+  <p class="reveal">And you look at other people, the ones who still seem soft, who still trust easily, who still love openly, and you feel something between envy and anger.</p>
+
+  <p class="reveal">How can they still be like that? Don't they know the world will hurt them? Don't they know people will take advantage? Don't they see what's coming?</p>
+
+  <p class="reveal">Or maybe… maybe they've just been luckier than you. Maybe they haven't had to learn the lessons you learned. Maybe they haven't been broken the way you've been broken.</p>
+
+  <p class="reveal">And part of you wants to protect them. Warn them. Tell them to be more careful.</p>
+
+  <p class="reveal">But another part of you misses being like them. Misses when you could love without fear. Trust without doubt. Give without calculating the cost.</p>
+
+  <div class="pull-quote reveal">
+    <p>You miss the person you were before life made you hard. And you hate the person you've had to become.</p>
+  </div>
+
+  <div class="section-break reveal"><span>&#10022;</span></div>
+
+  <p class="reveal">But here's what I need you to understand: <span class="amber">You are not a bad person for becoming this way.</span></p>
+
+  <p class="reveal">You are not weak for building walls. You are not wrong for being protective. You are not cruel for being cautious.</p>
+
+  <p class="reveal">You did what you had to do to survive. And survival isn't always pretty. It's not always soft. It's not always kind.</p>
+
+  <p class="reveal">Sometimes survival means becoming someone you don't recognize. Someone harder. Someone colder. Someone more careful.</p>
+
+  <p class="reveal">And that's okay. It really is.</p>
+
+  <p class="reveal">But now you have a choice.</p>
+
+  <p class="reveal">You can stay this person forever. Keep the walls up. Keep everyone at a distance. Stay safe, stay protected, stay alone.</p>
+
+  <p class="reveal">Or you can slowly, carefully, start letting the armor come off.</p>
+
+  <p class="reveal">Not all at once. Not with everyone. Not recklessly.</p>
+
+  <p class="reveal">But bit by bit. Person by person. Moment by moment.</p>
+
+  <p class="reveal">You can choose one person who's proven themselves trustworthy and let them see a crack in your wall. You can choose one moment to be vulnerable, even though it scares you. You can choose to risk being soft again, just a little.</p>
+
+  <p class="reveal">And yes, you might get hurt again. That's the risk. That's always the risk.</p>
+
+  <p class="reveal">But you might also find connection. Love. Understanding. The kind of relationships that make you feel human again.</p>
+
+  <div class="section-break reveal"><span>&#10022;</span></div>
+
+  <p class="reveal">You might remember what it feels like to be yourself again. Not the person you were before, that person is gone, and that's okay. But a new version. One that's been through pain but hasn't let pain define them entirely.</p>
+
+  <p class="reveal">One that's cautious but not closed. Protected but not imprisoned. Strong but not hard.</p>
+
+  <p class="reveal">You can be both, you know. You can be wise from your experiences without being cold. You can be careful without being cynical. You can protect yourself without completely shutting down.</p>
+
+  <div class="pull-quote reveal">
+    <p>It's not about going back to being naive. It's about moving forward to being free.</p>
+  </div>
+
+  <p class="reveal">Free from the prison of your own protection. Free from the loneliness of your own walls. Free from hating the person survival forced you to become.</p>
+
+  <p class="reveal">Because that person, the one you hate, deserves compassion too.</p>
+
+  <p class="reveal">That person kept you alive when things were hard. That person protected you when no one else would. That person did what they had to do.</p>
+
+  <p class="reveal">Thank them. Honor them. Acknowledge what they did for you.</p>
+
+  <p class="reveal">And then gently, lovingly, let them know: We're safe now. We can start letting go. We can start being soft again.</p>
+
+  <div class="section-break reveal"><span>&#10022;</span></div>
+
+  <p class="reveal">It won't be easy. Some days you'll want to put all the armor back on. Some days the walls will feel safer than connection. Some days being hard will feel easier than being human.</p>
+
+  <p class="reveal">That's okay. Healing isn't linear. Growth isn't smooth.</p>
+
+  <p class="reveal">But every time you choose to be a little softer, a little more open, a little more trusting, you're choosing yourself. The real you. The you that exists underneath all that armor.</p>
+
+  <p class="reveal">And slowly, day by day, choice by choice, you'll start recognizing yourself again.</p>
+
+  <p class="reveal">Not as the person you were. Not as the person you had to become.</p>
+
+  <p class="reveal">But as the person you're <span class="amber">choosing</span> to be now.</p>
+
+  <p class="reveal">Someone who survived. Someone who's strong. Someone who's learned.</p>
+
+  <p class="reveal">But also someone who's still capable of softness. Still capable of trust. Still capable of love.</p>
+
+  <p class="reveal">That person is in there. Under all the armor. Behind all the walls. Beneath all the hardness.</p>
+
+  <p class="reveal">And they're waiting for you to let them breathe again.</p>
+
+  <div class="section-break reveal"><span>&#10022;</span></div>
+
+  <p class="reveal">So take off the armor, just for a moment. Just to remember what it feels like to be human. To be soft. To be you.</p>
+
+  <p class="reveal">You don't have to hate the person you became to survive.</p>
+
+  <p class="reveal">But you also don't have to be that person forever.</p>
+
+  <p class="reveal" style="font-family:'Playfair Display',serif; font-size:1.15em; font-weight:700; color:var(--text-bright); margin-top:40px;">You survived. Now it's time to live.</p>
+
+  <!-- SIGNATURE -->
+  <div class="signature reveal">
+    <p>With understanding and hope,</p>
+    <span class="sig-name">Someone who's worn that armor too</span>
+  </div>
+
+</article>
+
+<!-- FOOTER -->
+<footer>
+  <p class="medium-credit">Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+</footer>
+
+<script>
+  // Scroll progress bar
+  const progress = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const maxScroll = document.body.scrollHeight - window.innerHeight;
+    progress.style.width = (scrolled / maxScroll * 100) + '%';
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

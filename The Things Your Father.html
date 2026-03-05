@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Things Your Father Never Told You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0a0806;
+    --bg2: #0f0c09;
+    --amber: #c8874a;
+    --amber-pale: #e8b07a;
+    --amber-dim: #7a4f28;
+    --cream: #f0e8d8;
+    --cream-dim: #9a8878;
+    --white: #faf6f0;
+    --line: rgba(200, 135, 74, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--bg);
+    color: var(--cream);
+    font-family: 'EB Garamond', serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.028;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 1px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--amber-dim), var(--amber), var(--amber-pale));
+    z-index: 999;
+    transition: width 0.1s linear;
+  }
+
+  /* ── HEADER / HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 80px 24px 60px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 30%, rgba(130, 70, 20, 0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 80% 80%, rgba(80, 40, 10, 0.12) 0%, transparent 60%);
+  }
+
+  .hero-eyebrow {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 100;
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--amber);
+    opacity: 0;
+    animation: fadeUp 1.2s ease forwards 0.3s;
+    margin-bottom: 40px;
+  }
+
+  .hero-title-wrap {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-title-line1 {
+    font-family: 'Cormorant Infant', serif;
+    font-weight: 300;
+    font-size: clamp(52px, 9vw, 128px);
+    line-height: 0.9;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    opacity: 0;
+    animation: fadeUp 1.4s ease forwards 0.5s;
+    display: block;
+  }
+
+  .hero-title-line2 {
+    font-family: 'Cormorant Infant', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(38px, 6.5vw, 90px);
+    line-height: 1;
+    color: var(--amber);
+    letter-spacing: 0.02em;
+    opacity: 0;
+    animation: fadeUp 1.4s ease forwards 0.8s;
+    display: block;
+    margin-top: 8px;
+  }
+
+  .hero-title-line3 {
+    font-family: 'Cormorant Infant', serif;
+    font-weight: 300;
+    font-size: clamp(52px, 9vw, 128px);
+    line-height: 0.9;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    opacity: 0;
+    animation: fadeUp 1.4s ease forwards 1.1s;
+    display: block;
+    margin-top: 8px;
+  }
+
+  .hero-divider {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--amber), transparent);
+    margin: 52px auto;
+    opacity: 0;
+    animation: fadeIn 1.2s ease forwards 1.6s;
+  }
+
+  .hero-meta {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 200;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    opacity: 0;
+    animation: fadeIn 1.2s ease forwards 1.9s;
+    text-align: center;
+  }
+
+  .hero-meta span {
+    color: var(--amber);
+    padding: 0 14px;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    animation: fadeIn 1.2s ease forwards 2.4s;
+  }
+
+  .scroll-hint span {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--amber-dim);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--amber-dim), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  /* ── ARTICLE ── */
+  .article-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 60px 32px 120px;
+    position: relative;
+  }
+
+  /* Big decorative letter */
+  .drop-cap::first-letter {
+    font-family: 'Cormorant Infant', serif;
+    font-weight: 600;
+    font-size: 5.8em;
+    line-height: 0.75;
+    float: left;
+    margin-right: 0.08em;
+    margin-top: 0.05em;
+    color: var(--amber);
+  }
+
+  .article-wrap p {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(17px, 2.1vw, 20px);
+    line-height: 1.85;
+    color: var(--cream);
+    margin-bottom: 0;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .article-wrap p.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Sentence-level highlights on certain paragraphs */
+  .article-wrap p em {
+    font-style: italic;
+    color: var(--amber-pale);
+  }
+
+  /* Section breaks */
+  .section-break {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 56px 0;
+    opacity: 0;
+    transform: scaleX(0.5);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+  .section-break.visible {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .section-break::before,
+  .section-break::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--amber-dim), transparent);
+  }
+
+  .section-break-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 8px var(--amber);
+  }
+
+  /* Pull quotes */
+  .pull-quote {
+    border-left: 2px solid var(--amber);
+    padding: 0 0 0 28px;
+    margin: 64px 0 64px 0;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+  .pull-quote.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .pull-quote p {
+    font-family: 'Cormorant Infant', serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(22px, 3vw, 30px) !important;
+    line-height: 1.5 !important;
+    color: var(--amber-pale) !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* ── CLOSING ── */
+  .closing-section {
+    padding: 100px 32px 80px;
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .closing-words {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 80px;
+  }
+
+  .closing-word {
+    font-family: 'Cormorant Infant', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(28px, 4.5vw, 54px);
+    color: var(--white);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.8s ease, transform 0.8s ease, color 0.4s ease;
+  }
+
+  .closing-word:hover { color: var(--amber); }
+
+  .closing-word.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .closing-word:nth-child(1) { transition-delay: 0s; }
+  .closing-word:nth-child(2) { transition-delay: 0.15s; }
+  .closing-word:nth-child(3) { transition-delay: 0.3s; }
+  .closing-word:nth-child(4) { transition-delay: 0.45s; }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--line);
+    padding: 52px 32px;
+    text-align: center;
+  }
+
+  .footer-text {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 200;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+  }
+
+  .footer-text a {
+    color: var(--amber);
+    text-decoration: none;
+    border-bottom: 1px solid var(--amber-dim);
+    padding-bottom: 1px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .footer-text a:hover {
+    color: var(--amber-pale);
+    border-color: var(--amber-pale);
+  }
+
+  /* ── AMBIENT GLOW ── */
+  .ambient {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(140, 75, 20, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: left 1.5s ease, top 1.5s ease;
+    z-index: 0;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; }
+    50%       { opacity: 1; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .article-wrap { padding: 40px 20px 80px; }
+    .closing-section { padding: 60px 20px 60px; }
+    .pull-quote { margin: 40px 0; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div class="ambient" id="ambient"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">An Essay on Silence &amp; Inheritance</div>
+  <div class="hero-title-wrap">
+    <span class="hero-title-line1">The Things</span>
+    <span class="hero-title-line2">Your Father</span>
+    <span class="hero-title-line3">Never Told You</span>
+  </div>
+  <div class="hero-divider"></div>
+  <div class="hero-meta">
+    By Princess <span>·</span> 6 min read <span>·</span> March 2026
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ARTICLE -->
+<article class="article-wrap">
+
+  <p class="drop-cap">He never told you he was proud of you.</p>
+
+  <p>Or maybe he did, once, in passing, and you held onto that moment for years because it was so rare. Because his approval felt impossible to earn.</p>
+
+  <div class="section-break"><div class="section-break-dot"></div></div>
+
+  <p>He never told you he loved you. Not out loud. Not in words. Maybe in his own way, through providing, through showing up, through working hard. But never in words.</p>
+
+  <p>And you needed the words. You needed to hear it. You needed him to say <em>"I love you"</em> and <em>"I'm proud of you"</em> and <em>"you matter to me."</em></p>
+
+  <p>But he didn't. And you spent your whole life wondering why. Wondering what was wrong with you that he couldn't say it. Wondering if you weren't good enough to deserve hearing it.</p>
+
+  <div class="section-break"><div class="section-break-dot"></div></div>
+
+  <p>He never told you that you were enough. That you didn't have to earn his love. That his silence wasn't about you, it was about him.</p>
+
+  <div class="pull-quote">
+    <p>He never told you about his own pain. His own struggles. His own father who probably never told him these things either. The cycle that he inherited and didn't know how to break.</p>
+  </div>
+
+  <p>He never told you how to be. How to handle emotions. How to express love. How to be vulnerable. How to ask for help.</p>
+
+  <p>Because he didn't know himself. Because he was taught that men don't show weakness. That emotions are something to bury, not express. That strength means silence and vulnerability is failure.</p>
+
+  <p>So he was silent. Distant. Strong in all the ways that actually made him weak. Unable to connect. Unable to express. Unable to give you what you needed most.</p>
+
+  <div class="section-break"><div class="section-break-dot"></div></div>
+
+  <p>He never told you that it was okay to cry. That feelings are normal. That being sensitive doesn't make you weak. That asking for help doesn't make you less of a man or less capable.</p>
+
+  <p>He never told you how to love. How to be in a relationship. How to treat someone with tenderness. How to communicate. How to be present.</p>
+
+  <p>So you learned from watching him. And maybe what you learned was how to be distant. How to shut down. How to provide for people but never really let them in.</p>
+
+  <p>Or maybe you learned what not to be. Maybe you swore you'd be different. You'd break the cycle. You'd be the father he never was. The partner he couldn't be. The person who actually says the words.</p>
+
+  <div class="section-break"><div class="section-break-dot"></div></div>
+
+  <p>He never told you that you could be different than him. That you weren't destined to repeat his patterns. That his limitations didn't have to be your limitations.</p>
+
+  <p>He never told you he was sorry. For the times he yelled. For the times he wasn't there. For the times he made you feel small or stupid or like you'd never measure up.</p>
+
+  <p>Maybe he didn't think he needed to apologize. Maybe he thought providing was enough. Maybe he didn't know he hurt you. Or maybe he knew and didn't know how to say it.</p>
+
+  <div class="pull-quote">
+    <p>He never told you that he was proud of you not for what you accomplished, but for who you are. Not for the grades or the wins or the achievements, but for your character, your heart, your effort.</p>
+  </div>
+
+  <p>So you learned that love is conditional. That you have to earn it. That you're only valuable when you're performing, achieving, succeeding.</p>
+
+  <div class="section-break"><div class="section-break-dot"></div></div>
+
+  <p>He never told you about his own fears. His own insecurities. His own feeling of not being enough. His own struggle to be the father he wanted to be but didn't know how to be.</p>
+
+  <p>If he had, maybe you would have understood. Maybe you would have seen him as human instead of distant. Maybe you would have felt less alone in your own struggles.</p>
+
+  <p>He never told you that it's okay to be different than him. That you don't have to follow his path. That you don't have to be strong in the same ways. That you can want different things and still be worthy of his respect.</p>
+
+  <p>He never told you he was wrong. About anything. Because admitting mistakes meant weakness. So he doubled down. Stayed stubborn. Let pride create distance between you.</p>
+
+  <div class="section-break"><div class="section-break-dot"></div></div>
+
+  <p>He never told you he needed you. That your presence mattered to him. That he thought about you. That he missed you. That he wished things were different between you.</p>
+
+  <p>Maybe he felt those things but couldn't say them. Maybe he wanted to but didn't know how. Maybe he was just as trapped in his own silence as you were hurt by it.</p>
+
+  <p>He never told you about his own father. About the hurt he carried. About the love he never received. About the cycle he was trying to break but didn't know how.</p>
+
+  <div class="section-break"><div class="section-break-dot"></div></div>
+
+  <p>And now maybe it's too late. Maybe he's gone. Maybe too much time has passed. Maybe the relationship is too damaged. Maybe the distance is too great.</p>
+
+  <p>Or maybe it's not too late. Maybe you can have the conversation. Maybe you can ask the questions. Maybe you can tell him what you needed to hear. Maybe he can finally say the things he never said.</p>
+
+  <p>But maybe he can't. Maybe he still doesn't know how. Maybe he's still stuck in the same patterns. Maybe he'll never be the father you needed him to be.</p>
+
+  <div class="pull-quote">
+    <p>And you have to make peace with that. You have to grieve the father you needed but never had. The relationship you wanted but couldn't have. The words you deserved to hear but never will.</p>
+  </div>
+
+  <div class="section-break"><div class="section-break-dot"></div></div>
+
+  <p>But you don't have to repeat his patterns. You don't have to be silent like he was. You don't have to be distant like he was. You don't have to carry his limitations forward.</p>
+
+  <p>You can break the cycle. You can be different. You can say the words he never said. You can express the love he couldn't express. You can be present in ways he never was.</p>
+
+  <p>You can be the father to your own children that he never was to you. Or you can be the partner, the friend, the person who actually communicates, who shows up, who says the words.</p>
+
+  <p>You can give others what you never received. Not because it's easy. But because you know what it feels like to not get it. And you refuse to make anyone else feel that way.</p>
+
+  <div class="section-break"><div class="section-break-dot"></div></div>
+
+  <p>You can tell your children you're proud of them. You can tell them you love them. You can tell them they're enough exactly as they are.</p>
+
+  <p>You can tell your partner you need them. You can express your feelings. You can be vulnerable. You can admit when you're wrong.</p>
+
+  <p>You can be everything he wasn't. Not to prove anything. But to heal. To break the cycle. To be the person you needed when you were young.</p>
+
+  <p>And maybe, in doing that, you'll finally understand him. You'll see that he was just a man. Flawed and limited and doing his best with what he knew. Which wasn't enough, but it was all he had.</p>
+
+  <div class="section-break"><div class="section-break-dot"></div></div>
+
+  <p>You can understand him and still be angry at him. You can love him and still be hurt by him. You can forgive him and still wish things had been different.</p>
+
+  <p>All of those things can be true at once.</p>
+
+  <div class="pull-quote">
+    <p>He never told you the things you needed to hear. And that's his loss as much as yours. Because he missed out on really knowing you. Really connecting with you. Really being your father in all the ways that mattered most.</p>
+  </div>
+
+  <p>But you're telling yourself now. You're giving yourself the words he never gave you.</p>
+
+  <p><em>"You're enough. You're loved. You're worthy. You matter. It's okay to feel. It's okay to need. It's okay to be yourself."</em></p>
+
+  <p>You're saying the things he never said. And you're believing them. Even though they're coming from you instead of him.</p>
+
+  <div class="section-break"><div class="section-break-dot"></div></div>
+
+  <p>Because you're the father figure you needed. The voice of encouragement. The source of pride. The person who sees your worth.</p>
+
+  <p>You're giving yourself what he couldn't give you. And that's powerful. That's healing. That's breaking the cycle.</p>
+
+  <p>He never told you these things. But you're telling yourself. And you're telling others. And you're creating a different legacy.</p>
+
+  <p>One where love is spoken. Where feelings matter. Where vulnerability is strength. Where words are said before it's too late.</p>
+
+  <p>That's how you honor what you didn't receive. Not by staying bitter. But by being different. By being better. By breaking the silence.</p>
+
+  <div class="section-break"><div class="section-break-dot"></div></div>
+
+  <p>You're not him. You never were. You never will be.</p>
+
+  <p>And maybe that's the greatest gift he never gave you — the motivation to be everything he wasn't.</p>
+
+  <p>The things your father never told you? You're telling yourself now. And you're telling others. And the cycle is breaking.</p>
+
+  <p>With you. Because of you. Through you.</p>
+
+  <p>And somewhere, maybe, he's proud of that. Even if he never learned how to say it.</p>
+
+  <div class="section-break"><div class="section-break-dot"></div></div>
+
+  <p>You did. You broke the silence. You said the words. You became who you needed.</p>
+
+  <p>And that's everything he never told you that you always were.</p>
+
+</article>
+
+<!-- CLOSING WORDS -->
+<section class="closing-section">
+  <div class="closing-words">
+    <div class="closing-word">Enough.</div>
+    <div class="closing-word">Loved.</div>
+    <div class="closing-word">Worthy.</div>
+    <div class="closing-word">Proud.</div>
+  </div>
+  <p style="font-family:'EB Garamond',serif; font-style:italic; font-size:18px; color:var(--cream-dim); line-height:1.7;">
+    You always were. Even when he couldn't tell you.<br>
+    You always will be. Because now you know.<br>
+    And no one can take that from you.<br><br>
+    <em style="color:var(--amber-dim);">Not even his silence.</em>
+  </p>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="footer-text">
+    Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp; Written by Princess
+  </p>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (scrollTop / docH) * 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+  });
+
+  // Ambient glow follows mouse lazily
+  const ambient = document.getElementById('ambient');
+  document.addEventListener('mousemove', (e) => {
+    ambient.style.left = e.clientX + 'px';
+    ambient.style.top  = e.clientY + 'px';
+  });
+
+  // Intersection observer for scroll reveals
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.article-wrap p, .section-break, .pull-quote, .closing-word')
+    .forEach(el => observer.observe(el));
+
+  // Stagger article paragraphs slightly
+  document.querySelectorAll('.article-wrap p').forEach((p, i) => {
+    p.style.transitionDelay = `${(i % 3) * 0.08}s`;
+  });
+</script>
+</body>
+</html>

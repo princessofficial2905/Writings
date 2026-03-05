@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Love I Had to Teach Myself — Princess</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0807;
+    --bg2: #0f0d0b;
+    --amber: #c8923a;
+    --amber-dim: #8a611f;
+    --amber-glow: rgba(200, 146, 58, 0.12);
+    --cream: #e8dcc8;
+    --cream-dim: #b8a88a;
+    --muted: #6b5e4e;
+    --white: #f5efe4;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--bg);
+    color: var(--cream);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 20px;
+    line-height: 1.85;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.4;
+  }
+
+  /* Reading progress bar */
+  #progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--amber-dim), var(--amber));
+    width: 0%;
+    z-index: 100;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 12px var(--amber);
+  }
+
+  /* Hero Section */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 2rem 4rem;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(200,146,58,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Floating orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    animation: drift 20s ease-in-out infinite;
+  }
+  .orb1 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(200,146,58,0.08), transparent 70%);
+    top: -100px; right: -100px;
+    animation-delay: 0s;
+  }
+  .orb2 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(180,120,30,0.06), transparent 70%);
+    bottom: 0; left: -80px;
+    animation-delay: -10s;
+  }
+
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(30px, -20px); }
+    66% { transform: translate(-20px, 30px); }
+  }
+
+  .byline {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    line-height: 1.05;
+    text-align: center;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 1.4s ease 0.5s forwards;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--amber);
+    display: block;
+    font-weight: 600;
+  }
+
+  .hero-divider {
+    margin: 3.5rem auto;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.9s forwards;
+  }
+
+  .hero-divider-line {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--amber));
+  }
+  .hero-divider-line.right {
+    background: linear-gradient(90deg, var(--amber), transparent);
+  }
+  .hero-divider-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 10px var(--amber);
+  }
+
+  .hero-meta {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-align: center;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 1.1s forwards;
+  }
+
+  /* Scroll indicator */
+  .scroll-cue {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.8s forwards;
+  }
+  .scroll-cue span {
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(180deg, var(--amber), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  /* Article body */
+  .article-wrap {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 6rem 2rem 8rem;
+  }
+
+  /* Section reveal on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Opening quote / first paragraph */
+  .opening-para {
+    font-size: 1.15em;
+    font-style: italic;
+    color: var(--cream);
+    border-left: 2px solid var(--amber);
+    padding-left: 2rem;
+    margin-bottom: 4rem;
+    position: relative;
+  }
+  .opening-para::before {
+    content: '\201C';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 6rem;
+    color: var(--amber-dim);
+    opacity: 0.4;
+    position: absolute;
+    top: -2rem;
+    left: -0.5rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .opening-para em {
+    color: var(--amber);
+    font-style: italic;
+  }
+
+  p {
+    margin-bottom: 2rem;
+    color: var(--cream-dim);
+    font-size: 1em;
+  }
+
+  /* Verse / line-break stanzas */
+  .verse {
+    margin: 3.5rem 0;
+    padding: 2.5rem 2rem;
+    border-top: 1px solid rgba(200,146,58,0.15);
+    border-bottom: 1px solid rgba(200,146,58,0.15);
+    background: linear-gradient(135deg, rgba(200,146,58,0.03), transparent);
+  }
+
+  .verse-line {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.15em;
+    color: var(--cream);
+    line-height: 2.1;
+    letter-spacing: 0.01em;
+  }
+
+  /* Sacred section */
+  .sacred-block {
+    margin: 4rem 0;
+    padding: 3rem 2.5rem;
+    background: rgba(200,146,58,0.04);
+    border: 1px solid rgba(200,146,58,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .sacred-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(180deg, transparent, var(--amber), transparent);
+  }
+  .sacred-block .sacred-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  /* The beautiful part */
+  .beautiful-part {
+    margin: 4rem 0;
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+  .beautiful-part .intro {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    display: block;
+  }
+  .beautiful-part .bold-claim {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    color: var(--white);
+    line-height: 1.5;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+
+  .love-list {
+    list-style: none;
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .love-list li {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.1em;
+    color: var(--cream-dim);
+    padding-left: 1.5rem;
+    position: relative;
+  }
+  .love-list li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    color: var(--amber);
+    font-size: 0.5rem;
+    top: 0.5rem;
+  }
+
+  /* Closing poem */
+  .closing-poem {
+    margin: 5rem 0 3rem;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+  }
+  .closing-poem::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 100% at 50% 50%, rgba(200,146,58,0.06), transparent 70%);
+    pointer-events: none;
+  }
+  .closing-poem .poem-line {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 2.3;
+    letter-spacing: 0.02em;
+  }
+  .closing-poem .poem-line.amber { color: var(--amber); }
+  .closing-poem .poem-line.last {
+    font-weight: 600;
+    font-style: normal;
+    margin-top: 1rem;
+    color: var(--white);
+  }
+
+  /* Divider ornament */
+  .ornament {
+    text-align: center;
+    margin: 4rem 0;
+    color: var(--amber-dim);
+    font-size: 1.2rem;
+    letter-spacing: 0.5rem;
+    opacity: 0.6;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid rgba(200,146,58,0.12);
+    padding: 4rem 2rem;
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .author-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+  .author-bio {
+    font-size: 0.85em;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 2rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .medium-link {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    color: var(--amber-dim);
+    text-decoration: none;
+    text-transform: uppercase;
+    border: 1px solid rgba(200,146,58,0.3);
+    padding: 0.8rem 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .medium-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--amber-glow);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .medium-link:hover::before { opacity: 1; }
+  .medium-link:hover { color: var(--amber); border-color: var(--amber); box-shadow: 0 0 20px rgba(200,146,58,0.15); }
+  .medium-link a { color: inherit; text-decoration: none; }
+  .medium-link a:hover { color: var(--amber); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Ambient glow when scrolling */
+  .glow-word {
+    color: var(--amber);
+    font-style: italic;
+  }
+
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    .article-wrap { padding: 4rem 1.5rem 6rem; }
+    .opening-para { padding-left: 1.2rem; }
+    .sacred-block { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="byline">Princess &nbsp;·&nbsp; February 2026</div>
+
+  <h1 class="hero-title">
+    The Love I Had to
+    <em>Teach Myself</em>
+  </h1>
+
+  <div class="hero-divider">
+    <div class="hero-divider-line"></div>
+    <div class="hero-divider-dot"></div>
+    <div class="hero-divider-line right"></div>
+  </div>
+
+  <div class="hero-meta">A meditation on self &nbsp;·&nbsp; 3 min read</div>
+
+  <div class="scroll-cue">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- Article -->
+<article class="article-wrap">
+
+  <div class="opening-para reveal">
+    There comes a moment when you look at your reflection, not the one in the mirror, but the one in your soul, and realize that the love you were waiting to receive from others was the love you needed to learn to give yourself. For so long, you searched for someone to speak life into you, someone to reassure you, someone to choose you, someone to stay, someone to hold the parts of you you couldn't hold alone. You wanted someone to understand your softness, honor your heart, see your depth, and love you in the way you always loved others. But life kept sending you people who couldn't love you in the way you needed. And in the emptiness they left behind, you slowly began learning the truth: <em>If you don't love yourself in the way you deserve, you will keep accepting love that falls short of your soul.</em>
+  </div>
+
+  <div class="verse reveal">
+    <span class="verse-line">You weren't wrong for wanting love.</span>
+    <span class="verse-line">You weren't wrong for yearning for gentleness, consistency, affection, and safety.</span>
+    <span class="verse-line">But the people you handed your heart to were not capable of giving you the fullness of love you carry within you.</span>
+    <span class="verse-line">You kept giving pieces of yourself to people who didn't even know how to hold themselves together.</span>
+    <span class="verse-line">You kept asking for understanding from people who never understood their own emotions.</span>
+    <span class="verse-line">You kept desiring loyalty from hearts that didn't have loyalty to offer.</span>
+    <span class="verse-line">And somewhere along the line, you blamed yourself for expecting too much, when in reality, your expectations were simply aligned with the love God intended for you.</span>
+  </div>
+
+  <div class="sacred-block reveal">
+    <span class="sacred-title">∴ The Sacred Removal</span>
+    <p>So He did something sacred. He removed the people who could not love you properly. Not as punishment. Not as cruelty. But as divine protection. He allowed their absence to become the space where you finally learned to love yourself the way they never did.</p>
+    <p style="margin-bottom:0;">You learned to comfort yourself when others walked away. You learned to trust yourself when others left you confused. You learned to validate your emotions when no one else cared to. You learned that your heart is worthy of affection even when no one is offering it.</p>
+  </div>
+
+  <div class="beautiful-part reveal">
+    <span class="intro">∴ The Most Beautiful Part</span>
+    <div class="bold-claim">The love you are teaching yourself now is preparing your heart for the love God is bringing to you later.</div>
+    <ul class="love-list">
+      <li>A love that won't make you question your worth.</li>
+      <li>A love that won't disappear when things get hard.</li>
+      <li>A love that won't take your softness for granted.</li>
+      <li>A love that won't expect you to carry the emotional weight alone.</li>
+      <li>A love that will match the gentleness you've learned to give yourself.</li>
+    </ul>
+  </div>
+
+  <p class="reveal" style="font-size:1.05em; color: var(--cream);">
+    One day, My friend, you will look back and realize that the love you were forced to give yourself became the foundation for everything beautiful that is coming. You will attract a love that mirrors the way you finally learned to treat your own heart. You will no longer accept crumbs because you've learned to feed your soul with compassion. You will no longer settle for uncertainty because you've learned to give yourself peace. You will no longer chase love because you've learned that real love doesn't require chasing, it meets you where you are.
+  </p>
+
+  <div class="ornament reveal">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+  <div class="closing-poem reveal">
+    <span class="poem-line">The love you taught yourself</span>
+    <span class="poem-line amber">is the love that will protect you,</span>
+    <span class="poem-line">heal you,</span>
+    <span class="poem-line">and prepare you</span>
+    <span class="poem-line last">for the love that is meant for you.</span>
+  </div>
+
+</article>
+
+<!-- Footer -->
+<footer class="reveal">
+  <div class="author-name">Princess</div>
+  <p class="author-bio">Just a girl named Princess… dreaming of that one soul who stumbles upon her words and finally feels less alone.</p>
+  <div class="medium-link">Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></div>
+</footer>
+
+<script>
+  // Reading progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop || document.body.scrollTop;
+    const scrollHeight = doc.scrollHeight - doc.clientHeight;
+    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    document.getElementById('progress-bar').style.width = progress + '%';
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finding Peace in Goodbyes — Princess</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0806;
+    --bg2: #0f0c09;
+    --amber: #c8853a;
+    --amber-light: #e8a55a;
+    --amber-dim: #8a5520;
+    --cream: #e8ddd0;
+    --cream-dim: #9e9082;
+    --white: #f5ede0;
+    --line: rgba(200,133,58,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--bg);
+    color: var(--cream);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.35;
+  }
+
+  /* Top vignette */
+  .vignette {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* Ambient glow */
+  .ambient {
+    position: fixed;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(200,133,58,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 120px 24px 0;
+    max-width: 760px;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeUp 1.4s ease forwards 0.2s;
+  }
+
+  .eyebrow {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 36px;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(48px, 9vw, 88px);
+    line-height: 1.0;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    margin-bottom: 18px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--amber-light);
+  }
+
+  .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(20px, 3vw, 26px);
+    color: var(--cream-dim);
+    font-weight: 300;
+    margin-bottom: 56px;
+  }
+
+  /* Divider ornament */
+  .ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 0 auto 60px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.8s;
+  }
+
+  .ornament-line {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--amber-dim));
+  }
+
+  .ornament-line.right {
+    background: linear-gradient(to left, transparent, var(--amber-dim));
+  }
+
+  .ornament-diamond {
+    width: 6px;
+    height: 6px;
+    background: var(--amber);
+    transform: rotate(45deg);
+  }
+
+  /* ── META BAR ── */
+  .meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber-dim);
+    margin-bottom: 80px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 1s;
+  }
+
+  .meta span { opacity: 0.5; }
+
+  /* ── OPENING QUOTE ── */
+  .opening-quote {
+    position: relative;
+    max-width: 620px;
+    margin: 0 auto 100px;
+    padding: 0 40px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 1.2s ease forwards 1.2s;
+  }
+
+  .opening-quote::before {
+    content: '\201C';
+    position: absolute;
+    top: -30px;
+    left: 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 120px;
+    color: var(--amber);
+    opacity: 0.15;
+    line-height: 1;
+  }
+
+  .opening-quote p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(22px, 3.5vw, 30px);
+    line-height: 1.5;
+    color: var(--cream);
+    font-weight: 300;
+  }
+
+  /* ── ARTICLE BODY ── */
+  article {
+    position: relative;
+    z-index: 10;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 24px 120px;
+  }
+
+  .section {
+    margin-bottom: 72px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section p {
+    font-size: clamp(17px, 2.2vw, 20px);
+    line-height: 1.9;
+    color: var(--cream-dim);
+    font-weight: 300;
+    margin-bottom: 28px;
+  }
+
+  .section p:last-child { margin-bottom: 0; }
+
+  /* Highlighted sacred block */
+  .sacred-block {
+    position: relative;
+    padding: 48px 48px 48px 60px;
+    margin: 80px 0;
+    border-left: 2px solid var(--amber);
+    background: linear-gradient(135deg, rgba(200,133,58,0.05) 0%, transparent 60%);
+  }
+
+  .sacred-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: 1px solid rgba(200,133,58,0.08);
+    border-left: none;
+  }
+
+  .sacred-block .label {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  .sacred-block p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 3vw, 26px);
+    font-style: italic;
+    line-height: 1.7;
+    color: var(--white) !important;
+    font-weight: 300;
+  }
+
+  .sacred-block strong {
+    font-weight: 500;
+    color: var(--amber-light);
+    font-style: normal;
+  }
+
+  /* Lines for the "right now" section */
+  .breath-lines {
+    padding: 60px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    margin: 80px 0;
+  }
+
+  .breath-lines p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(20px, 3vw, 26px) !important;
+    line-height: 2 !important;
+    text-align: center;
+    color: var(--cream) !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Closing lines */
+  .closing {
+    padding: 80px 0 0;
+    text-align: center;
+  }
+
+  .closing p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(19px, 2.8vw, 24px);
+    font-style: italic;
+    line-height: 1.9;
+    color: var(--cream);
+  }
+
+  .closing .final-line {
+    display: block;
+    margin-top: 40px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 2.2vw, 20px);
+    color: var(--amber-light);
+    letter-spacing: 0.05em;
+    font-style: italic;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 60px 24px 80px;
+    border-top: 1px solid var(--line);
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .author-block {
+    margin-bottom: 40px;
+  }
+
+  .author-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 10px;
+  }
+
+  .author-bio {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--cream-dim);
+    line-height: 1.6;
+  }
+
+  .medium-link {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+  }
+
+  .medium-link a {
+    color: var(--amber-light);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(232,165,90,0.3);
+    padding-bottom: 2px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .medium-link a:hover {
+    color: var(--white);
+    border-color: var(--white);
+  }
+
+  /* ── SCROLL PROGRESS ── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--amber-dim), var(--amber-light));
+    z-index: 2000;
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+
+  /* ── FLOATING PAGE NUMBER ── */
+  .page-marker {
+    position: fixed;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 500;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards 2s;
+  }
+
+  .page-marker .dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--amber-dim);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .page-marker .dot.active {
+    background: var(--amber);
+    transform: scale(1.5);
+  }
+
+  @media (max-width: 768px) {
+    .page-marker { display: none; }
+    .sacred-block { padding: 36px 28px; }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* Candle flicker on amber elements */
+  @keyframes flicker {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.85; }
+    75%      { opacity: 0.95; }
+  }
+
+  .ornament-diamond {
+    animation: flicker 4s ease-in-out infinite;
+  }
+
+  /* Letter-spacing reveal on title */
+  h1 {
+    animation: fadeUp 1.6s ease forwards 0.3s;
+    opacity: 0;
+  }
+
+  .subtitle {
+    animation: fadeUp 1.4s ease forwards 0.6s;
+    opacity: 0;
+  }
+
+  /* horizontal rule styled */
+  hr.section-break {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 80px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="vignette"></div>
+<div class="ambient"></div>
+<div class="progress-bar" id="progress"></div>
+
+<!-- Floating nav dots -->
+<div class="page-marker" id="dots">
+  <div class="dot active" data-section="0"></div>
+  <div class="dot" data-section="1"></div>
+  <div class="dot" data-section="2"></div>
+  <div class="dot" data-section="3"></div>
+  <div class="dot" data-section="4"></div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <p class="eyebrow">An essay on love, loss, and divine redirection</p>
+  <h1>Finding Peace<br>in <em>Goodbyes</em></h1>
+  <p class="subtitle">You Never Wanted to Say</p>
+</header>
+
+<div class="ornament">
+  <div class="ornament-line"></div>
+  <div class="ornament-diamond"></div>
+  <div class="ornament-line right"></div>
+</div>
+
+<div class="meta">
+  <span>Princess</span>
+  <span>·</span>
+  <span>Feb 2026</span>
+  <span>·</span>
+  <span>2 min read</span>
+</div>
+
+<!-- Opening quote -->
+<div class="opening-quote">
+  <p>Goodbyes are the hardest when you never saw them coming, when everything felt fine until suddenly it didn't.</p>
+</div>
+
+<!-- ARTICLE -->
+<article>
+
+  <!-- Para 1 -->
+  <div class="section" data-index="0">
+    <p>Goodbyes are the hardest when you never saw them coming, when everything felt fine until suddenly it didn't, when love felt steady until the ground shifted beneath your feet. You didn't want to let go. You didn't plan to walk away. You didn't imagine your story ending the way it did.</p>
+    <p>And yet, life placed you at a crossroads where holding on meant hurting yourself, and releasing meant hurting your heart. It's a tender, complicated ache, grieving something you still wish could have stayed, while knowing deep down that its presence was no longer aligned with your future.</p>
+  </div>
+
+  <!-- Para 2 -->
+  <div class="section" data-index="1">
+    <p>There's a kind of goodbye that doesn't feel like closure but like surrender, not giving up, but giving in to the truth that love alone isn't enough to keep someone by your side. You may still care. You may still remember. You may still feel that familiar tenderness when their name crosses your mind.</p>
+    <p>But each day, you understand a little more that staying attached to what is no longer meant for you blocks the blessings God is trying to bring into your life. Sometimes the love you wanted is not the love that would have supported your growth. Sometimes the person you longed for was only meant to teach you something, not stay forever.</p>
+  </div>
+
+  <!-- Sacred block -->
+  <div class="section sacred-block" data-index="2">
+    <span class="label">But here's the part that feels almost sacred</span>
+    <p><strong>Goodbyes often contain more protection than heartbreak.</strong><br><br>
+    God sees the conversations you didn't hear, the intentions you didn't see, the future you didn't know. He closes doors not to punish you, but to prepare you. He removes people not to leave you empty, but to make space for the right souls. He lets certain chapters end even when you're still holding the pen, because He knows that what's ahead requires a version of you that can't grow while clinging to what's behind.</p>
+  </div>
+
+  <!-- Para 3 -->
+  <div class="section" data-index="3">
+    <p>One day, you will look back and realize that this goodbye, the one that felt like it tore you apart, was the very thing that set you free. You'll understand why things didn't work out. You'll see how losing them opened paths that never would have existed if they stayed. You'll feel gratitude instead of grief, clarity instead of confusion, peace instead of longing.</p>
+    <p>And you'll finally understand that some goodbyes aren't endings they're beginnings in disguise.</p>
+  </div>
+
+  <hr class="section-break">
+
+  <!-- Breath lines -->
+  <div class="section breath-lines" data-index="4">
+    <p>Right now, it's okay to hurt.</p>
+    <p>It's okay to miss them.</p>
+    <p>It's okay to remember the good they brought into your life.</p>
+    <p>But let your heart rest in the truth that God never takes without giving back something better, gentler, more aligned, more healing.</p>
+  </div>
+
+  <!-- Closing -->
+  <div class="section closing" data-index="4">
+    <p>
+      You're not just saying goodbye to someone.<br>
+      You're saying hello to the version of your life God always wanted for you,<br>
+      one where love stays, grows, and never leaves you wondering<br>
+      why goodbye had to happen in the first place.
+    </p>
+    <span class="final-line">And that, is where peace lives.</span>
+  </div>
+
+</article>
+
+<!-- FOOTER -->
+<footer>
+  <div class="author-block">
+    <p class="author-name">Written by Princess</p>
+    <p class="author-bio">Just a girl named Princess, dreaming of that one soul who stumbles upon her words and finally feels less alone.</p>
+  </div>
+  <p class="medium-link">Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+</footer>
+
+<script>
+  // Scroll progress
+  const bar = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = pct + '%';
+  });
+
+  // Scroll-reveal sections
+  const sections = document.querySelectorAll('.section');
+  const dots = document.querySelectorAll('.dot');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        const idx = entry.target.dataset.index;
+        if (idx !== undefined) {
+          dots.forEach(d => d.classList.remove('active'));
+          const dot = document.querySelector(`.dot[data-section="${idx}"]`);
+          if (dot) dot.classList.add('active');
+        }
+      }
+    });
+  }, { threshold: 0.15 });
+
+  sections.forEach(s => observer.observe(s));
+
+  // Subtle parallax on ambient glow
+  const ambient = document.querySelector('.ambient');
+  window.addEventListener('scroll', () => {
+    ambient.style.transform = `translateX(-50%) translateY(${window.scrollY * 0.08}px)`;
+  });
+</script>
+</body>
+</html>

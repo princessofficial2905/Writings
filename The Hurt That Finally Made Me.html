@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Hurt That Finally Made Me Choose Myself</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0806;
+      --bg2: #0f0d0a;
+      --amber: #c8873a;
+      --amber-soft: #d9a05a;
+      --amber-glow: rgba(200, 135, 58, 0.12);
+      --cream: #f0e6d3;
+      --muted: #7a6a55;
+      --line: rgba(200, 135, 58, 0.2);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.45;
+    }
+
+    /* ── HERO ─────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 70% at 50% 60%, rgba(200,135,58,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 20%, rgba(200,135,58,0.04) 0%, transparent 60%);
+    }
+
+    /* Floating particles */
+    .particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: var(--amber);
+      opacity: 0;
+      animation: float-up var(--dur, 8s) var(--delay, 0s) infinite ease-in;
+    }
+    @keyframes float-up {
+      0%   { opacity: 0; transform: translateY(0) scale(1); }
+      10%  { opacity: 0.6; }
+      80%  { opacity: 0.2; }
+      100% { opacity: 0; transform: translateY(-80vh) scale(0.3); }
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fade-in 1.2s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: clamp(3rem, 9vw, 7.5rem);
+      line-height: 1.05;
+      text-align: center;
+      color: var(--cream);
+      max-width: 900px;
+      opacity: 0;
+      animation: fade-up 1.4s 0.5s forwards;
+    }
+
+    .hero-title span {
+      display: block;
+      color: var(--amber);
+    }
+
+    .hero-divider {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--amber), transparent);
+      margin: 3rem auto;
+      opacity: 0;
+      animation: fade-in 1.2s 1.2s forwards;
+    }
+
+    .hero-meta {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-align: center;
+      opacity: 0;
+      animation: fade-in 1.2s 1.5s forwards;
+    }
+
+    .hero-meta span {
+      color: var(--amber-soft);
+      margin: 0 0.8em;
+    }
+
+    /* ── SCROLL INDICATOR ─────────────────────────── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fade-in 1s 2s forwards;
+    }
+    .scroll-hint p {
+      font-family: 'Cinzel', serif;
+      font-size: 0.5rem;
+      letter-spacing: 0.4em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .scroll-arrow {
+      width: 14px;
+      height: 14px;
+      border-right: 1px solid var(--amber);
+      border-bottom: 1px solid var(--amber);
+      transform: rotate(45deg);
+      animation: arrow-pulse 2s infinite;
+    }
+    @keyframes arrow-pulse {
+      0%, 100% { opacity: 0.3; transform: rotate(45deg) translateY(0); }
+      50%       { opacity: 1;   transform: rotate(45deg) translateY(4px); }
+    }
+
+    /* ── ARTICLE ──────────────────────────────────── */
+    article {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+    }
+
+    /* Opening quote / pull */
+    .opening-quote {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      line-height: 1.5;
+      color: var(--amber-soft);
+      text-align: center;
+      padding: 4rem 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      opacity: 0;
+      animation: fade-up 1.2s 0.1s forwards;
+      animation-play-state: paused;
+    }
+    .opening-quote.visible {
+      animation-play-state: running;
+    }
+
+    .opening-quote::before,
+    .opening-quote::after {
+      content: '"';
+      font-size: 6rem;
+      color: var(--amber);
+      opacity: 0.12;
+      position: absolute;
+      font-family: 'IM Fell English', serif;
+      line-height: 1;
+    }
+    .opening-quote::before { top: 1rem; left: -0.5rem; }
+    .opening-quote::after  { content: '"'; bottom: -1rem; right: -0.5rem; }
+
+    /* Body paragraphs */
+    .body-text {
+      margin-top: 4rem;
+    }
+
+    .body-text p {
+      font-size: clamp(1.1rem, 2vw, 1.3rem);
+      line-height: 1.95;
+      color: var(--cream);
+      opacity: 0.88;
+      margin-bottom: 2.2rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .body-text p.visible {
+      opacity: 0.88;
+      transform: translateY(0);
+    }
+
+    /* Highlighted sentence */
+    .body-text p em {
+      font-style: italic;
+      color: var(--amber-soft);
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+      line-height: 1.5;
+      color: var(--cream);
+      border-left: 2px solid var(--amber);
+      padding: 1rem 0 1rem 2rem;
+      margin: 3rem 0;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .pull-quote.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Ornament */
+    .ornament {
+      text-align: center;
+      color: var(--amber);
+      font-size: 1.5rem;
+      letter-spacing: 0.5em;
+      opacity: 0.5;
+      margin: 3rem 0;
+    }
+
+    /* ── CLOSING ──────────────────────────────────── */
+    .closing-line {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      color: var(--amber);
+      text-transform: uppercase;
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--line);
+      opacity: 0;
+      transition: opacity 1s;
+    }
+    .closing-line.visible { opacity: 1; }
+
+    /* ── FOOTER ───────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem 5rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .author-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .medium-link {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+      letter-spacing: 0.02em;
+    }
+    .medium-link:hover { color: var(--amber); }
+    .medium-link a {
+      color: var(--amber-soft);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200,135,58,0.3);
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .medium-link a:hover {
+      color: var(--amber);
+      border-color: var(--amber);
+    }
+
+    /* ── ANIMATIONS ───────────────────────────────── */
+    @keyframes fade-in {
+      to { opacity: 1; }
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────── */
+    @media (max-width: 600px) {
+      .opening-quote::before,
+      .opening-quote::after { display: none; }
+      article { padding: 0 1.25rem 5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="hero-eyebrow">A Personal Essay</p>
+    <h1 class="hero-title">
+      The Hurt That<br/>Finally Made Me
+      <span>Choose Myself</span>
+    </h1>
+    <div class="hero-divider"></div>
+    <p class="hero-meta">By <span>Princess</span> &nbsp;·&nbsp; <span>February 2026</span></p>
+
+    <div class="scroll-hint">
+      <p>Read</p>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- Article -->
+  <article>
+
+    <blockquote class="opening-quote" id="oq">
+      no one is worth losing yourself for.
+    </blockquote>
+
+    <div class="body-text">
+
+      <p>There comes a moment in every woman's life where the hurt becomes too familiar, too repeated, too heavy to pretend it isn't shaping her. And in that moment, usually quiet, usually lonely, usually after a thousand unnoticed heartbreaks, you finally choose yourself in a way you never had the courage to before.</p>
+
+      <p>You don't choose yourself out of anger. You don't choose yourself out of pride. You choose yourself because the hurt that kept breaking you has finally taught you the truth: <em>no one is worth losing yourself for.</em></p>
+
+      <div class="pull-quote">
+        The disappointment that once shattered you now becomes the thing that wakes you up.
+      </div>
+
+      <p>The love that once felt irreplaceable becomes the thing you can finally walk away from. And the version of yourself who tolerated, forgave, waited, and held on for so long suddenly whispers, <em>"I matter too,"</em> and that whisper becomes the beginning of your freedom.</p>
+
+      <p>You didn't choose yourself earlier because you didn't want to give up on someone you loved. But choosing yourself now isn't giving up, it's growing up. It's realizing that love should not make you shrink. It should not dim your light, silence your needs, or make you question your worth.</p>
+
+      <p>You finally understand that self-respect is not selfish, and staying in spaces that hurt you is not loyalty, it's self-abandonment, and your heart deserves more than that.</p>
+
+      <div class="ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+      <p>God saw the hurt long before you admitted it. He saw the way you stayed hopeful even when the situation was draining your spirit. He saw the nights you cried quietly, the mornings you wore strength like armor, the days you held pieces of yourself together while still being soft toward others.</p>
+
+      <p>And He knew the moment you were ready, ready to let go, ready to rise, ready to choose yourself even if it scared you. He didn't let the hurt destroy you; He used it to redirect you. He used it to teach you discernment, boundaries, self-trust, and the sacred truth that <em>your heart is worth protecting.</em></p>
+
+      <div class="pull-quote">
+        One day soon, My friend, you will look back and thank yourself for finally choosing you.
+      </div>
+
+      <p>You will see how that one decision changed everything, your peace, your confidence, your standards, your relationships, your future. You will see how choosing yourself made room for people who value you, love you, show up for you, and never make you feel like you're asking for too much.</p>
+
+      <p>The hurt that once broke you ended up saving you, because it pushed you toward the version of yourself who knows her worth, honors her heart, and refuses to settle for anything less than the love God always intended for her.</p>
+
+      <p><em>Choosing yourself was not the end, it was the beginning of your becoming.</em></p>
+
+    </div>
+
+    <p class="closing-line" id="closing">With love, always &nbsp;✦&nbsp; Princess</p>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p class="author-name">Written by Princess</p>
+    <p class="medium-link">
+      Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+    </p>
+  </footer>
+
+  <script>
+    // Generate particles
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 28; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.bottom = '-10px';
+      p.style.setProperty('--dur', (6 + Math.random() * 10) + 's');
+      p.style.setProperty('--delay', (Math.random() * 10) + 's');
+      p.style.opacity = '0';
+      container.appendChild(p);
+    }
+
+    // Intersection observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll(
+      '.opening-quote, .body-text p, .pull-quote, .closing-line'
+    ).forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

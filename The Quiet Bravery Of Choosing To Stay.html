@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Quiet Bravery of Choosing to Stay</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IM+Fell+English:ital@0;1&family=Crimson+Pro:ital,wght@0,200;0,300;1,200;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0806;
+    --bg2: #0f0c09;
+    --amber: #c8922a;
+    --amber-soft: #e8b86d;
+    --amber-pale: #f5d99a;
+    --cream: #e8dcc8;
+    --muted: #7a6e5f;
+    --faint: #2a2318;
+    --text: #d4c4a8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-weight: 200;
+    font-size: 21px;
+    line-height: 1.85;
+    cursor: default;
+    overflow-x: hidden;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* OPENING CURTAIN */
+  #curtain {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 999;
+    animation: curtainLift 2.4s cubic-bezier(0.76, 0, 0.24, 1) 0.3s forwards;
+  }
+
+  @keyframes curtainLift {
+    0% { transform: scaleY(1); transform-origin: top; }
+    100% { transform: scaleY(0); transform-origin: top; }
+  }
+
+  /* AMBIENT GLOW */
+  .ambient {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .ambient-1 {
+    top: -200px;
+    left: -100px;
+    background: radial-gradient(circle, rgba(200,146,42,0.06) 0%, transparent 70%);
+  }
+  .ambient-2 {
+    bottom: -200px;
+    right: -100px;
+    background: radial-gradient(circle, rgba(200,146,42,0.04) 0%, transparent 70%);
+  }
+
+  /* HEADER / HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px 40px;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(200,146,42,0.07) 0%, transparent 70%),
+      linear-gradient(180deg, transparent 60%, var(--bg) 100%);
+    pointer-events: none;
+  }
+
+  /* Decorative lines */
+  .hero-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .hero-lines::before,
+  .hero-lines::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(200,146,42,0.3), transparent);
+    animation: lineGrow 2.5s ease 1s forwards;
+    height: 0;
+  }
+  .hero-lines::before { top: 0; }
+  .hero-lines::after { bottom: 0; }
+
+  @keyframes lineGrow {
+    to { height: 35%; }
+  }
+
+  .eyebrow {
+    font-family: 'Crimson Pro', serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.8s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(52px, 9vw, 110px);
+    font-weight: 300;
+    line-height: 1.08;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 2s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--amber-soft);
+  }
+
+  .title-ornament {
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    margin: 50px auto;
+    opacity: 0;
+    animation: fadeIn 1s ease 2.6s forwards;
+  }
+
+  .hero-byline {
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: 0;
+    animation: fadeUp 1s ease 2.8s forwards;
+  }
+
+  .hero-byline span {
+    color: var(--amber);
+  }
+
+  /* SCROLL INDICATOR */
+  .scroll-cue {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeIn 1s ease 3.5s forwards;
+  }
+
+  .scroll-cue span {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(180deg, var(--amber), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  /* MAIN ARTICLE */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 60px 40px 120px;
+  }
+
+  /* FLOATING CANDLE ELEMENT */
+  .candle-glow {
+    position: sticky;
+    top: 40px;
+    float: right;
+    margin: 0 0 60px 60px;
+    width: 3px;
+    height: 80px;
+    background: linear-gradient(180deg, var(--amber) 0%, rgba(200,146,42,0.1) 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 20px 8px rgba(200,146,42,0.15), 0 0 60px 20px rgba(200,146,42,0.05);
+    animation: candleFlicker 3s ease-in-out infinite;
+  }
+
+  @keyframes candleFlicker {
+    0%, 100% { opacity: 0.8; transform: scaleX(1); }
+    33% { opacity: 1; transform: scaleX(1.3); }
+    66% { opacity: 0.6; transform: scaleX(0.8); }
+  }
+
+  /* PARAGRAPHS */
+  p {
+    margin-bottom: 2em;
+    color: var(--text);
+    font-size: 21px;
+    font-weight: 200;
+    line-height: 1.9;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  p.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* PULL QUOTE */
+  .pull-quote {
+    position: relative;
+    margin: 70px -60px;
+    padding: 50px 60px;
+    border-left: none;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .pull-quote.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .pull-quote::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+  }
+
+  .pull-quote::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+  }
+
+  .pull-quote p {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(24px, 3.5vw, 36px);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--amber-pale);
+    margin: 0;
+    opacity: 1;
+    transform: none;
+  }
+
+  /* BREATH ANIMATION INTERLUDE */
+  .breath-interlude {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .breath-interlude.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .breath-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 1px solid rgba(200,146,42,0.3);
+    position: relative;
+    margin: 0 auto 30px;
+    animation: breathe 4s ease-in-out infinite;
+  }
+
+  .breath-circle::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(200,146,42,0.5);
+    animation: breathe 4s ease-in-out 0.5s infinite;
+  }
+
+  .breath-circle::after {
+    content: '';
+    position: absolute;
+    inset: 24px;
+    border-radius: 50%;
+    background: rgba(200,146,42,0.15);
+    animation: breathe 4s ease-in-out 1s infinite;
+  }
+
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; }
+  }
+
+  .breath-text {
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'Crimson Pro', serif;
+    font-weight: 300;
+  }
+
+  /* BRAVE MOMENTS LIST */
+  .brave-list {
+    margin: 60px 0;
+    padding: 0;
+    list-style: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .brave-list.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .brave-list li {
+    position: relative;
+    padding: 18px 0 18px 32px;
+    border-bottom: 1px solid rgba(200,146,42,0.1);
+    font-size: 20px;
+    color: var(--text);
+    line-height: 1.6;
+    font-style: italic;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 300;
+  }
+
+  .brave-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 1px;
+    background: var(--amber);
+  }
+
+  .brave-list li:first-child {
+    border-top: 1px solid rgba(200,146,42,0.1);
+  }
+
+  /* CLOSING SECTION */
+  .closing {
+    margin-top: 100px;
+    padding-top: 60px;
+    border-top: 1px solid rgba(200,146,42,0.2);
+    text-align: center;
+  }
+
+  .closing-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--amber-soft);
+    margin-bottom: 40px;
+    line-height: 1.2;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards;
+  }
+
+  .closing-title.visible {
+    opacity: 1;
+  }
+
+  /* STAY repeated word */
+  .stay-word {
+    display: block;
+    font-family: 'IM Fell English', Georgia, serif;
+    font-size: clamp(80px, 15vw, 160px);
+    font-style: italic;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(200,146,42,0.4);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin: 60px 0;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 1s ease, transform 1s ease;
+    user-select: none;
+  }
+
+  .stay-word.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* SIGNATURE */
+  .signature {
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 1px solid var(--faint);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .signature.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .signature p {
+    opacity: 1;
+    transform: none;
+    font-size: 17px;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 0.5em;
+  }
+
+  .signature .sig-name {
+    font-family: 'IM Fell English', Georgia, serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--amber-soft);
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 60px 40px;
+    border-top: 1px solid var(--faint);
+  }
+
+  footer p {
+    opacity: 1;
+    transform: none;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 0;
+  }
+
+  footer a {
+    color: var(--amber);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(200,146,42,0.3);
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  footer a:hover {
+    color: var(--amber-pale);
+    border-color: var(--amber-pale);
+  }
+
+  /* READING PROGRESS */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--amber), var(--amber-pale));
+    z-index: 9999;
+    transition: width 0.1s;
+    box-shadow: 0 0 10px rgba(200,146,42,0.5);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    body { font-size: 19px; }
+    main { padding: 40px 24px 80px; }
+    .pull-quote { margin: 50px 0; padding: 40px 24px; }
+    .hero { padding: 60px 24px; }
+    .candle-glow { display: none; }
+  }
+
+  /* SECTION DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin: 60px 0;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  .divider.visible { opacity: 1; }
+
+  .divider::before,
+  .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(200,146,42,0.3));
+  }
+
+  .divider::after {
+    background: linear-gradient(90deg, rgba(200,146,42,0.3), transparent);
+  }
+
+  .divider span {
+    font-size: 18px;
+    color: var(--amber);
+    font-family: 'IM Fell English', serif;
+  }
+</style>
+</head>
+<body>
+
+<div id="curtain"></div>
+<div class="ambient ambient-1"></div>
+<div class="ambient ambient-2"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-lines"></div>
+  <div class="eyebrow">An Essay on Invisible Courage</div>
+  <h1 class="hero-title">The Quiet Bravery of <em>Choosing to Stay</em></h1>
+  <span class="title-ornament"></span>
+  <div class="hero-byline">By <span>Princess</span> &nbsp;&middot;&nbsp; February 2026</div>
+  <div class="scroll-cue">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<main>
+  <div class="candle-glow"></div>
+
+  <p>Nobody talks about this kind of bravery.</p>
+
+  <p>Not the loud kind. Not the kind that wins awards or gets recognized or makes headlines.</p>
+
+  <p>But the quiet kind. The invisible kind. The kind that happens every single morning when you open your eyes and decide to try one more day.</p>
+
+  <p>Even when you're not sure why. Even when the reasons are blurry. Even when staying feels harder than leaving.</p>
+
+  <div class="pull-quote">
+    <p>That's bravery too. Maybe the truest kind.</p>
+  </div>
+
+  <p>Because you're tired. So deeply, impossibly tired.</p>
+
+  <p>Tired of fighting battles no one sees. Tired of carrying weight no one knows about. Tired of pretending you're okay when you're barely holding on.</p>
+
+  <p>You're tired of the same thoughts. The same fears. The same darkness that shows up uninvited and refuses to leave.</p>
+
+  <p>You're tired of trying to find reasons to stay when staying feels so heavy. When waking up feels like the hardest thing you'll do all day. When just existing takes more energy than you have to give.</p>
+
+  <div class="breath-interlude">
+    <div class="breath-circle"></div>
+    <p class="breath-text">Just breathe</p>
+  </div>
+
+  <p>And yet. Yet you stay.</p>
+
+  <p>You don't wake up feeling inspired. You don't jump out of bed excited for the day. You don't have some grand purpose that makes it all make sense.</p>
+
+  <p>You just wake up. And you stay. And you try.</p>
+
+  <div class="pull-quote">
+    <p>That's it. That's the whole thing. And that's everything.</p>
+  </div>
+
+  <p>Because staying isn't always about hope. Sometimes it's just about not leaving. Not because you want to be here. But because you choose to be here. Even when you can't explain why.</p>
+
+  <p>Maybe you stay for the people who love you. Even when you can't feel their love through the fog.</p>
+
+  <p>Maybe you stay because some small part of you is curious about tomorrow. Even when today feels impossible.</p>
+
+  <p>Maybe you stay because you've made it this far and giving up now feels like wasting all the hard days you've already survived.</p>
+
+  <p>Maybe you stay because you don't want to transfer your pain to someone else. Because you know what pain feels like, and you don't want to cause it.</p>
+
+  <p>Or maybe you stay for no reason at all. Just because. Just because you woke up and decided to stay one more day. And that's enough.</p>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <p>The world doesn't see this kind of bravery. There's no medal for "got out of bed when everything hurt." No applause for "survived another day." No recognition for "chose to stay when leaving felt easier."</p>
+
+  <p>But it's bravery all the same. Maybe the most honest kind.</p>
+
+  <p>Because the people who talk about bravery usually talk about the big moments. The dramatic choices. The life-changing decisions.</p>
+
+  <p>But you? You're being brave in the small moments. The invisible ones. The ones nobody sees.</p>
+
+  <ul class="brave-list">
+    <li>You're brave when you take a shower even though it feels like climbing a mountain.</li>
+    <li>You're brave when you eat something, anything, even when your appetite is gone.</li>
+    <li>You're brave when you reach out to someone even when you feel like a burden.</li>
+    <li>You're brave when you take your medication even though you're tired of needing it.</li>
+    <li>You're brave when you go to therapy even though talking about it hurts.</li>
+    <li>You're brave when you get through work even though your mind is somewhere darker.</li>
+    <li>You're brave when you smile at someone even though you're breaking inside.</li>
+    <li>You're brave when you keep your appointments, answer your phone, show up to obligations, all while fighting a battle no one else can see.</li>
+  </ul>
+
+  <p>And you're brave when you do none of those things. When you can't do those things. When the bravest thing you can do is just stay in bed and breathe and wait for the day to end.</p>
+
+  <div class="pull-quote">
+    <p>Because sometimes staying alive is the only thing you can do. And sometimes that's the bravest thing of all.</p>
+  </div>
+
+  <p>People who haven't been where you are don't understand this. They think bravery looks like action. Movement. Progress. Success.</p>
+
+  <p>They say things like "just think positive" or "choose happiness" or "things will get better."</p>
+
+  <p>And you nod. You smile. You don't tell them that you're already doing the hardest thing possible just by being here.</p>
+
+  <p>You don't tell them that "thinking positive" when your brain is drowning you in darkness takes more strength than they'll ever know.</p>
+
+  <p>You don't tell them that you're not choosing sadness. You're choosing to stay despite it. And that choice is costing you everything you have.</p>
+
+  <p>They see your survival as a given. They don't realize it's a choice you're making. Over and over. Every single day. Sometimes every single hour.</p>
+
+  <p>They don't know that you negotiate with yourself. "Just make it to lunch." "Just get through this meeting." "Just stay until tomorrow."</p>
+
+  <p>They don't know that you've broken your life down into smaller and smaller pieces just to survive it. That sometimes "one day at a time" is too much, so it becomes "one hour at a time." And sometimes even that's too much, so it becomes "one breath at a time."</p>
+
+  <div class="pull-quote">
+    <p>Just breathe. Just stay. Just keep going. Even when you don't know why. Even when the why is blurry or gone completely.</p>
+  </div>
+
+  <p>And you do. You stay. You breathe. You keep going.</p>
+
+  <p>Not because you're strong. You don't feel strong. You feel weak. You feel like you're barely making it.</p>
+
+  <p>But you are making it. That's the thing. You're surviving. You're still here.</p>
+
+  <p>And that takes a kind of strength most people will never understand. A quiet, grinding, exhausting kind of strength that doesn't feel like strength at all.</p>
+
+  <p>It feels like barely hanging on. Like one more bad day might break you completely. Like you're holding yourself together with tape and wishes and sheer stubborn refusal to let go.</p>
+
+  <div class="pull-quote">
+    <p>But you're doing it. Day after day. You're doing it.</p>
+  </div>
+
+  <p>And I know it doesn't feel like enough. I know you look at other people and think they're doing so much more, being so much more, handling life so much better.</p>
+
+  <p>But they're not fighting what you're fighting. They're not carrying what you're carrying. They don't know what it costs you to just be here.</p>
+
+  <p>And if they did, they'd be amazed. They'd see what I see. What anyone who's been in your shoes sees.</p>
+
+  <div class="pull-quote">
+    <p>That you're brave. So incredibly, impossibly brave.</p>
+  </div>
+
+  <p>Not for the big things. For the small ones. For waking up. For staying. For trying.</p>
+
+  <p>For choosing life even when life feels like too much.</p>
+
+  <p>For being here even when here is the hardest place to be.</p>
+
+  <p>That's bravery. The truest kind.</p>
+
+  <p>And maybe you can't see it yet. Maybe you won't believe it even as you read these words.</p>
+
+  <p>But it's true. You're brave. You're so brave.</p>
+
+  <p>And the world needs you to keep being brave. Keep staying. Keep trying.</p>
+
+  <p>Not because you have some grand purpose you need to fulfill. Not because you owe anyone anything.</p>
+
+  <p>But because you deserve to see what happens next. You deserve to be here for the moments that will make all of this worth it.</p>
+
+  <p>The moments you can't imagine yet. The days that will feel lighter. The time when breathing won't be so hard. When staying won't take so much effort. When you'll look back at this version of yourself and realize: I made it. I stayed. I survived.</p>
+
+  <p>You deserve to meet the version of yourself who made it through this. Who's on the other side. Who remembers these days but doesn't live in them anymore.</p>
+
+  <p>And that version of you is proud. So proud. Of the you that stayed. The you that tried. The you that kept going even when everything said to stop.</p>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <p>So keep going. Please. One more day. One more hour. One more breath.</p>
+
+  <p>Not because you have to. Not because anyone's making you.</p>
+
+  <p>But because you're choosing to. Because even when the why is blurry, even when you can't see the point, some part of you keeps choosing to stay.</p>
+
+  <p>And that part of you, that tiny, stubborn, impossibly brave part, deserves to see what comes next.</p>
+
+  <!-- CLOSING STAY -->
+  <div style="text-align:center; margin: 80px 0;">
+    <div class="stay-word">Stay.</div>
+  </div>
+
+  <p style="text-align:center;">Just for today. Just for this moment.</p>
+
+  <p style="text-align:center;">Tomorrow you can decide again. But today, just stay.</p>
+
+  <div class="pull-quote">
+    <p>Your quiet bravery matters. Your invisible strength matters. Your choice to be here matters.</p>
+  </div>
+
+  <p style="text-align:center; font-family: 'IM Fell English', serif; font-size: 26px; color: var(--amber-pale); font-style: italic;">You matter.</p>
+
+  <p style="text-align:center;">Even when you can't feel it. Even when you don't believe it. Even when it doesn't make sense.</p>
+
+  <p style="text-align:center; font-family: 'IM Fell English', serif; font-size: 26px; color: var(--amber-pale); font-style: italic;">You matter.</p>
+
+  <p style="text-align:center;">And the world is better with you in it.</p>
+
+  <div class="pull-quote">
+    <p>So stay.</p>
+    <p style="margin-top: 20px; font-size: clamp(18px, 2.5vw, 24px);">Please stay.</p>
+  </div>
+
+  <!-- SIGNATURE -->
+  <div class="signature">
+    <p>With deep respect for your bravery,</p>
+    <p class="sig-name">Someone who understands the weight of staying</p>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <p>Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a> &nbsp;&middot;&nbsp; Written by Princess &nbsp;&middot;&nbsp; February 2026</p>
+</footer>
+
+<script>
+  // Reading progress
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const total = document.body.scrollHeight - window.innerHeight;
+    const pct = (window.scrollY / total) * 100;
+    bar.style.width = pct + '%';
+  });
+
+  // Intersection observer for scroll reveals
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('p, .pull-quote, .brave-list, .breath-interlude, .divider, .stay-word, .signature').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>

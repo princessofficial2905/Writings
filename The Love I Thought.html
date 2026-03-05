@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Love I Thought Would Save Me</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0b0a09;
+      --bg2: #100f0d;
+      --amber: #c8893a;
+      --amber-light: #e6a84a;
+      --amber-dim: rgba(200,137,58,0.15);
+      --cream: #f0e6d3;
+      --muted: #7a6e62;
+      --text: #d4c9b8;
+      --white: #faf5ee;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Cormorant Infant', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.85;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* ── AMBIENT GLOW ── */
+    .ambient {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,137,58,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: breathe 8s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.15); }
+    }
+
+    /* ── PROGRESS BAR ── */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--amber), var(--amber-light));
+      z-index: 999;
+      transition: width 0.1s linear;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      overflow: hidden;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+
+    .hero-title-line {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.0;
+      opacity: 0;
+    }
+    .hero-title-line:nth-child(1) {
+      font-size: clamp(52px, 9vw, 110px);
+      animation: fadeUp 1s ease 0.6s forwards;
+    }
+    .hero-title-line:nth-child(2) {
+      font-size: clamp(38px, 6.5vw, 78px);
+      color: var(--amber);
+      animation: fadeUp 1s ease 0.85s forwards;
+      margin-top: 8px;
+    }
+    .hero-title-line:nth-child(3) {
+      font-size: clamp(52px, 9vw, 110px);
+      animation: fadeUp 1s ease 1.1s forwards;
+      margin-top: 4px;
+    }
+
+    .hero-divider {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--amber), transparent);
+      margin: 52px auto 40px;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.4s forwards;
+    }
+
+    .hero-meta {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeUp 1s ease 1.6s forwards;
+    }
+    .hero-meta span { color: var(--amber); margin: 0 10px; }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeUp 1s ease 2.2s forwards;
+    }
+    .scroll-hint span {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.4em;
+      color: var(--muted);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--amber), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── ARTICLE BODY ── */
+    article {
+      position: relative;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 32px 120px;
+      z-index: 2;
+    }
+
+    /* Opening large drop letter */
+    .drop-cap::first-letter {
+      float: left;
+      font-family: 'Playfair Display', serif;
+      font-size: 88px;
+      font-weight: 900;
+      color: var(--amber);
+      line-height: 0.75;
+      margin: 6px 16px 0 -4px;
+      text-shadow: 0 0 40px rgba(200,137,58,0.3);
+    }
+
+    .prose-block {
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .prose-block.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Section dividers */
+    .ornament {
+      text-align: center;
+      margin: 56px 0;
+      color: var(--amber);
+      font-size: 18px;
+      letter-spacing: 0.5em;
+      opacity: 0.5;
+    }
+
+    /* Verse lines */
+    .verse {
+      padding: 0 0 0 40px;
+      border-left: 1px solid var(--amber-dim);
+      margin: 48px 0;
+    }
+    .verse p {
+      font-style: italic;
+      font-size: 19px;
+      color: var(--cream);
+      margin: 0;
+      line-height: 2;
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      background: transparent;
+      border-top: 1px solid rgba(200,137,58,0.25);
+      border-bottom: 1px solid rgba(200,137,58,0.25);
+      padding: 40px 0;
+      margin: 60px 0;
+      text-align: center;
+    }
+    .pull-quote p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(22px, 3vw, 30px);
+      color: var(--amber-light);
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    /* Divine whisper */
+    .divine {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(18px, 2.5vw, 24px);
+      color: var(--amber-light);
+      text-align: center;
+      margin: 60px 0;
+      line-height: 1.7;
+      padding: 36px;
+      background: radial-gradient(ellipse at center, rgba(200,137,58,0.06) 0%, transparent 70%);
+    }
+
+    /* ── CLOSING / FOOTER ── */
+    .closing {
+      text-align: center;
+      padding: 80px 32px 60px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .closing-line {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(28px, 4vw, 42px);
+      color: var(--white);
+      line-height: 1.4;
+      margin-bottom: 12px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .closing-line.visible { opacity: 1; transform: translateY(0); }
+    .closing-line.amber { color: var(--amber); }
+
+    .final-divider {
+      width: 60px;
+      height: 1px;
+      background: var(--amber);
+      margin: 56px auto;
+      opacity: 0.4;
+    }
+
+    .medium-credit {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .medium-credit a {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200,137,58,0.3);
+      padding-bottom: 1px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .medium-credit a:hover {
+      color: var(--amber-light);
+      border-color: var(--amber-light);
+    }
+
+    .author-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 40px;
+      padding: 14px 28px;
+      border: 1px solid rgba(200,137,58,0.2);
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+    }
+    .author-tag::before, .author-tag::after {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--amber);
+      opacity: 0.4;
+    }
+
+    /* ── FLOATING PARTICLES ── */
+    .particles-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      background: var(--amber);
+      border-radius: 50%;
+      animation: drift linear infinite;
+      opacity: 0;
+    }
+    @keyframes drift {
+      0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(-10vh) translateX(30px); opacity: 0; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      article { padding: 0 20px 80px; }
+      .verse { padding-left: 20px; }
+      .drop-cap::first-letter { font-size: 64px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+  <div class="ambient"></div>
+  <div class="particles-container" id="particles"></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-eyebrow">A Personal Essay by Princess</p>
+    <h1>
+      <span class="hero-title-line">The Love I Thought</span>
+      <span class="hero-title-line">Would</span>
+      <span class="hero-title-line">Save Me.</span>
+    </h1>
+    <div class="hero-divider"></div>
+    <p class="hero-meta">February 2026 <span>&middot;</span> 3 min read</p>
+    <div class="scroll-hint">
+      <span>Read</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ARTICLE -->
+  <article>
+
+    <div class="prose-block drop-cap">
+      <p>There comes a moment, usually after the tears have dried and the silence has settled, when you finally admit to yourself that you once believed a certain love would save you. You thought they were the one who would finally understand your heart, calm your fears, fill your emptiness, make your world feel softer. You thought their presence would heal wounds you had carried for years. You thought their love would be the safe place you had prayed for in the dark. And for a while, you clung to the idea of them as if they were the answer to everything you never said out loud. But in the end, you learned something incredibly painful and incredibly freeing: not every love that feels like destiny is meant to be your salvation.</p>
+    </div>
+
+    <div class="prose-block verse">
+      <p>You weren't foolish for believing in them.</p>
+      <p>You weren't naïve for hoping they could be the one.</p>
+      <p>You weren't wrong for seeing potential, for imagining a future, for trusting the connection you felt.</p>
+      <p>But the love you thought would save you ended up breaking you in ways you didn't anticipate.</p>
+      <p>It showed you parts of yourself you had forgotten.</p>
+      <p>It brought old wounds to the surface.</p>
+      <p>It forced you to face your fears, your insecurities, your longing to be chosen fully.</p>
+      <p>And while it hurt, deeply, quietly, silently, it also awakened something powerful within you:</p>
+      <p>the recognition that salvation does not come from another person.</p>
+      <p>It comes from within.</p>
+      <p>It comes from God.</p>
+    </div>
+
+    <div class="ornament">&#10022; &nbsp;&nbsp; &#10022; &nbsp;&nbsp; &#10022;</div>
+
+    <div class="prose-block verse">
+      <p>The love that broke you was never meant to save you,</p>
+      <p>it was meant to reveal you.</p>
+      <p>It revealed the child inside you who just wanted to feel safe.</p>
+      <p>It revealed the woman inside you who deserved more than fragments.</p>
+      <p>It revealed the expectations you buried, the patterns you carried, the wounds you masked with hope.</p>
+      <p>It revealed that your heart was asking someone else to do the healing work you were always meant to do with God.</p>
+    </div>
+
+    <div class="pull-quote prose-block">
+      <p>The love that broke you was never meant to save you. It was meant to reveal you.</p>
+    </div>
+
+    <div class="prose-block verse">
+      <p>And God&hellip; He was there the entire time.</p>
+      <p>He watched you reach for a love that wasn't strong enough to hold you.</p>
+      <p>He watched you give pieces of yourself to someone who couldn't carry them.</p>
+      <p>He watched your hope fade into disappointment.</p>
+      <p>And gently, so gently, He began redirecting your steps.</p>
+      <p>Not to punish you, but to remind you:</p>
+    </div>
+
+    <div class="divine prose-block">
+      "No human being is meant to save you.<br/>Only I can do that."
+    </div>
+
+    <div class="prose-block verse">
+      <p>And when God becomes the one who saves you, something miraculous happens,</p>
+      <p>you stop needing love to rescue you</p>
+      <p>and start waiting for love that <em>matches</em> you.</p>
+      <p>A love that enhances, not completes.</p>
+      <p>A love that supports, not defines.</p>
+      <p>A love that strengthens, not replaces the foundation you've built with Him.</p>
+    </div>
+
+    <div class="ornament">&#10022; &nbsp;&nbsp; &#10022; &nbsp;&nbsp; &#10022;</div>
+
+    <div class="prose-block verse">
+      <p>One day, My friend, you will meet a love that doesn't promise to save you,</p>
+      <p>because you won't need saving anymore.</p>
+      <p>You'll already be whole, already steady, already grounded in your worth.</p>
+      <p>And that love will feel different.</p>
+      <p>It will be peaceful instead of desperate.</p>
+      <p>Healing instead of overwhelming.</p>
+      <p>Aligned instead of uncertain.</p>
+      <p>And finally, truly, you'll understand why the love you once thought would save you had to fall apart.</p>
+    </div>
+
+  </article>
+
+  <!-- CLOSING -->
+  <section class="closing">
+    <span class="closing-line">It wasn't your salvation.</span>
+    <span class="closing-line">It was your awakening.</span>
+    <span class="closing-line amber">And now, you're ready for the love that was meant for<br/>the healed version of you, not the hurting one.</span>
+    <div class="final-divider"></div>
+    <p class="medium-credit">Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+    <div class="author-tag">Princess</div>
+  </section>
+
+  <script>
+    // ── SCROLL PROGRESS ──
+    const bar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const max = document.body.scrollHeight - window.innerHeight;
+      bar.style.width = (window.scrollY / max * 100) + '%';
+    });
+
+    // ── SCROLL REVEAL ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.prose-block, .closing-line').forEach(el => observer.observe(el));
+
+    // ── FLOATING PARTICLES ──
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+        left: ${Math.random() * 100}%;
+        width: ${Math.random() * 2 + 1}px;
+        height: ${Math.random() * 2 + 1}px;
+        animation-duration: ${Math.random() * 20 + 14}s;
+        animation-delay: ${Math.random() * 15}s;
+        opacity: 0;
+      `;
+      container.appendChild(p);
+    }
+  </script>
+</body>
+</html>

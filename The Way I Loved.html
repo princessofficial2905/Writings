@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Way I Loved — Before I Learned Better</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0806;
+    --bg2: #0f0c09;
+    --amber: #c8913a;
+    --amber-light: #e2b06a;
+    --amber-pale: #f5deb3;
+    --text: #c9b99a;
+    --text-dim: #7a6a55;
+    --text-bright: #ede0c8;
+    --line: rgba(200,145,58,0.15);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 19px;
+    line-height: 1.85;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── GRAIN OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.4;
+  }
+
+  /* ── AMBIENT GLOW ── */
+  .ambient {
+    position: fixed;
+    top: -20vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(ellipse at center, rgba(200,145,58,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px 60px;
+    position: relative;
+    text-align: center;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, var(--amber), transparent);
+  }
+
+  .eyebrow {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 100;
+    font-size: 10px;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .title-wrap {
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Cormorant Infant', serif;
+    font-weight: 300;
+    font-size: clamp(58px, 10vw, 118px);
+    line-height: 0.92;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.5s forwards;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--amber-light);
+  }
+
+  .subtitle {
+    font-family: 'Cormorant Infant', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(18px, 3vw, 26px);
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    margin-top: 24px;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.8s forwards;
+  }
+
+  .meta {
+    margin-top: 52px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.1s forwards;
+  }
+
+  .meta-line { width: 40px; height: 1px; background: var(--amber); opacity: 0.4; }
+
+  .meta-text {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 200;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeIn 1s ease 2s forwards;
+  }
+
+  .scroll-hint span {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .scroll-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--amber);
+    animation: scrollBounce 2s ease-in-out infinite;
+  }
+
+  /* ── DECORATIVE ORNAMENT ── */
+  .ornament {
+    text-align: center;
+    padding: 60px 0 20px;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.5s forwards;
+  }
+
+  .ornament svg { width: 80px; opacity: 0.35; }
+
+  /* ── ARTICLE ── */
+  article {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px 32px 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Paragraph reveal on scroll */
+  .para-block {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+    margin-bottom: 0;
+  }
+
+  .para-block.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .para-block p {
+    color: var(--text);
+    font-size: 19px;
+    line-height: 1.9;
+    margin-bottom: 32px;
+  }
+
+  /* Opening drop cap paragraph */
+  .opening p:first-child::first-letter {
+    font-family: 'Cormorant Infant', serif;
+    font-size: 5.2em;
+    font-weight: 600;
+    color: var(--amber);
+    float: left;
+    line-height: 0.75;
+    margin-right: 12px;
+    margin-top: 8px;
+  }
+
+  /* Section dividers */
+  .section-break {
+    text-align: center;
+    padding: 32px 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .section-break.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-break span {
+    color: var(--amber);
+    font-size: 13px;
+    letter-spacing: 0.5em;
+    opacity: 0.5;
+  }
+
+  /* Learned list — styled as poetic lines */
+  .lesson-list {
+    padding: 8px 0 8px 0;
+  }
+
+  .lesson-list .line {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--text);
+    font-size: 18.5px;
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .lesson-list .line:last-child { border-bottom: none; }
+
+  .lesson-list .line::before {
+    content: '';
+    display: inline-block;
+    width: 22px;
+    min-width: 22px;
+    height: 1px;
+    background: var(--amber);
+    margin-top: 14px;
+    opacity: 0.5;
+  }
+
+  /* Pull quote */
+  .pull-quote {
+    margin: 48px 0;
+    padding: 36px 40px;
+    border-left: 2px solid var(--amber);
+    background: linear-gradient(135deg, rgba(200,145,58,0.04), transparent);
+    position: relative;
+  }
+
+  .pull-quote::before {
+    content: '\201C';
+    position: absolute;
+    top: -10px;
+    left: 28px;
+    font-family: 'Cormorant Infant', serif;
+    font-size: 80px;
+    color: var(--amber);
+    opacity: 0.3;
+    line-height: 1;
+  }
+
+  .pull-quote p {
+    font-family: 'Cormorant Infant', serif;
+    font-style: italic;
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 400;
+    color: var(--amber-pale);
+    line-height: 1.6;
+    margin-bottom: 0 !important;
+  }
+
+  /* God paragraph — special treatment */
+  .divine-block {
+    padding: 48px 32px;
+    margin: 16px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    text-align: center;
+  }
+
+  .divine-block p {
+    font-family: 'Cormorant Infant', serif;
+    font-size: clamp(18px, 2.5vw, 22px);
+    line-height: 1.95;
+    color: var(--text-bright);
+    font-style: italic;
+    margin-bottom: 0 !important;
+  }
+
+  /* Closing stanza */
+  .closing-stanza {
+    padding: 16px 0;
+  }
+
+  .closing-stanza .stanza-line {
+    padding: 9px 0;
+    font-style: italic;
+    color: var(--text-bright);
+    font-size: 19px;
+    border-bottom: 1px solid rgba(200,145,58,0.07);
+  }
+
+  .closing-stanza .stanza-line:last-child { border: none; }
+
+  /* Final line */
+  .final-note {
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+
+  .final-note p {
+    font-family: 'Cormorant Infant', serif;
+    font-style: italic;
+    font-size: clamp(20px, 3vw, 26px);
+    color: var(--amber-light);
+    line-height: 1.7;
+    margin-bottom: 0 !important;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 64px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  footer::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, var(--amber));
+    margin: 0 auto 48px;
+  }
+
+  .author-name {
+    font-family: 'Cormorant Infant', serif;
+    font-weight: 300;
+    font-size: clamp(28px, 5vw, 44px);
+    color: var(--text-bright);
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+
+  .author-bio {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 200;
+    font-size: 11.5px;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    max-width: 420px;
+    margin: 0 auto 36px;
+    line-height: 1.9;
+  }
+
+  .medium-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 200;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 14px 28px;
+    border: 1px solid rgba(200,145,58,0.2);
+    transition: all 0.4s ease;
+  }
+
+  .medium-link:hover {
+    color: var(--amber);
+    border-color: rgba(200,145,58,0.6);
+    background: rgba(200,145,58,0.04);
+    letter-spacing: 0.5em;
+  }
+
+  .medium-link .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--amber);
+    opacity: 0.5;
+  }
+
+  /* ── READING PROGRESS ── */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--amber), var(--amber-light));
+    width: 0%;
+    z-index: 1000;
+    transition: width 0.1s linear;
+  }
+
+  /* ── FLOATING PARTICLES ── */
+  .particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    background: var(--amber);
+    border-radius: 50%;
+    opacity: 0;
+    animation: float var(--dur) ease-in-out var(--delay) infinite;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes scrollBounce {
+    0%, 100% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(10px); opacity: 0.3; }
+  }
+
+  @keyframes float {
+    0%   { opacity: 0; transform: translateY(100vh) scale(0); }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.3; }
+    100% { opacity: 0; transform: translateY(-10vh) scale(1.5); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    article { padding: 20px 20px 80px; }
+    .pull-quote { padding: 28px 24px; }
+    .divine-block { padding: 36px 16px; }
+    h1 { font-size: clamp(50px, 14vw, 80px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+<div class="ambient"></div>
+<div class="particles" id="particles"></div>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <p class="eyebrow">Personal Essay &nbsp;·&nbsp; February 2026</p>
+  <div class="title-wrap">
+    <h1>The Way<br>I <em>Loved</em></h1>
+  </div>
+  <p class="subtitle">Before I Learned Better.</p>
+  <div class="meta">
+    <div class="meta-line"></div>
+    <span class="meta-text">By Princess</span>
+    <div class="meta-line"></div>
+  </div>
+  <div class="scroll-hint">
+    <span>Read</span>
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<!-- ── ARTICLE ── -->
+<article>
+
+  <div class="para-block opening">
+    <p>There comes a moment when you look back at the way you used to love, the way you gave without limits, trusted without hesitation, forgave without being asked, and stayed long after your heart began to break, and instead of feeling ashamed, you finally feel tenderness for that version of yourself. You loved with innocence, purity, hope, and depth. You didn't calculate. You didn't hold back. You didn't question whether someone deserved your heart, you simply offered it, believing that love alone could fix, heal, transform, or hold anything. That wasn't foolish. That was beautiful. That was human. That was you before the world taught you to be careful.</p>
+  </div>
+
+  <div class="para-block">
+    <p>But over time, through heartbreak and disappointment, you learned lessons you never asked for.</p>
+    <div class="lesson-list">
+      <div class="line">You learned that not everyone loves with the same sincerity.</div>
+      <div class="line">You learned that effort matters more than words.</div>
+      <div class="line">You learned that loyalty isn't something you can teach someone who doesn't value it.</div>
+      <div class="line">You learned that love cannot thrive in places built on confusion.</div>
+      <div class="line">And you learned that giving your all to the wrong people only leaves you with fragments of yourself you have to gather alone.</div>
+    </div>
+  </div>
+
+  <div class="section-break">
+    <span>✦ &nbsp; ✦ &nbsp; ✦</span>
+  </div>
+
+  <div class="para-block">
+    <p>And as painful as those lessons were, they didn't harden you, they refined you.</p>
+    <div class="closing-stanza">
+      <div class="stanza-line">You didn't stop loving deeply; you just stopped loving carelessly.</div>
+      <div class="stanza-line">You didn't stop trusting; you started trusting yourself more.</div>
+      <div class="stanza-line">You didn't stop giving; you learned to give in ways that don't drain you.</div>
+      <div class="stanza-line">You didn't stop believing in love; you simply raised your standards for the kind of love that deserves to stay.</div>
+    </div>
+  </div>
+
+  <div class="para-block">
+    <div class="pull-quote">
+      <p>He saw you placing your heart in hands that didn't know how to hold it. And He didn't let those experiences break you — He used them to shape you.</p>
+    </div>
+  </div>
+
+  <div class="para-block divine-block">
+    <p>God saw the way you loved before you knew better.<br>
+    He saw your purity, your softness, your hopefulness, your willingness to pour into others even when you were running on empty.<br>
+    He saw you placing your heart in hands that didn't know how to hold it.<br>
+    And He didn't let those experiences break you, He used them to shape you.<br>
+    He let you love deeply because that is who you are.<br>
+    He let you learn through pain because wisdom is born from truth.<br>
+    And now, He is guiding you toward the kind of love your heart was always meant for, a love that matches your purity instead of taking advantage of it.</p>
+  </div>
+
+  <div class="section-break">
+    <span>✦ &nbsp; ✦ &nbsp; ✦</span>
+  </div>
+
+  <div class="para-block">
+    <p>One day, My friend, you will love again, but not the way you used to.</p>
+    <div class="closing-stanza">
+      <div class="stanza-line">You will love with clarity instead of confusion.</div>
+      <div class="stanza-line">You will love with boundaries instead of self-abandonment.</div>
+      <div class="stanza-line">You will love with confidence instead of fear.</div>
+      <div class="stanza-line">You will love with wisdom instead of desperation.</div>
+      <div class="stanza-line">And the right person will look at you and thank God for every version of you that learned, healed, softened, and grew.</div>
+    </div>
+  </div>
+
+  <div class="para-block final-note">
+    <p>The way you loved before wasn't wrong, it was simply unprotected.<br>
+    And now, you are learning to love yourself with the same intensity you once reserved for others.<br>
+    That is what "loving better" truly means.</p>
+  </div>
+
+</article>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="author-name">Princess</div>
+  <p class="author-bio">Just a girl named Princess — dreaming of that one soul who stumbles upon her words and finally feels less alone.</p>
+  <a class="medium-link" href="https://medium.com/@prvaxis" target="_blank" rel="noopener">
+    <div class="dot"></div>
+    Originally published on <strong style="color:var(--amber-light);font-weight:400;">&nbsp;Medium&nbsp;</strong>
+    <div class="dot"></div>
+  </a>
+</footer>
+
+<script>
+  // Reading progress bar
+  const progress = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (scrolled / total * 100) + '%';
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.para-block, .section-break').forEach(el => observer.observe(el));
+
+  // Floating particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      --dur: ${12 + Math.random() * 20}s;
+      --delay: ${Math.random() * 15}s;
+      width: ${Math.random() < 0.3 ? 2 : 1}px;
+      height: ${Math.random() < 0.3 ? 2 : 1}px;
+      opacity: ${0.1 + Math.random() * 0.3};
+    `;
+    container.appendChild(p);
+  }
+
+  // Parallax subtle on hero title
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    const hero = document.querySelector('.hero');
+    if (hero && y < window.innerHeight) {
+      hero.style.transform = `translateY(${y * 0.25}px)`;
+    }
+  });
+</script>
+</body>
+</html>

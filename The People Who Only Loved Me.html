@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The People Who Only Loved Me When It Was Convenient</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0b09;
+    --bg2: #111009;
+    --amber: #c8922a;
+    --amber-light: #e8b84b;
+    --amber-dim: #7a5518;
+    --text: #d4c9b5;
+    --text-dim: #7a7264;
+    --cream: #f0e8d5;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.18rem;
+    line-height: 1.9;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* Vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* Ambient glow */
+  .ambient {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,146,42,0.04) 0%, transparent 70%);
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    animation: drift 12s ease-in-out infinite alternate;
+  }
+
+  @keyframes drift {
+    from { transform: translateX(-50%) translateY(0); }
+    to { transform: translateX(-50%) translateY(60px); }
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    padding: 120px 20px 60px;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.3s forwards;
+  }
+
+  .byline {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .byline::before, .byline::after {
+    content: '';
+    display: inline-block;
+    width: 40px;
+    height: 1px;
+    background: var(--amber-dim);
+  }
+
+  .main-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--amber-light);
+    margin-bottom: 48px;
+  }
+
+  .meta {
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .meta span { color: var(--amber-dim); }
+
+  /* Divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px auto 60px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.8s forwards;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    display: block;
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--amber-dim));
+  }
+
+  .divider::after {
+    background: linear-gradient(to left, transparent, var(--amber-dim));
+  }
+
+  .divider-gem {
+    width: 6px;
+    height: 6px;
+    background: var(--amber);
+    transform: rotate(45deg);
+  }
+
+  /* Main content */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  .drop-cap-para {
+    opacity: 0;
+    animation: fadeUp 1s ease 1.0s forwards;
+  }
+
+  .drop-cap-para::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 5.5rem;
+    font-weight: 700;
+    float: left;
+    line-height: 0.75;
+    margin: 8px 12px -4px 0;
+    color: var(--amber-light);
+  }
+
+  p {
+    margin-bottom: 2rem;
+    font-weight: 300;
+    font-size: 1.2rem;
+    color: var(--text);
+  }
+
+  em {
+    font-style: italic;
+    color: var(--cream);
+  }
+
+  strong {
+    font-weight: 600;
+    color: var(--amber-light);
+    font-style: normal;
+  }
+
+  /* Stanza / poem block */
+  .stanza {
+    border-left: 2px solid var(--amber-dim);
+    padding: 8px 0 8px 32px;
+    margin: 2.5rem 0;
+    font-style: italic;
+    color: var(--cream);
+    font-size: 1.08rem;
+    line-height: 2.2;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.3s forwards;
+  }
+
+  .stanza p {
+    margin: 0;
+    font-size: inherit;
+  }
+
+  /* God section — pull quote */
+  .pull-truth {
+    background: linear-gradient(135deg, rgba(200,146,42,0.07), rgba(200,146,42,0.02));
+    border: 1px solid rgba(200,146,42,0.15);
+    border-radius: 2px;
+    padding: 36px 40px;
+    margin: 3rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pull-truth::before {
+    content: '\201C';
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    color: rgba(200,146,42,0.12);
+    position: absolute;
+    top: -20px;
+    left: 12px;
+    line-height: 1;
+  }
+
+  .pull-truth p {
+    margin: 0;
+    font-size: 1.15rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* God italics block */
+  .god-section {
+    font-style: italic;
+    padding: 4px 0;
+  }
+
+  /* Closing verse */
+  .closing-verse {
+    text-align: center;
+    padding: 48px 20px;
+    margin: 3rem 0 2rem;
+    border-top: 1px solid rgba(200,146,42,0.12);
+    border-bottom: 1px solid rgba(200,146,42,0.12);
+    position: relative;
+  }
+
+  .closing-verse p {
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--cream);
+    margin: 0 0 0.6rem;
+  }
+
+  .closing-verse p:last-child { margin: 0; }
+
+  .closing-verse p:last-child {
+    color: var(--amber-light);
+    font-style: normal;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  /* Fade animations for sections */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 40px 20px 80px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .originally {
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .originally a {
+    color: var(--amber);
+    text-decoration: none;
+    transition: color 0.3s;
+    border-bottom: 1px solid var(--amber-dim);
+    padding-bottom: 1px;
+  }
+
+  .originally a:hover { color: var(--amber-light); border-color: var(--amber-light); }
+
+  .author-sig {
+    margin-top: 28px;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: var(--text-dim);
+  }
+
+  .author-sig strong {
+    color: var(--cream);
+    font-style: normal;
+  }
+
+  /* Scroll progress bar */
+  #progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--amber-dim), var(--amber-light));
+    z-index: 2000;
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* Floating candle flame deco */
+  .flame {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 2px;
+    height: 28px;
+    background: linear-gradient(to top, var(--amber), transparent);
+    border-radius: 50%;
+    animation: flicker 2s ease-in-out infinite alternate;
+    opacity: 0.5;
+  }
+
+  .flame::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: var(--amber);
+    border-radius: 50%;
+    box-shadow: 0 0 12px 4px rgba(200,146,42,0.4);
+  }
+
+  @keyframes flicker {
+    from { transform: scaleX(1) skewX(0deg); opacity: 0.5; }
+    to { transform: scaleX(1.3) skewX(-3deg); opacity: 0.7; }
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 80px 20px 40px; }
+    .pull-truth { padding: 24px 22px; }
+    .stanza { padding-left: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div class="ambient"></div>
+<div class="flame"></div>
+
+<header>
+  <div class="byline">Princess &nbsp;&bull;&nbsp; February 2026</div>
+  <h1 class="main-title">The People Who<br>Only Loved Me</h1>
+  <p class="subtitle">When It Was Convenient</p>
+  <div class="meta">
+    <span>3 min read</span>
+  </div>
+</header>
+
+<div class="divider"><div class="divider-gem"></div></div>
+
+<main>
+
+  <p class="drop-cap-para fade-in">
+    There comes a moment when you finally recognize the pattern that once hurt you so deeply: some people only loved you when it was convenient for them. They reached for you when they were lonely, when they were bored, when they needed comfort, when they wanted reassurance, but disappeared the moment you needed them back. They loved you in fragments, in moments, in pieces that never added up to something whole. They gave you affection without commitment, attention without consistency, and tenderness without intention. And because your heart is so beautifully soft, you accepted those crumbs and turned them into meals, believing it was all you deserved. But deep down, a quiet ache kept growing, whispering the truth you were too afraid to face: <em>They didn't love you. They loved your convenience.</em>
+  </p>
+
+  <div class="stanza fade-in">
+    <p>You were always available, always forgiving, always understanding.</p>
+    <p>You made space for them even when they never made space for you.</p>
+    <p>You answered messages instantly while they replied when it suited them.</p>
+    <p>You showed up every time they reached out, even when you were hurting.</p>
+    <p>You were their safe place, but they were never yours.</p>
+    <p>And it stings in a way that words barely hold, realizing you poured your sincerity into people who only saw you as a temporary refuge rather than a permanent choice.</p>
+  </div>
+
+  <div class="pull-truth fade-in">
+    <p>But here is the truth you've earned through pain and clarity: <strong>Love that only arrives when it's convenient is not love, it's dependency, comfort, and selfishness disguised as affection.</strong> And you, my friend, deserve a love rooted in effort, not convenience. You deserve someone who chooses you not because the moment is easy, but because the connection is meaningful. Someone who doesn't treat your heart like a switch they can turn on and off depending on their emotional weather. Someone who sees your presence as a blessing, not a fallback plan.</p>
+  </div>
+
+  <div class="god-section fade-in">
+    <p>God saw everything you tolerated.</p>
+    <p>He saw the moments you stayed awake waiting for a reply that never came.</p>
+    <p>He saw the hope you poured into people who never intended to stay.</p>
+    <p>He saw the heaviness you carried because you kept accepting half-love from people who had no intention of giving you more.</p>
+    <p>And in His mercy, He let those people fall away, not to break your heart, but to protect it. Because convenience isn't the foundation He wants for you. He wants devotion, consistency, sacredness, intentionality. And He will not allow you to settle for less than what He created you to receive.</p>
+  </div>
+
+  <p class="fade-in">
+    One day, my friend, you will meet someone who loves you even when it's not convenient. Someone who stays when you're difficult, not just when you're easy. Someone who shows up not only when they need you, but because they cherish you. Someone who chooses you in the quiet, the chaos, the ordinary, the emotional, the heavy, the sacred. And when that love arrives, you'll realize why God removed the people who only loved you in moments, they were never meant to love you through a lifetime.
+  </p>
+
+  <div class="closing-verse fade-in">
+    <p>You were never asking for too much.</p>
+    <p>You were asking the wrong people.</p>
+    <p>And God is leading you to hearts that love not out of convenience,</p>
+    <p>but out of commitment.</p>
+  </div>
+
+</main>
+
+<footer>
+  <p class="originally">
+    Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+  </p>
+  <p class="author-sig">Written by <strong>Princess</strong> &mdash; just a girl dreaming that someone stumbles upon her words and finally feels less alone.</p>
+</footer>
+
+<script>
+  // Scroll progress
+  window.addEventListener('scroll', () => {
+    const el = document.documentElement;
+    const scrolled = el.scrollTop / (el.scrollHeight - el.clientHeight) * 100;
+    document.getElementById('progress').style.width = scrolled + '%';
+  });
+
+  // Intersection observer for fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

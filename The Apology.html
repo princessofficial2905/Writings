@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Apology — Princess</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0806;
+      --bg2: #100d09;
+      --amber: #c8902a;
+      --amber-soft: #d4a84b;
+      --amber-pale: #e8c97a;
+      --cream: #f0e6d0;
+      --muted: #7a6a55;
+      --faint: #1e1812;
+      --border: rgba(200,144,42,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.85;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── Grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 80px 32px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 30%, rgba(200,144,42,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 80%, rgba(200,144,42,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 100;
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Infant', serif;
+      font-weight: 300;
+      font-size: clamp(68px, 12vw, 160px);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 1.2s ease 0.5s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--amber-soft);
+    }
+
+    .hero-subtitle {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: clamp(18px, 2.5vw, 26px);
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      max-width: 480px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.8s forwards;
+      margin-bottom: 64px;
+    }
+
+    .scroll-hint {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 100;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeUp 1s ease 1.2s forwards;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--amber), transparent);
+      animation: scrollPulse 2s ease-in-out 1.5s infinite;
+    }
+
+    /* ── Decorative divider ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin: 0 auto 80px;
+      max-width: 300px;
+    }
+
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-glyph {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 22px;
+      color: var(--amber);
+      font-weight: 300;
+    }
+
+    /* ── Article wrapper ── */
+    .article-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 32px 120px;
+    }
+
+    /* ── Drop cap first paragraph ── */
+    .drop-cap::first-letter {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 5.5em;
+      font-weight: 300;
+      float: left;
+      line-height: 0.75;
+      margin: 0.08em 0.08em 0 0;
+      color: var(--amber-soft);
+    }
+
+    /* ── Paragraphs ── */
+    p {
+      margin-bottom: 1.6em;
+      color: var(--cream);
+      font-weight: 400;
+    }
+
+    /* ── Pull quote ── */
+    .pull-quote {
+      position: relative;
+      margin: 64px 0;
+      padding: 40px 48px;
+      border-left: 2px solid var(--amber);
+      background: linear-gradient(135deg, rgba(200,144,42,0.05) 0%, transparent 60%);
+    }
+
+    .pull-quote::before {
+      content: '\201C';
+      font-family: 'Cormorant Infant', serif;
+      font-size: 120px;
+      line-height: 0.6;
+      color: var(--amber);
+      opacity: 0.25;
+      position: absolute;
+      top: 24px;
+      left: 16px;
+    }
+
+    .pull-quote p {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-size: clamp(24px, 3.5vw, 34px);
+      line-height: 1.5;
+      color: var(--amber-pale);
+      font-weight: 300;
+      margin: 0;
+    }
+
+    /* ── Highlight section ── */
+    .highlight-block {
+      margin: 72px 0;
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .highlight-block p {
+      font-family: 'Cormorant Infant', serif;
+      font-size: clamp(20px, 3vw, 30px);
+      font-style: italic;
+      color: var(--amber-pale);
+      font-weight: 300;
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── Apology letter block ── */
+    .letter-block {
+      margin: 72px 0;
+      padding: 48px 52px;
+      background: var(--faint);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .letter-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--amber), transparent);
+    }
+
+    .letter-block p {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: 19px;
+      line-height: 1.9;
+      color: #c8b89a;
+      margin-bottom: 1em;
+    }
+
+    .letter-block p:last-child { margin-bottom: 0; }
+
+    .letter-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 100;
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    /* ── Closing triad ── */
+    .closing-triad {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 72px 0 48px;
+      text-align: center;
+    }
+
+    .closing-triad span {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-size: clamp(22px, 3vw, 30px);
+      color: var(--amber-soft);
+      font-weight: 300;
+      position: relative;
+    }
+
+    .closing-triad span::after {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--amber);
+      margin: 12px auto 0;
+    }
+
+    /* ── End statement ── */
+    .end-statement {
+      text-align: center;
+      margin: 80px 0 48px;
+    }
+
+    .end-statement p {
+      font-family: 'Cormorant Infant', serif;
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 300;
+      line-height: 1.3;
+      color: var(--cream);
+      margin-bottom: 0;
+    }
+
+    .end-statement p em {
+      font-style: italic;
+      color: var(--amber-soft);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 32px;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .footer-author {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 100;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .footer-name {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 28px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      margin-bottom: 24px;
+    }
+
+    .footer-medium {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+    }
+
+    .footer-medium a {
+      color: var(--amber-soft);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200,144,42,0.3);
+      transition: color 0.3s, border-color 0.3s;
+    }
+
+    .footer-medium a:hover {
+      color: var(--amber-pale);
+      border-color: var(--amber-pale);
+    }
+
+    /* ── Scroll-reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Keyframes ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; transform: scaleY(1); }
+      50%       { opacity: 1;   transform: scaleY(1.15); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .pull-quote { padding: 28px 28px; }
+      .letter-block { padding: 32px 28px; }
+      .closing-triad { gap: 20px; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">A Personal Essay by Princess</div>
+    <h1 class="hero-title">The<br><em>Apology</em></h1>
+    <p class="hero-subtitle">You're Never Going to Get</p>
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      read
+    </div>
+  </section>
+
+  <!-- ARTICLE -->
+  <main class="article-wrap">
+
+    <div class="divider reveal">
+      <div class="divider-line"></div>
+      <div class="divider-glyph">&#10022;</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <p class="drop-cap reveal">You're waiting for an apology that's never coming.</p>
+
+    <p class="reveal">From the person who hurt you. Who lied to you. Who betrayed you. Who broke you. Who said they loved you and then destroyed you.</p>
+
+    <p class="reveal">You're waiting for them to acknowledge what they did. To take responsibility. To say they were wrong. That they hurt you. That they're sorry.</p>
+
+    <p class="reveal">You're waiting for them to see your pain. To understand the damage. To recognize the weight you've been carrying because of their actions.</p>
+
+    <div class="pull-quote reveal">
+      <p>You're waiting for closure. For validation. For them to finally admit that yes, it happened, yes, it was bad, yes, you have every right to feel the way you feel.</p>
+    </div>
+
+    <p class="reveal">But it's not coming. That apology. That acknowledgment. That moment of recognition.</p>
+
+    <p class="reveal">They're not going to give it to you.</p>
+
+    <p class="reveal">Maybe because they don't think they did anything wrong. They've rewritten the story in their head. You're the problem. You're too sensitive. You're making a big deal out of nothing. They were just joking. They didn't mean it like that. You're overreacting.</p>
+
+    <p class="reveal">Maybe because they know exactly what they did and they don't care. They're not sorry. They'd do it again. Your pain doesn't matter to them. It never did.</p>
+
+    <p class="reveal">Maybe because they're incapable of apologizing. Their ego won't allow it. Their pride won't let them. Admitting fault would shatter the image they have of themselves, and they'd rather let you suffer than face that.</p>
+
+    <p class="reveal">Maybe because they're too broken themselves to see the brokenness they caused. They're so consumed by their own pain that they can't see yours. They're drowning and they can't acknowledge that they pulled you under too.</p>
+
+    <p class="reveal">Maybe because they're gone. Dead or disappeared or cut out of your life. And you'll never get the chance to hear those words even if they wanted to say them.</p>
+
+    <div class="highlight-block reveal">
+      <p>The reason doesn't matter. The result is the same.</p>
+    </div>
+
+    <p class="reveal">You're not getting the apology. You're not getting the acknowledgment. You're not getting the validation.</p>
+
+    <p class="reveal">And you need to stop waiting for it.</p>
+
+    <p class="reveal">Because waiting for their apology is giving them power they don't deserve. It's keeping you stuck. It's tying your healing to their actions. It's making your peace dependent on someone who will never give you peace.</p>
+
+    <p class="reveal">You're essentially saying you can't move on until they say sorry. You can't heal until they admit what they did. You can't be okay until they make this right.</p>
+
+    <p class="reveal">But they're not going to make it right. They can't. They won't. And every day you wait is another day you're giving them control over your life.</p>
+
+    <p class="reveal">They hurt you once. Don't let them keep hurting you by waiting for something they'll never give.</p>
+
+    <div class="pull-quote reveal">
+      <p>You deserve an apology. You absolutely do. What they did was wrong. Your pain is valid. Your anger is justified. You were hurt and that hurt deserves to be acknowledged.</p>
+    </div>
+
+    <p class="reveal">But you're not going to get that acknowledgment from them. So you have to give it to yourself.</p>
+
+    <p class="reveal">You have to be the one who says what happened to you was wrong. That you didn't deserve it. That your pain is real and valid.</p>
+
+    <p class="reveal">You have to validate yourself. Because waiting for them to validate you is waiting for something that will never come.</p>
+
+    <p class="reveal">And I know that's not fair. I know it's not right. I know you shouldn't have to be the one to do this. They should apologize. They should take responsibility. They should make amends.</p>
+
+    <p class="reveal">But they won't. And you can't let their refusal to do the right thing keep you from healing.</p>
+
+    <p class="reveal">You have to let go of the apology you're never going to get. You have to release the fantasy of them finally seeing the light, finally understanding, finally saying the words you need to hear.</p>
+
+    <p class="reveal">That fantasy is keeping you prisoner. That hope is keeping you stuck. That waiting is stealing your peace.</p>
+
+    <p class="reveal">So stop waiting. Stop hoping. Stop giving them space in your head and your heart.</p>
+
+    <p class="reveal">They don't deserve it. They never did.</p>
+
+    <p class="reveal">What they did to you was real. The hurt was real. The damage was real. You don't need them to confirm it. You know what happened. You lived it.</p>
+
+    <p class="reveal">And you get to decide that it was wrong. You get to decide that you were hurt. You get to decide that you deserved better.</p>
+
+    <p class="reveal">You don't need their permission. You don't need their agreement. You don't need their apology.</p>
+
+    <!-- LETTER BLOCK -->
+    <div class="letter-block reveal">
+      <span class="letter-label">The apology you owe yourself</span>
+      <p>I'm sorry I waited so long for someone else to validate my pain. I'm sorry I made my healing dependent on their acknowledgment. I'm sorry I gave them so much power over my peace.</p>
+      <p>I'm sorry for what happened to you. I'm sorry you were hurt. I'm sorry you didn't get the apology you deserved. But I see you. I believe you. I validate you.</p>
+    </div>
+
+    <p class="reveal">Give yourself the apology they never will. Acknowledge your own pain. Validate your own experience. Believe your own story.</p>
+
+    <p class="reveal">And then let them go. Not because they deserve forgiveness. Not because what they did is okay. Not because you're over it.</p>
+
+    <p class="reveal">But because you deserve freedom. You deserve peace. You deserve to move forward without waiting for someone who will never give you what you need.</p>
+
+    <p class="reveal">They don't get to keep you stuck. They don't get to hold you hostage with an apology they'll never give. They don't get to control your healing.</p>
+
+    <div class="highlight-block reveal">
+      <p>You get to heal without their permission. You get to move on without their acknowledgment. You get to be okay without their apology.</p>
+    </div>
+
+    <p class="reveal">It's hard. I know it's hard. Because you want that apology. You need it. You deserve it.</p>
+
+    <p class="reveal">But you're never going to get it. And accepting that is the first step to freedom.</p>
+
+    <p class="reveal">So accept it. Grieve it if you need to. Rage about it if you need to. Feel all the feelings about how unfair it is that they get to walk away without taking responsibility while you're left picking up the pieces.</p>
+
+    <p class="reveal">But then release it. Release them. Release the wait. Release the hope. Release the fantasy.</p>
+
+    <p class="reveal">They're not going to apologize. They're not going to change. They're not going to suddenly become the person you needed them to be.</p>
+
+    <p class="reveal">And that's on them. That's their loss. That's their failure. That's their burden to carry, whether they acknowledge it or not.</p>
+
+    <p class="reveal">Your burden is to heal. To move forward. To build a life that's not defined by what they did or didn't do.</p>
+
+    <p class="reveal">And you can do that. You can heal without their apology. You can be okay without their acknowledgment. You can find peace without their validation.</p>
+
+    <p class="reveal">Because your healing was never dependent on them. It was always dependent on you.</p>
+
+    <p class="reveal">And you're stronger than you think. You've survived this long without that apology. You can survive without it forever.</p>
+
+    <div class="pull-quote reveal">
+      <p>You can thrive without it.</p>
+    </div>
+
+    <p class="reveal">So let it go. The apology you're never going to get. The closure that's not coming. The acknowledgment you'll never receive.</p>
+
+    <p class="reveal">Let it go. And take your power back.</p>
+
+    <p class="reveal">They don't get to decide when you heal. They don't get to control when you move on. They don't get to keep you stuck.</p>
+
+    <p class="reveal">You decide. You control. You move forward.</p>
+
+    <p class="reveal">Without them. Without their apology. Without their permission.</p>
+
+    <p class="reveal">You are the only validation you need. You are the only acknowledgment that matters. You are the only apology you're waiting for.</p>
+
+    <p class="reveal">So give it to yourself. And then move on.</p>
+
+    <!-- CLOSING TRIAD -->
+    <div class="closing-triad reveal">
+      <span>Free</span>
+      <span>Whole</span>
+      <span>Healed</span>
+    </div>
+
+    <p class="reveal">Without the apology you're never going to get.</p>
+
+    <p class="reveal">You don't need it anymore.</p>
+
+    <p class="reveal">You never did.</p>
+
+    <p class="reveal">You just needed you.</p>
+
+    <p class="reveal">And you've been here all along.</p>
+
+    <p class="reveal">Ready to heal. Ready to move on. Ready to be free.</p>
+
+    <!-- END STATEMENT -->
+    <div class="end-statement reveal">
+      <p>So <em>be free.</em></p>
+    </div>
+
+    <p class="reveal">The apology isn't coming.</p>
+    <p class="reveal">But your healing is.</p>
+    <p class="reveal">And it starts the moment you stop waiting for someone else to give you permission to be okay.</p>
+
+    <div class="highlight-block reveal">
+      <p>You're okay. Right now. Without their apology. You're okay. And that's all the closure you need.</p>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-author reveal">Written by</div>
+    <div class="footer-name reveal">Princess</div>
+    <div class="footer-medium reveal">
+      Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

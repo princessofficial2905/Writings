@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nothing ended. — Princess</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0c0b09;
+      --surface: #111009;
+      --amber: #c8922a;
+      --amber-light: #e8b04a;
+      --amber-dim: rgba(200,146,42,0.15);
+      --text: #d4c9b8;
+      --text-dim: #7a7060;
+      --text-bright: #ede5d4;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.85;
+      overflow-x: hidden;
+    }
+
+    /* ── Grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 clamp(24px, 8vw, 120px) clamp(60px, 10vh, 120px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(200,146,42,0.07) 0%, transparent 70%),
+                  radial-gradient(ellipse 40% 40% at 20% 20%, rgba(200,146,42,0.04) 0%, transparent 60%);
+    }
+
+    /* Floating particles */
+    .particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      background: var(--amber);
+      border-radius: 50%;
+      animation: drift linear infinite;
+      opacity: 0;
+    }
+    @keyframes drift {
+      0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(-10vh) translateX(30px); opacity: 0; }
+    }
+
+    .issue-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 32px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .issue-label::before {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: var(--amber);
+      opacity: 0.6;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(56px, 10vw, 140px);
+      font-weight: 400;
+      line-height: 0.95;
+      color: var(--text-bright);
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--amber-light);
+    }
+
+    .hero-subtitle {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: clamp(18px, 2.5vw, 28px);
+      color: var(--text-dim);
+      margin-bottom: 48px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+    .hero-meta span { color: var(--amber); opacity: 0.7; }
+
+    .scroll-cue {
+      position: absolute;
+      bottom: 40px;
+      right: clamp(24px, 8vw, 120px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--amber), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 0.9; transform: scaleY(1.1); }
+    }
+
+    /* ── Divider ── */
+    .chapter-divider {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 80px clamp(24px, 8vw, 120px) 0;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .chapter-divider::before,
+    .chapter-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--amber-dim), transparent);
+    }
+    .chapter-symbol {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--amber);
+      opacity: 0.5;
+    }
+
+    /* ── Article body ── */
+    .article {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: clamp(60px, 8vh, 100px) clamp(24px, 6vw, 80px);
+    }
+
+    .lede {
+      font-size: clamp(22px, 3vw, 32px);
+      font-style: italic;
+      color: var(--text-bright);
+      line-height: 1.6;
+      margin-bottom: 56px;
+      padding-bottom: 56px;
+      border-bottom: 1px solid var(--amber-dim);
+    }
+
+    .article p {
+      margin-bottom: 32px;
+      color: var(--text);
+      font-size: clamp(18px, 1.8vw, 21px);
+    }
+
+    /* Stanza block */
+    .stanza {
+      margin: 48px 0;
+      padding: 40px 48px;
+      border-left: 2px solid var(--amber);
+      background: linear-gradient(135deg, rgba(200,146,42,0.05), transparent);
+      position: relative;
+    }
+    .stanza::before {
+      content: '"';
+      font-family: 'Playfair Display', serif;
+      font-size: 80px;
+      color: var(--amber);
+      opacity: 0.15;
+      position: absolute;
+      top: -10px;
+      left: 16px;
+      line-height: 1;
+    }
+    .stanza p {
+      margin-bottom: 16px !important;
+      font-style: italic;
+      color: var(--text-bright) !important;
+      font-size: clamp(17px, 1.7vw, 20px) !important;
+    }
+    .stanza p:last-child { margin-bottom: 0 !important; }
+
+    .stanza p em {
+      font-style: normal;
+      color: var(--amber-light);
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      margin: 64px 0;
+      text-align: center;
+      padding: 0 16px;
+    }
+    .pull-quote p {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 3vw, 36px);
+      font-style: italic;
+      color: var(--amber-light);
+      line-height: 1.5;
+      margin-bottom: 0 !important;
+    }
+    .pull-quote .ornament {
+      display: block;
+      margin: 20px auto 0;
+      width: 40px;
+      height: 1px;
+      background: var(--amber);
+      opacity: 0.5;
+    }
+
+    /* Closing */
+    .closing-stanza {
+      margin: 56px 0;
+      text-align: center;
+    }
+    .closing-stanza p {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(18px, 2vw, 24px);
+      font-style: italic;
+      color: var(--text-bright) !important;
+      margin-bottom: 8px !important;
+    }
+
+    /* ── Footer attribution ── */
+    .attribution {
+      margin-top: 80px;
+      padding-top: 40px;
+      border-top: 1px solid var(--amber-dim);
+      text-align: center;
+    }
+    .attribution p {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 0 !important;
+    }
+    .attribution a {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200,146,42,0.3);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .attribution a:hover {
+      color: var(--amber-light);
+      border-color: var(--amber-light);
+    }
+
+    /* ── Animate on scroll ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── Ambient glow that follows reading ── */
+    .ambient-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,146,42,0.03) 0%, transparent 70%);
+      pointer-events: none;
+      transition: top 0.8s ease, left 0.8s ease;
+      z-index: 0;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body>
+
+<div class="ambient-glow" id="glow"></div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="particles" id="particles"></div>
+
+  <p class="issue-label">An Essay by Princess</p>
+  <h1 class="hero-title">Nothing<br><em>ended.</em></h1>
+  <p class="hero-subtitle">I just woke up.</p>
+  <div class="hero-meta">
+    <span>✦</span> February 2026 <span>·</span> 3 min read
+  </div>
+
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    read
+  </div>
+</section>
+
+<div class="chapter-divider"><span class="chapter-symbol">✦</span></div>
+
+<!-- Article -->
+<article class="article">
+
+  <p class="lede reveal">
+    There comes a moment, usually long after the dust has settled, when you look back at a love you once held onto so tightly and realize you did not lose it, you outgrew it.
+  </p>
+
+  <p class="reveal">And that realization does not come with anger or regret, but with a quiet softness. Because in truth, you did not wake up one day and decide you were done. You simply evolved. Your heart stretched. Your spirit expanded. Your soul became wiser. You became someone who needed more peace, more clarity, more honesty, more depth, and the love you once clung to could not grow with you. You tried to hold on out of loyalty, out of hope, out of familiarity. But deep down, the connection had already begun to shrink around a heart that was learning to bloom.</p>
+
+  <div class="stanza reveal">
+    <p>You did not outgrow them because you stopped caring.</p>
+    <p>You outgrew them because caring was no longer enough to sustain you.</p>
+    <p>You did not outgrow them because something was wrong with them.</p>
+    <p>You outgrew them because something was right with you, finally.</p>
+    <p>You began to see your worth more clearly.</p>
+    <p>You began to recognize your needs instead of burying them.</p>
+    <p>You began to understand the difference between being loved and being valued.</p>
+    <p>And slowly, without noticing the exact moment it happened, you stepped into a version of yourself that their love could no longer reach.</p>
+  </div>
+
+  <p class="reveal">And God was there through all of it, guiding you gently. He saw you trying to fit into a relationship that no longer aligned with your growth. He saw the way you clung to comfort even when your soul was begging for more. He saw the emotional stretching you were doing just to maintain something that was no longer feeding your spirit. And in His love, He allowed the distance to deepen. Not to punish you, but to free you. Not to end something, but to prepare you for what is next.</p>
+
+  <div class="pull-quote reveal">
+    <p>Outgrowing someone is not failure, it is divine timing.</p>
+    <span class="ornament"></span>
+  </div>
+
+  <p class="reveal">One day, My friend, you will look back at the love you outgrew and feel nothing but gratitude. Gratitude for the lessons. Gratitude for the memories. Gratitude for the version of yourself who loved so sincerely. And gratitude for the woman you became because you listened to the quiet ache that whispered, <em style="color:var(--amber-light); font-style:italic;">"You deserve more than this."</em></p>
+
+  <p class="reveal">And when the right love enters your life, a love that matches your growth, honors your depth, and expands alongside your spirit, you will understand why you had to outgrow the love that once felt like everything. You will realize that you were not walking away from love… You were walking toward the love that was always meant for who you are becoming.</p>
+
+  <div class="closing-stanza reveal">
+    <p>Some loves are chapters.</p>
+    <p>Some loves are lessons.</p>
+    <p>And some loves, the rare, God-sent ones, are your future.</p>
+  </div>
+
+  <p class="reveal" style="text-align:center; font-family:'Playfair Display',serif; font-size:clamp(18px,2vw,24px); color:var(--text-bright); font-style:italic;">
+    This time, My friend, the love ahead of you will grow with you, not against you.
+  </p>
+
+  <div class="attribution reveal">
+    <p>Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+  </div>
+
+</article>
+
+<script>
+  // Particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left: ${Math.random()*100}%;
+      width: ${Math.random()*2+1}px;
+      height: ${Math.random()*2+1}px;
+      animation-duration: ${Math.random()*12+8}s;
+      animation-delay: ${Math.random()*10}s;
+    `;
+    container.appendChild(p);
+  }
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(r => observer.observe(r));
+
+  // Ambient glow
+  const glow = document.getElementById('glow');
+  document.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
+  });
+</script>
+</body>
+</html>

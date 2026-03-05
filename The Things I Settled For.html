@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Things I Settled For — Princess</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0b0906;
+    --bg2: #100d0a;
+    --amber: #c8882a;
+    --amber-soft: #e0a84a;
+    --amber-dim: #8a5c1a;
+    --cream: #f0e6d0;
+    --muted: #7a6a55;
+    --line: rgba(200, 136, 42, 0.18);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 20px;
+    line-height: 1.85;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ——— GRAIN OVERLAY ——— */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ——— AMBIENT GLOW ——— */
+  .ambient {
+    position: fixed;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,136,42,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 0;
+    animation: pulse 8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.15); }
+  }
+
+  /* ——— HEADER ——— */
+  header {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 110px 24px 60px;
+    overflow: hidden;
+  }
+
+  .eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--amber);
+    opacity: 0;
+    animation: fadeUp 1s 0.2s ease forwards;
+    margin-bottom: 28px;
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: clamp(2.4rem, 7vw, 5.5rem);
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    color: var(--cream);
+    opacity: 0;
+    animation: fadeUp 1s 0.45s ease forwards;
+    text-shadow: 0 0 80px rgba(200,136,42,0.2);
+  }
+
+  .subtitle {
+    display: block;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    color: var(--amber-soft);
+    letter-spacing: 0.08em;
+    margin-top: 12px;
+    opacity: 0;
+    animation: fadeUp 1s 0.65s ease forwards;
+  }
+
+  .meta {
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    margin-top: 36px;
+    opacity: 0;
+    animation: fadeUp 1s 0.85s ease forwards;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    justify-content: center;
+    margin: 50px auto;
+    opacity: 0;
+    animation: fadeUp 1s 1.05s ease forwards;
+  }
+  .divider-line { width: 80px; height: 1px; background: var(--line); }
+  .divider-gem {
+    width: 6px; height: 6px;
+    background: var(--amber);
+    transform: rotate(45deg);
+    box-shadow: 0 0 14px var(--amber);
+  }
+
+  /* ——— MAIN CONTENT ——— */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 28px 120px;
+  }
+
+  .stanza {
+    margin-bottom: 56px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .stanza.visible { opacity: 1; transform: translateY(0); }
+
+  p {
+    font-weight: 300;
+    font-size: clamp(1.05rem, 2vw, 1.2rem);
+    color: rgba(240, 230, 208, 0.88);
+  }
+
+  em {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    color: var(--amber-soft);
+    font-size: 1.05em;
+  }
+
+  /* ——— VERSE LINES (line-break stanzas) ——— */
+  .verse-block {
+    border-left: 1px solid var(--line);
+    padding-left: 28px;
+    margin: 0 0 56px 0;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .verse-block.visible { opacity: 1; transform: translateY(0); }
+
+  .verse-line {
+    display: block;
+    font-weight: 300;
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
+    color: rgba(240,230,208,0.78);
+    margin-bottom: 6px;
+  }
+
+  /* ——— PULL QUOTE ——— */
+  .pull-quote {
+    position: relative;
+    margin: 70px 0;
+    padding: 40px 44px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .pull-quote.visible { opacity: 1; transform: translateY(0); }
+
+  .pull-quote::before {
+    content: '\201C';
+    position: absolute;
+    top: -28px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem;
+    color: var(--amber);
+    line-height: 1;
+    opacity: 0.7;
+  }
+
+  .pull-quote p {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    color: var(--cream);
+    line-height: 1.7;
+  }
+
+  /* ——— CLOSING CODA ——— */
+  .coda {
+    text-align: center;
+    margin-top: 80px;
+    padding-top: 50px;
+    border-top: 1px solid var(--line);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .coda.visible { opacity: 1; transform: translateY(0); }
+
+  .coda p {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: var(--amber-soft);
+    line-height: 1.9;
+  }
+
+  /* ——— FOOTER ——— */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 60px 24px 80px;
+    border-top: 1px solid var(--line);
+  }
+
+  .author-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .author-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    color: var(--cream);
+    font-weight: 300;
+  }
+  .medium-link {
+    display: inline-block;
+    margin-top: 22px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.28em;
+    color: var(--amber-dim);
+    text-decoration: none;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--amber-dim);
+    padding-bottom: 2px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+  .medium-link:hover { color: var(--amber-soft); border-color: var(--amber-soft); }
+  .medium-link em { font-style: normal; }
+
+  /* ——— ANIMATIONS ——— */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ——— SCROLL INDICATOR ——— */
+  .scroll-indicator {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--amber-dim), var(--amber-soft));
+    z-index: 10000;
+    transition: width 0.1s linear;
+  }
+
+  /* ——— CANDLELIGHT FLICKER ——— */
+  .candle {
+    display: block;
+    text-align: center;
+    font-size: 1.5rem;
+    margin: 0 auto 32px;
+    animation: flicker 3s ease-in-out infinite;
+    opacity: 0;
+    animation: flicker 3s 1.4s ease-in-out infinite, fadeUp 1s 1.2s ease forwards;
+  }
+  @keyframes flicker {
+    0%, 100% { opacity: 0.9; transform: scale(1); }
+    25% { opacity: 0.7; transform: scale(0.97) rotate(-1deg); }
+    50% { opacity: 1; transform: scale(1.04) rotate(0.5deg); }
+    75% { opacity: 0.75; transform: scale(0.98) rotate(1deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-indicator" id="progress"></div>
+<div class="ambient"></div>
+
+<header>
+  <p class="eyebrow">A Personal Essay by Princess</p>
+  <h1>The Things I Settled For</h1>
+  <span class="subtitle">Without Realizing</span>
+  <p class="meta">February 21, 2026 &nbsp;&bull;&nbsp; 3 min read</p>
+  <div class="divider">
+    <span class="divider-line"></span>
+    <span class="divider-gem"></span>
+    <span class="divider-line"></span>
+  </div>
+  <span class="candle">🕯</span>
+</header>
+
+<main>
+
+  <div class="stanza">
+    <p>There comes a moment in your healing when you look back at the things you once accepted, the love you tolerated, the silence you excused, the inconsistency you normalized, the pain you swallowed, and you finally whisper to yourself, <em>"I deserved so much more."</em> You didn't settle because you were weak. You settled because you were hopeful. You settled because you believed in people's potential instead of their patterns. You settled because you thought love meant being endlessly patient, endlessly forgiving, endlessly understanding. You settled because you were afraid that asking for more would make you too much, or push them away, or leave you alone. What you didn't realize was that settling was slowly teaching your heart to live on emotional crumbs when God created you to feast on a love that is whole, steady, and nourishing.</p>
+  </div>
+
+  <div class="verse-block">
+    <span class="verse-line">You convinced yourself that the bare minimum was enough.</span>
+    <span class="verse-line">That the "almost" love was still love.</span>
+    <span class="verse-line">That their occasional effort counted as consistency.</span>
+    <span class="verse-line">That their presence once in a while was better than losing them completely.</span>
+  </div>
+
+  <div class="stanza">
+    <p>You learned to accept confusion instead of clarity, mixed signals instead of commitment, disappointment instead of devotion. And the saddest part is that you stopped even imagining what real love could look like, because you were too busy trying to make peace with the little you were given.</p>
+  </div>
+
+  <div class="pull-quote">
+    <p>Settling was not humility. It was heartbreak disguised as patience.</p>
+  </div>
+
+  <div class="verse-block">
+    <span class="verse-line">But God was watching the entire time.</span>
+    <span class="verse-line">He saw the moments you cried quietly after being treated like an option.</span>
+    <span class="verse-line">He saw the ways you lowered your standards just to feel chosen.</span>
+    <span class="verse-line">He saw how you shrank your needs to fit inside someone's limited capacity.</span>
+  </div>
+
+  <div class="stanza">
+    <p>And He knew, far before you did, that the life you were settling for was far smaller than the life He intended for you. So He began pulling you away, softening your grip on the wrong people, closing doors you kept knocking on, and whispering into your heart, <em>"You deserve more than this. Let Me show you."</em></p>
+  </div>
+
+  <div class="verse-block">
+    <span class="verse-line">And now, slowly, you're beginning to see it.</span>
+    <span class="verse-line">You're beginning to recognize the ways you abandoned your own heart.</span>
+    <span class="verse-line">You're beginning to understand that settling was not humility, it was heartbreak disguised as patience.</span>
+    <span class="verse-line">You're beginning to realize that love is not meant to bruise you emotionally, or leave you guessing, or make you feel unworthy.</span>
+  </div>
+
+  <div class="pull-quote">
+    <p>Real love expands you. Real love grows you. Real love meets your needs with joy, not resentment. Real love doesn't make you settle, it rises to meet you.</p>
+  </div>
+
+  <div class="stanza">
+    <p>One day, My friend, you will thank yourself for walking away from the spaces where you settled. You will feel proud of the woman who finally said, <em>"No more."</em> And when the right love finds you, the love God has been preparing for you, you will understand why you were never meant to live on the scraps of affection you once accepted. You will receive a love that feels like abundance, honesty, consistency, peace. A love where you no longer have to shrink or silence parts of yourself just to fit.</p>
+  </div>
+
+  <div class="coda">
+    <p>You settled before because you didn't know how beautiful, rare, and deserving your heart truly is.<br><br>Now you know, and your life will rise to match that truth.</p>
+  </div>
+
+</main>
+
+<footer>
+  <p class="author-tag">Written by</p>
+  <p class="author-name">Princess</p>
+  <br>
+  <a class="medium-link" href="https://medium.com/@prvaxis" target="_blank" rel="noopener">
+    Originally published on <em>Medium</em>
+  </a>
+</footer>
+
+<script>
+  // scroll progress bar
+  window.addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (window.scrollY / max) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+  });
+
+  // intersection observer for stanza reveals
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.stanza, .verse-block, .pull-quote, .coda').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

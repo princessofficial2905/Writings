@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>When They've Moved On — Princess</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300;400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --ink: #0b0906;
+      --paper: #f5f0e8;
+      --amber: #c8893a;
+      --amber-light: #e8b96a;
+      --amber-dim: #7a4e1a;
+      --ash: #1a1410;
+      --smoke: #2a211a;
+      --vellum: #d4c9b0;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--ink);
+      color: var(--vellum);
+      font-family: 'Libre Baskerville', Georgia, serif;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.35;
+    }
+    .cover {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      padding: 4rem 2rem;
+    }
+    .cover-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, #1c1108 0%, var(--ink) 70%);
+    }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0;
+      animation: orbFloat 8s ease-in-out infinite;
+    }
+    .orb-1 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(200,137,58,0.18) 0%, transparent 70%); top: -100px; left: -100px; animation-delay: 0s; }
+    .orb-2 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(200,137,58,0.12) 0%, transparent 70%); bottom: -80px; right: -80px; animation-delay: 3s; }
+    .orb-3 { width: 200px; height: 200px; background: radial-gradient(circle, rgba(232,185,106,0.1) 0%, transparent 70%); top: 40%; left: 60%; animation-delay: 5s; }
+    @keyframes orbFloat {
+      0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-20px) scale(1.05); }
+    }
+    .cover-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 860px;
+    }
+    .cover-eyebrow {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 100;
+      font-size: 0.72rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 2.8rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+    .cover-title {
+      font-family: 'Cormorant Infant', serif;
+      font-weight: 300;
+      font-size: clamp(3.5rem, 10vw, 7.5rem);
+      line-height: 0.92;
+      color: var(--paper);
+      margin-bottom: 0.4rem;
+      opacity: 0;
+      animation: fadeUp 1.2s ease 0.6s forwards;
+      letter-spacing: -0.02em;
+    }
+    .cover-title em { font-style: italic; color: var(--amber-light); }
+    .cover-sub {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1.2rem, 3vw, 1.9rem);
+      color: var(--vellum);
+      margin-top: 1.4rem;
+      letter-spacing: 0.02em;
+      opacity: 0;
+      animation: fadeUp 1.2s ease 0.9s forwards;
+    }
+    .cover-divider {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      justify-content: center;
+      margin: 3rem auto;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.2s forwards;
+    }
+    .cover-divider::before, .cover-divider::after {
+      content: '';
+      height: 1px;
+      width: 80px;
+      background: linear-gradient(to right, transparent, var(--amber-dim));
+    }
+    .cover-divider::after { background: linear-gradient(to left, transparent, var(--amber-dim)); }
+    .cover-divider-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--amber); }
+    .cover-meta {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 200;
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--amber-dim);
+      opacity: 0;
+      animation: fadeUp 1s ease 1.4s forwards;
+    }
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      opacity: 0;
+      animation: fadeIn 1s ease 2.2s forwards;
+      z-index: 2;
+    }
+    .scroll-hint span {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--amber-dim);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, var(--amber), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+    .article-wrap { position: relative; z-index: 2; }
+    .article-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+    }
+    .article-inner::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6rem;
+      bottom: 4rem;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, var(--amber-dim) 20%, var(--amber-dim) 80%, transparent);
+      opacity: 0.3;
+    }
+    .opening-para {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-size: clamp(1.22rem, 2.5vw, 1.55rem);
+      line-height: 1.75;
+      color: var(--paper);
+      margin-bottom: 3.5rem;
+      padding-left: 2.5rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .opening-para.visible { opacity: 1; transform: translateY(0); }
+    p {
+      font-size: clamp(0.98rem, 1.6vw, 1.1rem);
+      line-height: 1.95;
+      color: #c4b898;
+      margin-bottom: 2.4rem;
+      padding-left: 2.5rem;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    p.visible { opacity: 1; transform: translateY(0); }
+    .truth-block {
+      margin: 4rem 0;
+      padding: 2.8rem 2.5rem;
+      background: linear-gradient(135deg, rgba(200,137,58,0.06) 0%, rgba(200,137,58,0.02) 100%);
+      border-left: 2px solid var(--amber);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .truth-block.visible { opacity: 1; transform: translateY(0); }
+    .truth-block::after {
+      content: '\201C';
+      position: absolute;
+      top: -1.5rem;
+      right: 1.5rem;
+      font-family: 'Cormorant Infant', serif;
+      font-size: 8rem;
+      color: var(--amber);
+      opacity: 0.08;
+      line-height: 1;
+    }
+    .truth-text {
+      font-family: 'Cormorant Infant', serif;
+      font-weight: 600;
+      font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+      line-height: 1.7;
+      color: var(--amber-light);
+      font-style: italic;
+      padding: 0;
+      margin: 0;
+    }
+    .divine-block {
+      margin: 4rem 0;
+      padding: 3rem 2.5rem;
+      position: relative;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .divine-block.visible { opacity: 1; transform: translateY(0); }
+    .divine-block::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at top left, rgba(200,137,58,0.07) 0%, transparent 60%);
+    }
+    .divine-intro {
+      font-size: clamp(0.98rem, 1.6vw, 1.1rem);
+      line-height: 1.95;
+      color: #c4b898;
+      margin-bottom: 1.8rem;
+      padding: 0;
+      position: relative;
+    }
+    .divine-lines { list-style: none; padding: 0; margin: 0; position: relative; }
+    .divine-lines li {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      color: var(--amber-light);
+      padding: 0.5rem 0 0.5rem 2rem;
+      position: relative;
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      line-height: 1.6;
+    }
+    .divine-lines li.visible { opacity: 1; transform: translateX(0); }
+    .divine-lines li::before {
+      content: '\2014';
+      position: absolute;
+      left: 0;
+      color: var(--amber-dim);
+      font-style: normal;
+      font-family: 'Josefin Sans', sans-serif;
+    }
+    .fated-stanza {
+      margin: 4.5rem auto;
+      max-width: 480px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .fated-stanza.visible { opacity: 1; transform: translateY(0); }
+    .fated-stanza p {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-size: clamp(1.05rem, 2vw, 1.28rem);
+      line-height: 1.85;
+      color: #d4c9b0;
+      padding: 0;
+      margin-bottom: 0.3rem;
+      text-align: center;
+    }
+    .promise-block {
+      margin: 5rem 0 4rem;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease 0.2s, transform 0.9s ease 0.2s;
+    }
+    .promise-block.visible { opacity: 1; transform: translateY(0); }
+    .promise-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 100;
+      font-size: 0.65rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--amber-dim);
+      margin-bottom: 1.5rem;
+    }
+    .promise-text {
+      font-family: 'Cormorant Infant', serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(1.3rem, 3vw, 1.85rem);
+      line-height: 1.65;
+      color: var(--paper);
+      max-width: 560px;
+      margin: 0 auto 2rem;
+      padding: 0;
+      text-align: center;
+    }
+    .closing-verse {
+      margin: 5rem auto;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    .closing-verse.visible { opacity: 1; transform: translateY(0); }
+    .verse-line {
+      font-family: 'Cormorant Infant', serif;
+      font-weight: 300;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      line-height: 1.7;
+      display: block;
+      color: var(--vellum);
+      letter-spacing: 0.02em;
+    }
+    .verse-line.italic { font-style: italic; color: var(--amber-light); }
+    .verse-line.small { font-size: clamp(0.9rem, 1.6vw, 1.1rem); color: #9a8e7a; margin-top: 0.3rem; }
+    .article-footer {
+      border-top: 1px solid rgba(200,137,58,0.15);
+      margin: 6rem 2.5rem 0;
+      padding: 3rem 0 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .article-footer.visible { opacity: 1; transform: translateY(0); }
+    .footer-author {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 200;
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--amber-dim);
+    }
+    .footer-medium {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-size: 0.98rem;
+      color: #7a6e5a;
+    }
+    .footer-medium a {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200,137,58,0.3);
+      transition: color 0.3s, border-color 0.3s;
+      padding-bottom: 1px;
+    }
+    .footer-medium a:hover { color: var(--amber-light); border-color: var(--amber-light); }
+    .footer-mark { width: 30px; height: 1px; background: var(--amber-dim); opacity: 0.5; }
+    .section-number {
+      display: block;
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 100;
+      font-size: 0.6rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--amber-dim);
+      margin-bottom: 1rem;
+      padding-left: 2.5rem;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    .section-number.visible { opacity: 1; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @media (max-width: 600px) {
+      .cover-title { font-size: 3rem; }
+      .article-inner { padding: 4rem 1.2rem 3rem; }
+      .article-inner::before { display: none; }
+      p, .opening-para { padding-left: 0; }
+      .truth-block, .divine-block { padding: 2rem 1.5rem; }
+      .section-number { padding-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="cover">
+    <div class="cover-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="cover-content">
+      <p class="cover-eyebrow">An Essay on Grief &amp; Grace</p>
+      <h1 class="cover-title">When They've<br><em>Moved On</em></h1>
+      <p class="cover-sub">but Your Heart Is Still Trying to Catch Up</p>
+      <div class="cover-divider">
+        <span class="cover-divider-dot"></span>
+        <span class="cover-divider-dot"></span>
+        <span class="cover-divider-dot"></span>
+      </div>
+      <p class="cover-meta">Princess &nbsp;&middot;&nbsp; February 2026 &nbsp;&middot;&nbsp; 3 min read</p>
+    </div>
+    <div class="scroll-hint">
+      <span>Read</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <article class="article-wrap">
+    <div class="article-inner">
+
+      <span class="section-number">I.</span>
+      <p class="opening-para">
+        There's a very specific kind of heartbreak that comes from watching someone move on while you're still standing in the ruins of everything you felt for them. They walk away clean, clear-minded, certain. They find distractions, new people, new routines, new conversations... while you cling to memories that still feel warm in your hands. It's not that you wanted to hold on forever, it's that your heart didn't know how to let go as quickly as theirs did. And so you stay in that in-between space, loving someone who has already placed the story on a shelf you still revisit.
+      </p>
+
+      <span class="section-number">II.</span>
+      <p>
+        You wonder how they did it, how they detached, how they closed the door, how they walked away from something that still keeps your heart awake at night. You blame yourself at first. Maybe you cared too much. Maybe you loved too deeply. Maybe you stayed soft in a world that rewards those who leave first. And you replay everything, searching for the moment where your heart remained attached and theirs slipped free.
+      </p>
+
+      <div class="truth-block">
+        <p class="truth-text">
+          Some hearts move slowly, not because they're weak, but because they're sincere.<br><br>
+          You didn't love lightly. You didn't feel casually. You gave pieces of yourself that took time to grow, and now they take time to release. Your healing is not delayed, your healing is honest. Your heart isn't slow, your heart is loyal. And loyalty doesn't switch off suddenly just because someone else stopped choosing you.
+        </p>
+      </div>
+
+      <div class="divine-block">
+        <p class="divine-intro">
+          It's hard to accept that someone who meant everything to you now lives a life where you are barely a thought. It feels unfair, unbalanced, painful in a way that makes your chest tighten at the smallest reminders. But here is where God steps in, quietly, gently, lovingly, the way He always does when your heart feels abandoned:
+        </p>
+        <ul class="divine-lines">
+          <li>He reminds you that He saw the love you offered, even if they didn't.</li>
+          <li>He saw how much you wished it would work.</li>
+          <li>He saw the future you imagined with them.</li>
+          <li>He saw the pieces you held together long after they walked away.</li>
+          <li>And He's not letting you stay in this heartbreak longer than your lesson requires.</li>
+        </ul>
+      </div>
+
+      <div class="fated-stanza">
+        <p>They moved on quickly because they were not meant for your future.</p>
+        <p>You're holding on because you are still softening into your next chapter.</p>
+        <p>Your timelines are different because your destinies are different.</p>
+      </div>
+
+      <div class="promise-block">
+        <p class="promise-label">A Promise Whispered from Heaven</p>
+        <p class="promise-text">
+          One day, you will wake up and realize your heart has finally caught up to the truth. The ache will be quieter. The memories will feel distant. The longing will have loosened. And you will understand that God wasn't punishing you by letting them move on first... He was freeing you. He was clearing the space. He was making room for a love that doesn't leave, doesn't replace, doesn't forget, doesn't move on without you.
+        </p>
+      </div>
+
+      <div class="closing-verse">
+        <span class="verse-line">You are not behind.</span>
+        <span class="verse-line italic">You are healing at your heart's pace,</span>
+        <span class="verse-line small">and God is walking every slow step with you.</span>
+      </div>
+
+    </div>
+
+    <footer class="article-footer">
+      <div class="footer-mark"></div>
+      <p class="footer-author">Written by Princess</p>
+      <p class="footer-medium">
+        Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+      </p>
+      <div class="footer-mark"></div>
+    </footer>
+  </article>
+
+  <script>
+    const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -40px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          if (entry.target.classList.contains('divine-block')) {
+            const items = entry.target.querySelectorAll('.divine-lines li');
+            items.forEach((li, i) => {
+              setTimeout(() => li.classList.add('visible'), 300 + i * 180);
+            });
+          }
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll(
+      'p, .opening-para, .truth-block, .divine-block, .fated-stanza, .promise-block, .closing-verse, .article-footer, .section-number'
+    ).forEach(el => observer.observe(el));
+
+    const coverContent = document.querySelector('.cover-content');
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      if (scrolled < window.innerHeight) {
+        coverContent.style.transform = `translateY(${scrolled * 0.3}px)`;
+        coverContent.style.opacity = 1 - scrolled / (window.innerHeight * 0.75);
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>

@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Waiting for the Other Shoe to Drop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cinzel:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0907;
+      --bg2: #100e0b;
+      --amber: #c8963e;
+      --amber-light: #e8b96a;
+      --amber-dim: #7a5a22;
+      --cream: #f0e8d8;
+      --muted: #8a7d6a;
+      --dim: #3a3228;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--cream);
+      font-family: 'EB Garamond', serif;
+      font-size: 20px;
+      line-height: 1.85;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* Ambient glow top */
+    .glow-top {
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(200, 150, 62, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 40px;
+      overflow: hidden;
+    }
+
+    .header-lines {
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(200,150,62,0.04) 79px, rgba(200,150,62,0.04) 80px);
+      pointer-events: none;
+    }
+
+    .header-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(10,9,7,0.85) 100%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(48px, 8vw, 108px);
+      font-weight: 300;
+      line-height: 1.05;
+      text-align: center;
+      color: var(--cream);
+      max-width: 900px;
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      animation: fadeUp 1.2s ease 0.5s forwards;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--amber-light);
+    }
+
+    .header-rule {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, var(--amber), transparent);
+      margin: 56px auto 0;
+      opacity: 0;
+      animation: fadeIn 1s ease 1.2s forwards;
+    }
+
+    .byline {
+      margin-top: 40px;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-align: center;
+      opacity: 0;
+      animation: fadeUp 1s ease 1s forwards;
+    }
+
+    .byline span {
+      color: var(--amber-dim);
+      margin: 0 16px;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeIn 1s ease 1.8s forwards;
+    }
+
+    .scroll-hint p {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.4em;
+      color: var(--dim);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--amber-dim), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    /* Article body */
+    article {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 32px 120px;
+    }
+
+    /* Opening pull quote */
+    .opening {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--amber-light);
+      line-height: 1.2;
+      text-align: center;
+      padding: 80px 0 60px;
+      position: relative;
+    }
+
+    .opening::before, .opening::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 1px;
+      background: var(--amber-dim);
+      margin: 0 auto 32px;
+    }
+    .opening::after { margin: 32px auto 0; }
+
+    p {
+      margin-bottom: 1.6em;
+      color: #cfc4b0;
+    }
+
+    /* Section breaks */
+    .section-break {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin: 64px 0;
+    }
+
+    .section-break::before, .section-break::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--dim));
+    }
+    .section-break::after {
+      background: linear-gradient(to left, transparent, var(--dim));
+    }
+
+    .section-break-inner {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      color: var(--amber-dim);
+      letter-spacing: 0.3em;
+    }
+
+    /* Pull quote blocks */
+    .pull-quote {
+      margin: 64px 0;
+      padding: 0 0 0 28px;
+      border-left: 2px solid var(--amber);
+      position: relative;
+    }
+
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    /* Highlighted internal monologue */
+    .inner-voice {
+      background: rgba(200, 150, 62, 0.06);
+      border-top: 1px solid rgba(200,150,62,0.15);
+      border-bottom: 1px solid rgba(200,150,62,0.15);
+      padding: 32px 40px;
+      margin: 48px 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 19px;
+      color: var(--amber-light);
+      line-height: 1.7;
+    }
+
+    .inner-voice p { color: var(--amber-light); margin: 0; }
+
+    /* Emphasis paragraphs */
+    .emphasis {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(18px, 2.5vw, 24px);
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.5;
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    /* Closing section */
+    .closing {
+      text-align: center;
+      padding: 80px 0 40px;
+    }
+
+    .closing p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 300;
+      color: var(--cream);
+      line-height: 1.6;
+      margin-bottom: 1.2em;
+    }
+
+    .closing .final-line {
+      font-size: clamp(28px, 4vw, 42px);
+      font-style: italic;
+      color: var(--amber-light);
+      margin-top: 40px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--dim);
+      padding: 64px 40px;
+      text-align: center;
+      position: relative;
+    }
+
+    .footer-glow {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 200px;
+      background: radial-gradient(ellipse, rgba(200, 150, 62, 0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .author-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .author-dot {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--amber);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      color: var(--bg);
+    }
+
+    .author-name {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      letter-spacing: 0.3em;
+      color: var(--cream);
+    }
+
+    .author-bio {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 400px;
+      line-height: 1.6;
+    }
+
+    .medium-link {
+      display: inline-block;
+      margin-top: 32px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .medium-link a {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid var(--amber-dim);
+      transition: color 0.3s, border-color 0.3s;
+    }
+
+    .medium-link a:hover {
+      color: var(--amber-light);
+      border-color: var(--amber-light);
+    }
+
+    .copyright {
+      margin-top: 48px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      color: var(--dim);
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Decorative large number */
+    .section-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 120px;
+      font-weight: 300;
+      color: rgba(200,150,62,0.05);
+      line-height: 1;
+      margin-bottom: -60px;
+      display: block;
+      pointer-events: none;
+    }
+
+    /* Reading progress bar */
+    #progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(to right, var(--amber-dim), var(--amber-light));
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress"></div>
+  <div class="glow-top"></div>
+
+  <header>
+    <div class="header-lines"></div>
+    <div class="header-vignette"></div>
+    <p class="eyebrow">An essay by Princess</p>
+    <h1>Waiting for the<br /><em>Other Shoe</em><br />to Drop</h1>
+    <div class="header-rule"></div>
+    <p class="byline">February 2026 <span>&middot;</span> 7 min read</p>
+    <div class="scroll-hint">
+      <p>Read</p>
+      <div class="scroll-line"></div>
+    </div>
+  </header>
+
+  <article>
+
+    <div class="opening reveal">
+      Something good happened.
+    </div>
+
+    <p class="reveal">And you can not enjoy it.</p>
+
+    <p class="reveal">You got the job. You met someone. You finally achieved the thing you have been working toward. Something in your life is actually going well.</p>
+
+    <p class="reveal">And instead of celebrating, instead of feeling happy, instead of relaxing into the good thing, you are waiting.</p>
+
+    <p class="reveal">Waiting for it to fall apart. Waiting for the catch. Waiting for the moment when everything goes wrong.</p>
+
+    <div class="pull-quote reveal">
+      <p>Waiting for the other shoe to drop.</p>
+    </div>
+
+    <p class="reveal">Because good things do not last. That is what you learned. That is what you know. That is what always happens.</p>
+
+    <p class="reveal">Things go well for a minute. You get a taste of happiness. You let yourself hope. And then it all comes crashing down.</p>
+
+    <p class="reveal">So now you cannot enjoy good moments because you are spending them preparing for bad moments. You cannot celebrate success because you are already anticipating failure. You cannot relax into happiness because you know it is temporary.</p>
+
+    <p class="reveal emphasis">You are living in constant tension. Constant vigilance. Constant waiting. Even when things are good, especially when things are good, you cannot rest.</p>
+
+    <p class="reveal">Because you know what comes next. The other shoe. The inevitable disaster. The moment when good turns to bad and you remember that happiness was never yours to keep.</p>
+
+    <div class="section-break reveal"><div class="section-break-inner">I</div></div>
+
+    <p class="reveal">This is what trauma does. What chronic disappointment does. What repeated loss does. It teaches you that good things are dangerous. That hope is a setup for hurt. That letting your guard down means getting blindsided.</p>
+
+    <p class="reveal">So you keep your guard up. Even in the good times. Maybe especially in the good times.</p>
+
+    <div class="inner-voice reveal">
+      <p>You got the job? You are already worried about getting fired. You are already imagining what you could mess up. You are already preparing for the moment they realize they made a mistake hiring you.</p>
+    </div>
+
+    <div class="inner-voice reveal">
+      <p>You met someone? You are already waiting for them to see the real you and leave. You are already anticipating the relationship ending. You are already preparing for heartbreak while you are supposed to be falling in love.</p>
+    </div>
+
+    <div class="inner-voice reveal">
+      <p>Things are going well? You are searching for problems. You are finding cracks. You are looking for evidence that it is all about to fall apart because you need to be ready when it does.</p>
+    </div>
+
+    <p class="reveal">You cannot just be happy. You cannot just be in the moment. You cannot just enjoy what is happening right now.</p>
+
+    <p class="reveal">Because right now is when the other shoe could drop. And you need to be prepared. You need to see it coming. You need to brace for impact.</p>
+
+    <div class="section-break reveal"><div class="section-break-inner">II</div></div>
+
+    <p class="reveal">So you sabotage. Consciously or unconsciously, you create problems where there are not any. You find the flaw. You pick the fight. You push people away. You quit before you are fired. You end it before it ends you.</p>
+
+    <p class="reveal">Because at least if you make the bad thing happen, you are in control. At least if you drop the shoe yourself, you are not blindsided. At least if you destroy the good thing, you do not have to wait for it to be destroyed.</p>
+
+    <p class="reveal">Or you hyperanalyze. Every word. Every silence. Every change. Every tiny thing that could possibly be a sign that the end is coming.</p>
+
+    <div class="inner-voice reveal">
+      <p>They texted differently. Is this it? Is this the beginning of the end?<br /><br />
+      Your boss seemed distracted. Are they about to fire you?<br /><br />
+      Things have been good for too long. Something bad has to happen soon. It is overdue. You are owed a disaster.</p>
+    </div>
+
+    <p class="reveal">You are exhausting yourself with anxiety during moments that should be restful. You are stealing your own joy. You are spending good times preparing for bad times that have not happened and might never happen.</p>
+
+    <div class="pull-quote reveal">
+      <p>And the cruelest part? Sometimes your waiting creates what you are waiting for.</p>
+    </div>
+
+    <p class="reveal">Your anxiety makes you act differently. Your fear makes you needy or distant or difficult. Your constant bracing for disaster creates tension. Your inability to relax into happiness makes the happiness harder to sustain.</p>
+
+    <p class="reveal">And then it does fall apart. The relationship ends because your fear made it impossible. The job does not work out because your anxiety affected your performance. The good thing crumbles because you could not stop waiting for it to crumble.</p>
+
+    <div class="inner-voice reveal">
+      <p>And you say: See? I knew it. I was right to wait. I was right to not trust it. Good things do not last.</p>
+    </div>
+
+    <p class="reveal">But maybe it did not have to end. Maybe it could have lasted. Maybe your fear is what killed it.</p>
+
+    <p class="reveal emphasis">Maybe the other shoe only dropped because you spent so much time waiting for it that you kicked it down yourself.</p>
+
+    <p class="reveal">This is the cost of hypervigilance. Of never feeling safe. Of always waiting for disaster.</p>
+
+    <p class="reveal">You cannot enjoy the good because you are too busy preparing for the bad. You cannot live in the present because you are too focused on the future collapse. You cannot experience joy because you are too afraid of the pain that might follow.</p>
+
+    <p class="reveal">And that is not living. That is just surviving. That is just existing in a state of permanent anxiety disguised as preparedness.</p>
+
+    <div class="section-break reveal"><div class="section-break-inner">III</div></div>
+
+    <p class="reveal">So how do you stop? How do you enjoy good things when your entire nervous system is screaming that they are about to end?</p>
+
+    <p class="reveal">You start by recognizing the pattern. By seeing that you are doing this. By acknowledging that your brain is trying to protect you by keeping you on high alert, but it is actually stealing your ability to experience life.</p>
+
+    <p class="reveal">You start by challenging the thought. When your brain says "this is too good to be true," you ask "is it? Or is this just a good thing that is actually happening?"</p>
+
+    <p class="reveal">When you start waiting for disaster, you remind yourself: I am safe right now. In this moment. Right now, things are okay. I do not need to fast-forward to imaginary future problems.</p>
+
+    <p class="reveal">You start by staying present. Not in the catastrophic future your brain is creating. But here. Now. In this moment that is actually happening.</p>
+
+    <p class="reveal">Things are good right now? Be in right now. Do not time travel to future disaster. Do not borrow problems from tomorrow. Just be here, in this good moment, right now.</p>
+
+    <p class="reveal">You start by feeling your feelings. When good things happen, let yourself feel happy. Actually feel it. Even if it is uncomfortable. Even if it is scary. Even if your brain is screaming that happiness is dangerous.</p>
+
+    <p class="reveal">Feel the joy. The relief. The satisfaction. The love. The success. Whatever good feeling comes with the good thing, let yourself feel it. Fully. Without rushing to the next worry.</p>
+
+    <p class="reveal">You start by practicing trust. Not blind trust. Not pretending bad things never happen. But trust that you can handle whatever comes. Trust that if the other shoe drops, you will survive it. You have survived every other dropped shoe. You will survive the next one too.</p>
+
+    <div class="section-break reveal"><div class="section-break-inner">IV</div></div>
+
+    <p class="reveal">You start by accepting uncertainty. You cannot control whether good things last. You cannot prevent all loss. You cannot guarantee that happiness will not end. Life is uncertain. Always.</p>
+
+    <p class="reveal">But uncertainty does not mean disaster is guaranteed. It means things could go either way. Things could end. Or they could last. Or they could change into something different.</p>
+
+    <p class="reveal">You do not know. And spending all your energy preparing for the worst case scenario does not actually make it easier if it happens. It just robs you of the good times before it does.</p>
+
+    <p class="reveal">You start by grieving what taught you this. The shoe that dropped before. The time you were happy and then it all fell apart. The moment you trusted and got hurt. The relationship that ended. The loss that broke you.</p>
+
+    <p class="reveal">Grieve it. Feel it. Process it. Stop running from that pain and start healing it. Because until you do, it will keep controlling your present. It will keep making you wait for disaster during good moments.</p>
+
+    <p class="reveal">You start by being kind to yourself about this. About the waiting. About the anxiety. About the inability to relax. You are not doing this because you are negative or ungrateful or broken.</p>
+
+    <p class="reveal">You are doing this because you are scared. Because you have been hurt. Because your brain learned that good things end and now it is trying to protect you from that pain.</p>
+
+    <div class="pull-quote reveal">
+      <p>It is misguided protection. But it is still protection. It is still your system trying to keep you safe.</p>
+    </div>
+
+    <p class="reveal">Thank it. "Thank you for trying to protect me. But I do not need protection from happiness. I need permission to experience it."</p>
+
+    <p class="reveal">And then give yourself that permission. Permission to be happy without waiting for sadness. Permission to succeed without preparing for failure. Permission to love without bracing for loss.</p>
+
+    <p class="reveal">Permission to trust that good things can last. That happiness is not always followed by pain. That sometimes the other shoe does not drop. Sometimes things just stay good.</p>
+
+    <p class="reveal">Not forever, maybe. Nothing lasts forever. But for now. For this moment. For this season.</p>
+
+    <p class="reveal">And that is enough. This moment of good is enough. You do not need a guarantee of forever to enjoy right now.</p>
+
+    <div class="section-break reveal"><div class="section-break-inner">V</div></div>
+
+    <div class="closing reveal">
+      <p>So stop waiting for the other shoe to drop.</p>
+      <p>Stop spending good moments preparing for bad ones.</p>
+      <p>Stop robbing yourself of joy by constantly anticipating pain.</p>
+      <p>Be here. In this good thing. In this good moment. In this good day.</p>
+      <p>Let yourself have it. Let yourself feel it. Let yourself enjoy it.</p>
+      <p>Without waiting. Without bracing. Without preparing for disaster.</p>
+      <p>Just be here. In the good. Right now.</p>
+      <p>The future will come whether you worry about it or not. Bad things might happen whether you prepare for them or not. The shoe might drop whether you wait for it or not.</p>
+      <p>But right now? Right now things are good. Right now you are okay. Right now there is something worth enjoying.</p>
+      <p>So enjoy it. Please. Stop waiting and start living. Stop preparing and start experiencing. Stop bracing and start relaxing.</p>
+      <p>The other shoe might drop someday. Or it might not. But either way, you deserve to enjoy the time before it does.</p>
+      <p>You deserve to live without constant fear. You deserve to experience happiness without immediately preparing for sadness. You deserve good moments that are not overshadowed by waiting for bad ones.</p>
+      <p>You deserve to just be happy. Fully. Presently. Without the weight of anticipated disaster.</p>
+      <p>So let yourself. Let yourself have this. Let yourself enjoy this. Let yourself be here in this good thing without fast-forwarding to the end.</p>
+      <p>Stop waiting. Start living. Start trusting that sometimes good things just get to be good.</p>
+      <p>And you get to enjoy them. Without fear. Without bracing. Without waiting.</p>
+      <p>Just you. Here. In this good moment. Right now.</p>
+      <p>That is enough. You are enough. This moment is enough.</p>
+      <p>Stop waiting for it to end. And start letting yourself live it.</p>
+      <p>The other shoe might never drop. But if it does, you will handle it then.</p>
+      <p>For now, just be here. In the good. Finally.</p>
+      <p>You deserve that. You have always deserved that.</p>
+      <p>So give it to yourself. Stop waiting. Start living.</p>
+      <p>Right now. In this moment. In this good thing.</p>
+      <div class="final-line">Just be here. Finally. Without waiting.<br />Be here.</div>
+    </div>
+
+  </article>
+
+  <footer>
+    <div class="footer-glow"></div>
+    <div class="author-section reveal">
+      <div class="author-dot">P</div>
+      <div class="author-name">Princess</div>
+      <div class="author-bio">Just a girl named Princess&hellip; dreaming of that one soul who stumbles upon her words and finally feels less alone.</div>
+    </div>
+    <div class="medium-link reveal">
+      Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+    </div>
+    <p class="copyright reveal">&copy; 2026 Princess &nbsp;&middot;&nbsp; All rights reserved</p>
+  </footer>
+
+  <script>
+    // Reading progress
+    const progressBar = document.getElementById('progress');
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.width = (scrollTop / docHeight * 100) + '%';
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

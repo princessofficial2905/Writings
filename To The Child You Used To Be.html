@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>To the Child You Used to Be — Princess</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0b09;
+      --surface: #131109;
+      --amber: #c9903a;
+      --amber-soft: #e8b86d;
+      --amber-dim: rgba(201,144,58,0.15);
+      --cream: #f0e8d8;
+      --muted: #7a7060;
+      --faint: rgba(240,232,216,0.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.85;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── Grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.45;
+    }
+
+    /* ── Scroll progress bar ── */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--amber), var(--amber-soft));
+      z-index: 1000;
+      transition: width 0.1s linear;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 80px 24px 60px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 200px;
+      background: linear-gradient(to bottom, transparent, var(--bg));
+      pointer-events: none;
+    }
+
+    /* Radial amber glow behind title */
+    .hero-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,144,58,0.08) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -55%);
+      pointer-events: none;
+      animation: breathe 6s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 0.6; transform: translate(-50%, -55%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -55%) scale(1.12); }
+    }
+
+    .hero-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Infant', serif;
+      font-size: clamp(52px, 10vw, 110px);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--cream);
+      max-width: 900px;
+      opacity: 0;
+      animation: fadeUp 1.2s ease 0.5s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--amber-soft);
+    }
+
+    .hero-divider {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, var(--amber), transparent);
+      margin: 48px auto 36px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.9s forwards;
+    }
+
+    .hero-sub {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 100;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.1s forwards;
+    }
+
+    /* Opening line — pulled large */
+    .opening-line {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 80px 40px 0;
+      text-align: center;
+      opacity: 0;
+      animation: fadeUp 1.2s ease 1.3s forwards;
+    }
+
+    .opening-line p {
+      font-family: 'Cormorant Infant', serif;
+      font-size: clamp(26px, 4vw, 42px);
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(240,232,216,0.75);
+      line-height: 1.5;
+    }
+
+    /* ── Article body ── */
+    .article-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 80px 32px 120px;
+    }
+
+    .article-wrap p {
+      margin-bottom: 1.8em;
+      font-size: 1.05rem;
+      color: rgba(240,232,216,0.82);
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .article-wrap p.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Pull quote / highlight paragraphs */
+    .pull {
+      font-family: 'Cormorant Infant', serif;
+      font-size: clamp(22px, 3.5vw, 32px) !important;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--amber-soft) !important;
+      line-height: 1.55 !important;
+      margin: 2.5em 0 !important;
+      padding-left: 28px;
+      border-left: 1px solid var(--amber);
+      position: relative;
+    }
+
+    /* Closing litany section */
+    .litany {
+      background: var(--amber-dim);
+      border: 1px solid rgba(201,144,58,0.2);
+      border-radius: 2px;
+      padding: 48px 48px;
+      margin: 3em 0;
+    }
+
+    .litany p {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 1.25rem !important;
+      font-style: italic;
+      color: var(--amber-soft) !important;
+      line-height: 1.7 !important;
+      margin-bottom: 0.5em !important;
+      text-align: center;
+    }
+
+    /* Outro "I promise" block */
+    .closing-block {
+      text-align: center;
+      padding: 48px 0 0;
+    }
+
+    .closing-block p {
+      font-family: 'Cormorant Infant', serif;
+      font-size: clamp(18px, 2.8vw, 26px) !important;
+      font-style: italic;
+      color: var(--cream) !important;
+      margin-bottom: 0.6em !important;
+    }
+
+    .closing-final {
+      font-size: clamp(20px, 3.2vw, 30px) !important;
+      color: var(--amber-soft) !important;
+      font-weight: 600 !important;
+    }
+
+    /* ── Section break ornament ── */
+    .ornament {
+      text-align: center;
+      color: var(--amber);
+      font-size: 18px;
+      letter-spacing: 0.5em;
+      margin: 3em 0;
+      opacity: 0.5;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid rgba(201,144,58,0.15);
+      padding: 56px 32px;
+      text-align: center;
+    }
+
+    footer .author-tag {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    footer .author-name {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 28px;
+      font-style: italic;
+      color: var(--cream);
+      margin-bottom: 28px;
+    }
+
+    footer .medium-link {
+      display: inline-block;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      padding-bottom: 3px;
+      border-bottom: 1px solid rgba(201,144,58,0.3);
+      transition: color 0.3s, border-color 0.3s;
+    }
+
+    footer .medium-link span {
+      color: var(--amber);
+    }
+
+    footer .medium-link:hover {
+      color: var(--cream);
+      border-color: var(--amber);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Floating amber particles */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px; height: 2px;
+      border-radius: 50%;
+      background: var(--amber);
+      opacity: 0;
+      animation: drift linear infinite;
+    }
+
+    @keyframes drift {
+      0%   { opacity: 0; transform: translateY(100vh) translateX(0); }
+      10%  { opacity: 0.4; }
+      90%  { opacity: 0.2; }
+      100% { opacity: 0; transform: translateY(-10vh) translateX(40px); }
+    }
+
+    @media (max-width: 600px) {
+      .article-wrap { padding: 60px 20px 80px; }
+      .litany { padding: 32px 24px; }
+      .hero-title { font-size: clamp(44px, 12vw, 72px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-glow"></div>
+    <p class="hero-label">A letter to yourself</p>
+    <h1 class="hero-title">To the Child<br/><em>You Used to Be</em></h1>
+    <div class="hero-divider"></div>
+    <p class="hero-sub">By Princess &nbsp;·&nbsp; 2026</p>
+  </header>
+
+  <!-- Opening pull quote -->
+  <div class="opening-line">
+    <p>I wish I could go back and tell you.</p>
+  </div>
+
+  <!-- Article -->
+  <article class="article-wrap" id="article">
+
+    <p>Tell you that it wasn't your fault. That you didn't deserve it. That you were just a kid and kids shouldn't have to go through what you went through.</p>
+
+    <p>I wish I could go back and hold you. Protect you. Stand between you and all the things that hurt you. All the words that cut you. All the moments that broke you.</p>
+
+    <p class="pull">I wish I could tell you that you were enough. That you were lovable. That you were worthy. That you mattered.</p>
+
+    <p>Because you didn't hear it then. Or if you did, you didn't believe it. Because everything around you was telling you the opposite.</p>
+
+    <p>You learned to be small. To be quiet. To not take up space. To not ask for what you needed because asking meant being a burden.</p>
+
+    <p>You learned that your feelings were too much. That your tears were manipulation. That your needs were inconvenient. That you were somehow fundamentally too much and not enough at the same time.</p>
+
+    <p>You learned to apologize for existing. To make yourself invisible. To earn love instead of just receiving it.</p>
+
+    <p>And you carried all of that. A child carrying adult-sized pain. A small body holding weight that should never have been placed on it.</p>
+
+    <div class="ornament">· · ·</div>
+
+    <p>You tried so hard. To be good. To be perfect. To be what they wanted. To earn their love, their approval, their attention.</p>
+
+    <p>You thought if you were just better, things would get better. If you were just quieter, the yelling would stop. If you were just smarter, they'd be proud. If you were just different, they'd love you the way you needed to be loved.</p>
+
+    <p class="pull">But it was never about you. It was never your fault. You couldn't have fixed it by being different because you weren't the problem.</p>
+
+    <p>They were broken. The situation was broken. The environment was broken. But you were just a child. And you blamed yourself for all of it.</p>
+
+    <p>I wish I could go back and tell you: You didn't cause this. You can't control this. You can't fix this. And that's okay. It's not your job.</p>
+
+    <p>Your job is to be a kid. To play. To laugh. To make mistakes. To be imperfect. To just exist without having to earn your right to be here.</p>
+
+    <p>But you didn't get to do that, did you? You had to grow up too fast. You had to be the adult when the adults couldn't be. You had to take care of everyone else while nobody took care of you.</p>
+
+    <div class="ornament">· · ·</div>
+
+    <p>And you did it. You survived. You made it through. You got yourself here.</p>
+
+    <p>But at what cost?</p>
+
+    <p>You lost your childhood. Your innocence. Your sense of safety. Your ability to trust. Your belief that the world was a good place and people were fundamentally kind.</p>
+
+    <p>You learned too early that love can hurt. That family can wound. That the people who are supposed to protect you can be the ones you need protection from.</p>
+
+    <p>And you've been carrying that ever since. That wounded child. Still inside you. Still scared. Still waiting for someone to finally tell them they're safe now.</p>
+
+    <p class="pull">So I'm telling you. I'm telling that child you used to be: You're safe now. You made it. You survived. The worst is over.</p>
+
+    <div class="ornament">· · ·</div>
+
+    <p>I'm sorry. I'm sorry for what happened to you. I'm sorry you had to go through that. I'm sorry you didn't have the childhood you deserved.</p>
+
+    <p>I'm sorry nobody protected you. Nobody saw you. Nobody stood up for you. Nobody made you feel like you mattered.</p>
+
+    <p>You deserved so much better. You deserved to be loved unconditionally. To be protected fiercely. To be celebrated just for being you.</p>
+
+    <p>You deserved parents who were emotionally available. Who were safe. Who made you feel secure instead of scared.</p>
+
+    <p>You deserved to make mistakes without being made to feel worthless. To have feelings without being told they were wrong. To ask for what you needed without being made to feel like a burden.</p>
+
+    <p>You deserved to just be a kid.</p>
+
+    <p>And you didn't get that. And that's not fair. And I'm so, so sorry.</p>
+
+    <div class="ornament">· · ·</div>
+
+    <p class="pull">But you need to know: None of it was your fault.</p>
+
+    <p>You weren't too much. You weren't too sensitive. You weren't too needy. You weren't the problem.</p>
+
+    <p>You were a child. And children need things. They need love, attention, safety, validation, protection. That's not too much. That's normal. That's what childhood is supposed to be.</p>
+
+    <p>And if the adults in your life couldn't give you that, that was their failure. Not yours.</p>
+
+    <p class="pull">You weren't unlovable. You were unloved. There's a difference. And that difference matters.</p>
+
+    <p>You deserved better. And the fact that you didn't get it doesn't mean you weren't worthy of it. It means they weren't capable of giving it.</p>
+
+    <div class="ornament">· · ·</div>
+
+    <p>And I know you've spent your whole life trying to prove your worth. Trying to earn love. Trying to be good enough. Trying to be the person you thought you needed to be to finally be loved the way you needed to be loved.</p>
+
+    <p>But you can stop now. You can rest. You were always enough. You were always worthy. You were always deserving of love, protection, safety, care.</p>
+
+    <p>Always. From the beginning. Before you did anything to earn it. Before you proved anything. Before you became anything.</p>
+
+    <p>You were enough just by existing. Just by being born. Just by being you.</p>
+
+    <p>And I wish someone had told you that. I wish someone had shown you that. I wish someone had made you feel that in your bones so you never had to question it.</p>
+
+    <p>But they didn't. And you've questioned it every day since. Wondered if you're enough. Wondered if you're lovable. Wondered if you deserve good things.</p>
+
+    <p class="pull">So I'm telling you now: Yes. Yes, you are. Yes, you do.</p>
+
+    <p>You are enough. You are lovable. You deserve good things. You deserve happiness, peace, love, joy, safety, all of it.</p>
+
+    <p>You always did. Even when you were that scared little kid who thought they were the problem. Even then. Especially then.</p>
+
+    <div class="ornament">· · ·</div>
+
+    <p>And I'm sorry it took this long for you to hear it. I'm sorry you had to grow up and become your own parent. I'm sorry you had to give yourself what they should have given you.</p>
+
+    <p>But you did it. You survived. You healed yourself. You became the adult that child needed.</p>
+
+    <p>And now you get to go back and tell them. Tell that child inside you who's still waiting for someone to say it's going to be okay.</p>
+
+    <p>It's going to be okay. You're going to be okay. You are okay.</p>
+
+    <p>You made it. You survived. You're here. And you're so much stronger and braver and more resilient than you ever knew.</p>
+
+    <p>But you're also still that child. Still wounded. Still scared sometimes. Still carrying that pain.</p>
+
+    <p>And that's okay. You don't have to be over it. You don't have to be healed completely. You don't have to have it all figured out.</p>
+
+    <p>You just have to be kind to yourself. To that child you used to be. To the parts of you that are still hurting.</p>
+
+    <p>Hold them. Comfort them. Tell them what they needed to hear back then. Tell them now.</p>
+
+    <!-- The litany box -->
+    <div class="litany">
+      <p>"You're safe. You're loved. You're enough.</p>
+      <p>It wasn't your fault. You did nothing wrong.</p>
+      <p>You deserve good things. You matter.</p>
+      <p>You're worthy. You're going to be okay."</p>
+    </div>
+
+    <p>Tell them every day if you need to. As many times as it takes for them to finally believe it.</p>
+
+    <p>Because that child deserves to know. Deserves to hear it. Deserves to finally feel safe and loved and enough.</p>
+
+    <p>And you're the only one who can give them that now. You're the parent they needed. You're the protector they deserved. You're the adult they can finally trust.</p>
+
+    <p>So be that for them. For yourself. For the child you used to be who grew into the person you are now.</p>
+
+    <p>Honor them. Heal them. Love them.</p>
+
+    <p>They deserve it. They always did.</p>
+
+    <p>And so do you.</p>
+
+    <div class="ornament">· · ·</div>
+
+    <!-- Closing litany -->
+    <div class="closing-block">
+      <p>To the child you used to be: I see you. I hear you. I believe you. I'm sorry for what happened. It wasn't your fault.</p>
+      <p>You were always enough. You were always worthy. You were always deserving of love.</p>
+      <p>And you still are.</p>
+      <p>You always will be.</p>
+      <p style="color: var(--amber); font-size: 1.1rem; margin-top: 1.5em; font-family: 'Josefin Sans'; font-weight: 300; letter-spacing: 0.2em; font-style: normal;">I promise.</p>
+      <br/>
+      <p>You're safe now.</p>
+      <p>You're loved now.</p>
+      <p class="closing-final">You're enough now.</p>
+      <p style="margin-top: 0.8em; font-size: 1rem; color: var(--muted);">And you always were.</p>
+    </div>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p class="author-tag">Written by</p>
+    <p class="author-name">Princess</p>
+    <a href="https://medium.com/@prvaxis" target="_blank" class="medium-link">
+      Originally published on <span>Medium</span>
+    </a>
+  </footer>
+
+  <script>
+    // ── Progress bar ──
+    const bar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const total = document.body.scrollHeight - window.innerHeight;
+      bar.style.width = (scrolled / total * 100) + '%';
+    });
+
+    // ── Scroll reveal ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.article-wrap p, .litany, .closing-block').forEach(el => {
+      observer.observe(el);
+    });
+
+    // ── Floating particles ──
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const left = Math.random() * 100;
+      const duration = 12 + Math.random() * 20;
+      const delay = Math.random() * 20;
+      const size = 1 + Math.random() * 2;
+      p.style.cssText = `
+        left: ${left}%;
+        width: ${size}px;
+        height: ${size}px;
+        animation-duration: ${duration}s;
+        animation-delay: ${delay}s;
+        opacity: ${0.1 + Math.random() * 0.3};
+      `;
+      container.appendChild(p);
+    }
+
+    // ── Litany & closing-block scroll reveal ──
+    document.querySelectorAll('.litany p, .closing-block p').forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(18px)';
+      el.style.transition = `opacity 0.8s ease ${i * 0.12}s, transform 0.8s ease ${i * 0.12}s`;
+    });
+
+    const litanyObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('p').forEach(p => {
+            p.style.opacity = '1';
+            p.style.transform = 'translateY(0)';
+          });
+          litanyObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.litany, .closing-block').forEach(el => litanyObs.observe(el));
+  </script>
+</body>
+</html>

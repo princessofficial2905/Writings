@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>What They Missed In Me — Princess</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #080808;
+    --bg2: #0d0b09;
+    --gold: #c9a84c;
+    --gold-light: #e8cc85;
+    --gold-dim: rgba(201,168,76,0.15);
+    --cream: #f0e8d8;
+    --muted: #7a7060;
+    --warm: #2a2218;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 32px; height: 32px;
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.25s ease;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9990;
+    opacity: 0.6;
+  }
+
+  /* AMBIENT GLOW */
+  .glow-orb {
+    position: fixed;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    transition: all 1.5s ease;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 40px;
+    overflow: hidden;
+    z-index: 2;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(201,168,76,0.06) 0%, transparent 70%);
+  }
+
+  .hero-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 1.2s 0.3s forwards ease;
+  }
+
+  .hero-title-small {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 1.2s 0.6s forwards ease;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 10vw, 9rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, #a07830 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0;
+    animation: fadeUp 1.4s 0.8s forwards ease;
+    position: relative;
+  }
+
+  .hero-title::after {
+    content: 'What They Missed In Me';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, #a07830 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: blur(20px);
+    opacity: 0.3;
+    z-index: -1;
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(240,232,216,0.4);
+    margin-top: 24px;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    animation: fadeUp 1.2s 1.2s forwards ease;
+  }
+
+  .hero-divider {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 52px auto 0;
+    width: 260px;
+    opacity: 0;
+    animation: fadeUp 1s 1.5s forwards ease;
+  }
+  .hero-divider span {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .hero-divider svg { color: var(--gold); opacity: 0.7; }
+
+  .hero-meta {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 28px;
+    opacity: 0;
+    animation: fadeUp 1s 1.7s forwards ease;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 48px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeIn 1s 2.2s forwards ease;
+  }
+  .scroll-hint span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(180deg, var(--gold) 0%, transparent 100%);
+    animation: scrollPulse 2s infinite;
+  }
+
+  /* ARTICLE BODY */
+  .article {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 80px 40px 120px;
+  }
+
+  .drop-cap-para {
+    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+    line-height: 1.95;
+    font-weight: 300;
+    color: rgba(240,232,216,0.88);
+    letter-spacing: 0.01em;
+    margin-bottom: 52px;
+  }
+
+  .drop-cap-para::first-letter {
+    float: left;
+    font-family: 'Playfair Display', serif;
+    font-size: 5.2em;
+    font-weight: 700;
+    line-height: 0.78;
+    margin-right: 14px;
+    margin-top: 8px;
+    color: var(--gold);
+    text-shadow: 0 0 40px rgba(201,168,76,0.3);
+  }
+
+  .body-para {
+    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+    line-height: 1.95;
+    font-weight: 300;
+    color: rgba(240,232,216,0.88);
+    letter-spacing: 0.01em;
+    margin-bottom: 52px;
+  }
+
+  /* VERSE BLOCK */
+  .verse-block {
+    position: relative;
+    margin: 72px -20px;
+    padding: 52px 48px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.05) 0%, rgba(201,168,76,0.02) 100%);
+    border-left: 2px solid var(--gold);
+    border-right: none;
+  }
+  .verse-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+  .verse-block::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  .verse-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 2.1;
+    color: var(--cream);
+    display: block;
+    letter-spacing: 0.02em;
+  }
+
+  .verse-italic {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  /* CLOSING VERSE */
+  .closing-verse {
+    text-align: center;
+    margin: 72px 0;
+    padding: 60px 20px;
+    position: relative;
+  }
+  .closing-verse::before {
+    content: '"';
+    position: absolute;
+    top: -10px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    color: rgba(201,168,76,0.08);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .closing-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 2.2;
+    color: rgba(240,232,216,0.9);
+    display: block;
+    letter-spacing: 0.03em;
+  }
+
+  .closing-gold {
+    color: var(--gold-light);
+  }
+
+  /* SECTION ORNAMENT */
+  .ornament {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 60px 0;
+    opacity: 0.5;
+  }
+  .ornament span { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+  .ornament-dot { width: 4px; height: 4px; background: var(--gold); border-radius: 50%; }
+
+  /* FOOTER */
+  .footer {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid rgba(201,168,76,0.12);
+    padding: 60px 40px 80px;
+    text-align: center;
+  }
+
+  .author-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 52px;
+  }
+
+  .author-avatar-ring {
+    position: relative;
+    width: 72px; height: 72px;
+  }
+  .author-avatar-ring::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), transparent, var(--gold));
+    animation: rotateBorder 4s linear infinite;
+  }
+  .author-avatar-ring img {
+    position: relative;
+    z-index: 1;
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--bg);
+  }
+
+  .author-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: 0.05em;
+  }
+
+  .author-bio {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--muted);
+    max-width: 400px;
+    line-height: 1.7;
+  }
+
+  .published-on {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+  .published-on a {
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+    padding-bottom: 1px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+  .published-on a:hover {
+    color: var(--gold-light);
+    border-color: var(--gold-light);
+  }
+
+  .copyright {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: rgba(122,112,96,0.4);
+    text-transform: uppercase;
+    margin-top: 40px;
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* FLOATING PARTICLES */
+  .particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0;
+    animation: floatParticle var(--dur, 8s) var(--delay, 0s) infinite ease-in-out;
+  }
+
+  /* KEYFRAMES */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+  @keyframes rotateBorder {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes floatParticle {
+    0% { opacity: 0; transform: translateY(100vh) scale(0); }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.2; }
+    100% { opacity: 0; transform: translateY(-20vh) scale(1.5); }
+  }
+
+  /* READING PROGRESS */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    z-index: 9997;
+    width: 0%;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 8px var(--gold);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .article { padding: 60px 24px 80px; }
+    .verse-block { margin: 48px -4px; padding: 36px 28px; }
+    .hero { padding: 60px 24px; }
+    .footer { padding: 48px 24px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="progress-bar" id="progressBar"></div>
+<div class="glow-orb" id="glowOrb"></div>
+<div class="particles" id="particles"></div>
+
+<!-- HERO -->
+<header class="hero">
+  <p class="hero-label">A Love Letter to the Unseen Self</p>
+  <p class="hero-title-small">What They Missed In Me</p>
+  <h1 class="hero-title">was the part<br>that mattered.</h1>
+  <p class="hero-subtitle">for every soul who has ever felt unseen</p>
+  <div class="hero-divider">
+    <span></span>
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="3"/></svg>
+    <span></span>
+  </div>
+  <p class="hero-meta">By Princess &nbsp;·&nbsp; February 14, 2026 &nbsp;·&nbsp; 3 min read</p>
+  <div class="scroll-hint">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<!-- ARTICLE -->
+<article class="article">
+
+  <p class="drop-cap-para reveal">
+    There comes a moment, often long after the heartbreak has settled, when you finally realize that the parts of you someone overlooked were the very parts that made you extraordinary. You look back at the softness you offered, the patience you carried, the understanding you poured into someone who rarely met you halfway, and you see how much beauty existed within you, beauty they didn't have the capacity to recognize. You think about the way you listened, the way you cared, the way you gave your heart without hesitation, and you wonder how they could have missed something so rare. But sometimes people don't overlook you because you're unworthy, they overlook you because they're unready, unevolved, and unable to appreciate what they were given.
+  </p>
+
+  <div class="ornament reveal reveal-delay-1">
+    <span></span><div class="ornament-dot"></div><span></span>
+  </div>
+
+  <p class="body-para reveal">
+    You were the kind of person who remembered the little things, who made space for emotions they didn't even know how to name, who softened your tone so they wouldn't feel attacked, who showed up even when they barely lifted a finger for you. You offered tenderness in a world that often confuses it for weakness. You offered clarity when they offered confusion. You offered commitment when they offered excuses. You offered depth to someone who only knew how to swim in the shallow end of love. And still, you blamed yourself for not being enough, when in reality, you were more than they ever knew how to handle.
+  </p>
+
+  <div class="verse-block reveal reveal-delay-1">
+    <span class="verse-line">God saw the parts they dismissed.</span>
+    <span class="verse-line">He saw the vulnerability you tried to share but they brushed off.</span>
+    <span class="verse-line">He saw the love you poured out but never received back.</span>
+    <span class="verse-line">He saw the nights you questioned your worth because someone else failed to see it.</span>
+    <span class="verse-line" style="margin-top: 20px;">And with all the gentleness in His heart, He whispered into your spirit,</span>
+    <span class="verse-line verse-italic">&ldquo;They didn't appreciate you because they were never meant to keep you.&rdquo;</span>
+    <span class="verse-line" style="margin-top: 20px;">Some hearts are not mature enough to value purity.</span>
+    <span class="verse-line">Some souls are too wounded to recognize healing.</span>
+    <span class="verse-line">Some people are too distracted to notice grace when it's standing right in front of them.</span>
+  </div>
+
+  <p class="body-para reveal">
+    One day, my friend, someone will look at those very same parts of you, the softness, the sensitivity, the loyalty, the emotional depth, the tenderness that makes your love feel like a safe home, and they will treasure them in ways you've never experienced. They will meet your heart with the same beauty it gives. They will see your love not as a convenience, not as an option, but as the rare, sacred gift that it is. And you will finally understand that nothing about you was ever lacking, you were simply giving your best to someone who could only receive the bare minimum.
+  </p>
+
+  <div class="closing-verse reveal">
+    <span class="closing-line">The parts of you they never appreciated</span>
+    <span class="closing-line">will be the very parts someone else cherishes most.</span>
+    <span class="closing-line">And when that love arrives,</span>
+    <span class="closing-line">you will thank God that the wrong hearts let you go,</span>
+    <span class="closing-line closing-gold">because you were never meant to bloom in places<br>that could not recognize your light.</span>
+  </div>
+
+</article>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="author-section reveal">
+    <div class="author-avatar-ring">
+      <img src="https://miro.medium.com/v2/resize:fill:128:128/1*Gg_K0KNe6om7_dJRbeTfoQ.jpeg" alt="Princess" onerror="this.style.display='none'"/>
+    </div>
+    <div>
+      <p class="author-name">Princess</p>
+      <p class="author-bio">Just a girl named Princess… dreaming of that one soul who stumbles upon her words and finally feels less alone.</p>
+    </div>
+  </div>
+  <p class="published-on reveal">Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+  <p class="copyright reveal">&copy; 2026 Princess · All Rights Reserved</p>
+</footer>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // GLOW ORB FOLLOW MOUSE
+  const orb = document.getElementById('glowOrb');
+  document.addEventListener('mousemove', e => {
+    orb.style.left = e.clientX + 'px';
+    orb.style.top = e.clientY + 'px';
+  });
+
+  // PROGRESS BAR
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = pct + '%';
+  });
+
+  // SCROLL REVEAL
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // PARTICLES
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.setProperty('--dur', (6 + Math.random() * 10) + 's');
+    p.style.setProperty('--delay', (Math.random() * 10) + 's');
+    p.style.left = Math.random() * 100 + 'vw';
+    container.appendChild(p);
+  }
+</script>
+</body>
+</html>

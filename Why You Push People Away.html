@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why You Push People Away — Princess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0907;
+    --bg2: #0f0d0b;
+    --amber: #c8872a;
+    --amber-light: #e8a84a;
+    --amber-dim: #7a5018;
+    --cream: #e8dcc8;
+    --cream-dim: #a89880;
+    --text: #d4c4a8;
+    --text-dim: #7a6e60;
+    --line: rgba(200, 135, 42, 0.15);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'EB Garamond', serif;
+    font-size: 20px;
+    line-height: 1.85;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* Vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(5,4,3,0.7) 100%);
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 80px 24px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(200,135,42,0.08) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .hero-lines {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .hero-lines::before,
+  .hero-lines::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--amber-dim), transparent);
+  }
+
+  .hero-lines::before {
+    top: 0;
+    height: 35%;
+  }
+
+  .hero-lines::after {
+    bottom: 0;
+    height: 35%;
+  }
+
+  .overline {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.3s;
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 1.1;
+    color: var(--cream);
+    letter-spacing: -0.01em;
+    opacity: 0;
+    animation: fadeUp 1.2s ease forwards 0.5s;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--amber-light);
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    color: var(--cream-dim);
+    margin-top: 24px;
+    opacity: 0;
+    animation: fadeUp 1.2s ease forwards 0.8s;
+  }
+
+  .hero-meta {
+    margin-top: 48px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 1.1s;
+  }
+
+  .hero-meta span { display: flex; align-items: center; gap: 8px; }
+  .hero-meta .dot {
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--amber-dim);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards 1.8s;
+  }
+
+  .scroll-hint span {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    letter-spacing: 0.4em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--amber-dim), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  /* ARTICLE */
+  .article-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 160px;
+  }
+
+  /* Drop cap intro */
+  .intro-block {
+    position: relative;
+    padding: 60px 0 40px;
+    text-align: center;
+    border-top: 1px solid var(--line);
+  }
+
+  .intro-ornament {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 60px;
+    line-height: 1;
+    color: var(--amber);
+    opacity: 0.3;
+    margin-bottom: 16px;
+  }
+
+  .intro-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.4rem, 3.5vw, 2rem);
+    color: var(--cream);
+    line-height: 1.5;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* Paragraphs */
+  .content p {
+    margin-bottom: 1.6em;
+    color: var(--text);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .content p.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .content p:first-of-type::first-letter {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4.5em;
+    font-weight: 600;
+    line-height: 0.75;
+    float: left;
+    margin: 0.05em 0.08em 0 0;
+    color: var(--amber);
+  }
+
+  /* Pull quotes */
+  .pull-quote {
+    margin: 60px 0;
+    padding: 40px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    text-align: center;
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .pull-quote.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .pull-quote::before {
+    content: '\201C';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 80px;
+    line-height: 0.5;
+    color: var(--amber);
+    opacity: 0.25;
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  .pull-quote p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.3rem, 3vw, 1.75rem);
+    color: var(--cream);
+    line-height: 1.55;
+    max-width: 580px;
+    margin: 0 auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .pull-quote p::first-letter { all: unset; }
+
+  /* Section break */
+  .section-break {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 56px 0;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  .section-break.visible { opacity: 1; }
+
+  .section-break::before,
+  .section-break::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .section-break span {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--amber);
+    font-size: 20px;
+    letter-spacing: 0.2em;
+  }
+
+  /* Phone animation */
+  .phone-scene {
+    margin: 80px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+  .phone-scene.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .phone-caption {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .phone {
+    width: 120px;
+    height: 210px;
+    border-radius: 18px;
+    border: 1.5px solid rgba(200,135,42,0.3);
+    background: #111009;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(200,135,42,0.06), inset 0 0 20px rgba(0,0,0,0.8);
+  }
+
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 4px;
+    background: rgba(200,135,42,0.2);
+    border-radius: 2px;
+    z-index: 2;
+  }
+
+  .phone-screen {
+    position: absolute;
+    inset: 18px 8px 8px;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+
+  .phone-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 4px;
+    animation: phoneScroll 8s linear infinite;
+  }
+
+  @keyframes phoneScroll {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-55%); }
+  }
+
+  .msg-bubble {
+    background: rgba(200,135,42,0.08);
+    border: 1px solid rgba(200,135,42,0.12);
+    border-radius: 6px 6px 6px 2px;
+    padding: 5px 7px;
+    font-size: 7px;
+    color: var(--text-dim);
+    line-height: 1.4;
+    font-family: 'EB Garamond', serif;
+  }
+
+  .msg-bubble.unread {
+    border-color: rgba(200,135,42,0.3);
+    color: var(--cream-dim);
+  }
+
+  .msg-bubble.unread::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    background: var(--amber);
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  .notification-bar {
+    background: rgba(200,135,42,0.05);
+    border: 1px solid rgba(200,135,42,0.1);
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 6px;
+    color: var(--text-dim);
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Closing */
+  .closing {
+    margin-top: 80px;
+    padding: 60px 0;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+
+  .closing-final {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    color: var(--amber-light);
+    line-height: 1.4;
+    margin-bottom: 40px;
+  }
+
+  .author-line {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .medium-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    border-bottom: 1px solid var(--amber-dim);
+    padding-bottom: 2px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .medium-link:hover {
+    color: var(--amber-light);
+    border-color: var(--amber-light);
+  }
+
+  .medium-link .medium-word {
+    color: var(--amber);
+    font-style: normal;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    body { font-size: 18px; }
+    .article-wrap { padding: 0 20px 100px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-lines"></div>
+
+  <p class="overline">An Essay by Princess</p>
+
+  <h1>Why You Push<br><em>People Away</em></h1>
+  <p class="hero-subtitle">When You Need Them Most</p>
+
+  <div class="hero-meta">
+    <span>Princess</span>
+    <span class="dot"></span>
+    <span>7 min read</span>
+    <span class="dot"></span>
+    <span>March 2026</span>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ARTICLE -->
+<article class="article-wrap">
+
+  <div class="intro-block">
+    <div class="intro-ornament">§</div>
+    <p class="intro-quote">You're drowning and someone reaches out their hand. And you slap it away.</p>
+  </div>
+
+  <div class="content" id="content">
+
+    <p>Not because you don't need help. But because you need it so badly that accepting it feels terrifying.</p>
+
+    <p>So you push them away. You say "I'm fine." You put up walls. You isolate yourself. You make yourself unreachable right when you need people the most.</p>
+
+    <p>And then you wonder why you're so alone. Why nobody's there for you. Why you have to go through everything by yourself.</p>
+
+    <p>But they tried. They reached out. They offered. And you pushed them away.</p>
+
+    <p>You do this every time. Every crisis. Every breakdown. Every moment when you're falling apart and could actually use support, you push people away.</p>
+
+    <p>You ghost. You cancel plans. You don't return calls. You give one-word answers. You say you're fine when you're clearly not fine. You build walls so high nobody can climb them.</p>
+
+    <p>And you tell yourself it's because you don't want to burden anyone. You don't want to be too much. You don't want to impose. You don't want them to see you at your worst.</p>
+
+    <p>But that's not the whole truth, is it?</p>
+
+    <div class="pull-quote">
+      <p>The truth is deeper. Scarier. Harder to admit.</p>
+    </div>
+
+    <p>You push people away because you're testing them. You want to see if they'll stay. If they'll fight for you. If they'll break through your walls and prove they really care.</p>
+
+    <p>You push people away because you don't believe you're worthy of help. Deep down, you think you deserve to suffer alone. You think needing people makes you weak. You think accepting help means you've failed.</p>
+
+    <p>You push people away because vulnerability is terrifying. Letting someone see you broken feels like giving them power to hurt you. Admitting you need someone feels like admitting you're not enough on your own.</p>
+
+    <p>You push people away because you've been hurt before. Someone you needed wasn't there. Someone you trusted let you down. Someone you loved left when things got hard. So now you leave first. You push away before they can abandon you.</p>
+
+    <p>You push people away because it's easier. Easier than asking for help. Easier than explaining what you're going through. Easier than being vulnerable. Easier than risking rejection.</p>
+
+    <p>You push people away because you're ashamed. Ashamed of struggling. Ashamed of not having it together. Ashamed of needing anyone. Ashamed of the mess you've become.</p>
+
+    <p>You push people away because you don't know how to let them in. You don't know how to be vulnerable. You don't know how to ask for what you need. You don't know how to accept love when you feel unlovable.</p>
+
+    <div class="section-break"><span>✦</span></div>
+
+    <p>But here's what happens when you do this:</p>
+
+    <p>People eventually stop reaching out. Not because they don't care. But because you've taught them you don't want their help. You've trained them to stay away. You've shown them that their efforts to be there for you aren't welcome.</p>
+
+    <p>So they back off. They give you space. They assume you've got it handled. They stop asking if you're okay because you always say you're fine anyway.</p>
+
+    <p>And then you feel abandoned. You feel alone. You feel like nobody cares. Like you're going through everything by yourself because nobody showed up.</p>
+
+    <p>But they tried to show up. You just wouldn't let them in.</p>
+
+    <!-- Phone scene -->
+    <div class="phone-scene">
+      <div class="phone-caption">the calls you never answered</div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-content">
+            <div class="notification-bar">3 missed calls</div>
+            <div class="msg-bubble unread">hey, are you okay?</div>
+            <div class="msg-bubble">just checking in on you</div>
+            <div class="msg-bubble unread">I'm here if you want to talk</div>
+            <div class="msg-bubble">you've been quiet lately</div>
+            <div class="msg-bubble unread">please reach out</div>
+            <div class="msg-bubble">thinking of you</div>
+            <div class="notification-bar">read 2 days ago</div>
+            <div class="msg-bubble unread">still here whenever you're ready</div>
+            <div class="msg-bubble">no pressure, just know I care</div>
+            <div class="msg-bubble">...</div>
+            <div class="notification-bar">no response</div>
+            <div class="msg-bubble unread">hey, are you okay?</div>
+            <div class="msg-bubble">just checking in on you</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>You can't push people away and then blame them for not being there. You can't build walls and then complain about being isolated. You can't reject help and then feel hurt that nobody's helping.</p>
+
+    <p>This is a pattern. A cycle. A self-fulfilling prophecy.</p>
+
+    <p>You believe you're alone, so you act in ways that make you alone, which confirms your belief that you're alone.</p>
+
+    <p>You believe people will leave, so you push them away first, and then they leave because you pushed them away, which confirms your belief that people leave.</p>
+
+    <p>You believe you're not worthy of help, so you don't let anyone help you, which means you struggle alone, which confirms your belief that you have to do everything alone.</p>
+
+    <div class="pull-quote">
+      <p>You're creating the very thing you fear. You're making your worst beliefs come true by acting on them.</p>
+    </div>
+
+    <p>And I know why. I know you're scared. I know you've been hurt. I know trusting people feels impossible when people have proven they can't be trusted.</p>
+
+    <p>But not everyone is going to hurt you. Not everyone is going to leave. Not everyone is going to use your vulnerability against you.</p>
+
+    <p>Some people actually want to help. Some people actually care. Some people actually want to be there for you, especially when you're struggling.</p>
+
+    <p>But you have to let them. You have to stop pushing them away. You have to stop testing them to see if they'll fight through your walls. You have to stop making them prove their love by surviving your rejection.</p>
+
+    <p>Because that's not fair. And it doesn't work. People get tired. People give up. People stop trying after being pushed away enough times.</p>
+
+    <p>And then you're actually alone. Not because nobody cares. But because you made it too hard to care.</p>
+
+    <div class="section-break"><span>✦</span></div>
+
+    <p>So what do you do? How do you stop this pattern?</p>
+
+    <p>You start by recognizing it. By seeing what you're doing. By acknowledging that you push people away not because you don't need them but because you need them so much it scares you.</p>
+
+    <p>You start by understanding that needing people is not weakness. It's human. Everyone needs support. Everyone needs help. Everyone needs connection. You're not too much for needing those things.</p>
+
+    <p>You start by taking small risks. You don't have to tell everyone everything. But you can tell someone something. You can admit "I'm not okay" to one person. You can accept one offer of help. You can let one person in, just a little.</p>
+
+    <p>You start by challenging your beliefs. When you think "I'll burden them" or "They don't really care" or "I should handle this alone", challenge those thoughts. Ask yourself if they're actually true or if they're just fear talking.</p>
+
+    <p>You start by communicating. Instead of pushing people away, tell them what's happening. "I'm struggling right now and I tend to isolate when I'm struggling. I'm trying not to do that. Can you check on me even if I seem like I want to be alone?"</p>
+
+    <p>You start by accepting that vulnerability is scary but isolation is scarier. That being hurt by someone you let in is painful but being alone in your pain is worse. That the risk of rejection is worth it for the chance of connection.</p>
+
+    <p>You start by forgiving yourself for all the times you pushed people away. For all the relationships you damaged. For all the help you rejected. You were doing the best you could with the tools you had.</p>
+
+    <p>And you start by giving people another chance. Even if you've pushed them away before. Even if you've trained them to stay away. Reach out. Explain. Try again.</p>
+
+    <div class="pull-quote">
+      <p>"I pushed you away. I'm sorry. I was scared. I'm still scared. But I need you. Can we try again?"</p>
+    </div>
+
+    <p>Some people will say no. They've been hurt too many times by your walls. They don't have the energy to fight through anymore. And that's okay. That's their boundary. That's their self-care.</p>
+
+    <p>But some people will say yes. Some people have been waiting for you to let them in. Some people want to be there for you. Some people see through your pushing and understand it's fear, not rejection.</p>
+
+    <p>Those are your people. Let them in. Keep them close. Stop pushing them away.</p>
+
+    <div class="section-break"><span>✦</span></div>
+
+    <p>Because you need people. Everyone does. And pretending you don't need anyone doesn't make you strong. It makes you alone.</p>
+
+    <p>Admitting you need help is strength. Letting people in is courage. Accepting support is wisdom.</p>
+
+    <p>You don't have to go through everything alone. You don't have to carry everything by yourself. You don't have to suffer in isolation.</p>
+
+    <p>There are people who want to help. Who want to be there. Who want to support you.</p>
+
+    <p>Stop pushing them away. Stop testing them. Stop making them prove they care by fighting through your walls.</p>
+
+    <p>Just let them in. Let them help. Let them love you.</p>
+
+    <p>Even when you're struggling. Especially when you're struggling.</p>
+
+    <p>You deserve support. You deserve help. You deserve connection.</p>
+
+    <p>And you don't have to earn it. You don't have to be perfect first. You don't have to have it together.</p>
+
+    <p>You can be messy and broken and struggling and still worthy of care.</p>
+
+    <p>So next time you're drowning and someone reaches out their hand, take it.</p>
+
+    <p>Don't slap it away. Don't push them away. Don't isolate yourself.</p>
+
+    <p>Take the hand. Let them pull you up. Let them help you.</p>
+
+    <p>You need them. And that's okay. That's human. That's beautiful.</p>
+
+    <p>Stop pushing people away when you need them most.</p>
+
+    <p>Start letting them in. Start accepting help. Start being vulnerable.</p>
+
+    <p>It's scary. But it's also the only way to not be alone.</p>
+
+    <p>And you don't have to be alone. You never did.</p>
+
+    <p>You just have to stop pushing away the people who are trying to be there.</p>
+
+    <p>So stop. Please. Stop pushing. Start letting in.</p>
+
+    <p>You deserve to be helped. You deserve to be supported. You deserve to not go through this alone.</p>
+
+    <p>Let people be there for you. Let them help. Let them in.</p>
+
+    <p>You'll be amazed at how much lighter everything feels when you're not carrying it all by yourself.</p>
+
+    <p>You'll be amazed at how much love is available when you stop pushing it away.</p>
+
+    <p>You'll be amazed at how not alone you actually are.</p>
+
+    <p>Take the hand. Let them help. Let them stay.</p>
+
+    <p>You need them. And they want to be needed by you.</p>
+
+    <p>So let them. Please. Just let them.</p>
+
+    <p>You don't have to do this alone anymore.</p>
+
+    <p>Stop pushing. Start accepting. Start healing.</p>
+
+    <p>With help. With support. With people who care.</p>
+
+    <p>They're there. They've been there. Just waiting for you to let them in.</p>
+
+    <p>So let them. Today. Now. Before you push away one more person who's trying to love you.</p>
+
+    <p>Let them in. You deserve it. You've always deserved it.</p>
+
+    <p>And they want to be there. They're just waiting for you to let them.</p>
+
+    <p>So let them.</p>
+
+    <p>Please. Let them.</p>
+
+  </div><!-- /content -->
+
+  <!-- CLOSING -->
+  <div class="closing">
+    <p class="closing-final">You don't have to do this alone.<br>You never did.</p>
+    <p class="author-line">Written by Princess</p>
+    <p style="font-family:'EB Garamond',serif; font-style:italic; font-size:14px; color:var(--text-dim); margin-top:24px;">
+      Originally published on <a class="medium-word" href="https://medium.com/@prvaxis" target="_blank" rel="noopener" style="color:var(--amber); text-decoration:none; border-bottom:1px solid var(--amber-dim); transition:color 0.3s; font-style:normal;">Medium</a>
+    </p>
+  </div>
+
+</article>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.content p, .pull-quote, .section-break, .phone-scene').forEach((el, i) => {
+    el.style.transitionDelay = `${(i % 3) * 0.05}s`;
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>

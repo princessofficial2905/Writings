@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Kindness I Never Received Back</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0b09;
+    --bg2: #111009;
+    --amber: #c9933a;
+    --amber-soft: #e0b46a;
+    --amber-dim: #7a5820;
+    --text: #d4c8b8;
+    --text-dim: #8a7d6d;
+    --text-bright: #ede3d4;
+    --gold: #b8913a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 60px 20px;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 50% 40%, #1e1508 0%, #0d0b09 70%);
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(180, 120, 40, 0.08) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: breathe 6s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+  }
+
+  /* Floating particles */
+  .particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .particle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    background: var(--amber);
+    border-radius: 50%;
+    animation: drift linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes drift {
+    0% { opacity: 0; transform: translateY(0) translateX(0); }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.3; }
+    100% { opacity: 0; transform: translateY(-120vh) translateX(var(--dx, 20px)); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: var(--amber-dim);
+    text-transform: uppercase;
+    position: relative;
+    z-index: 2;
+    animation: fadeUp 1.2s ease forwards;
+    opacity: 0;
+    animation-delay: 0.3s;
+    margin-bottom: 30px;
+  }
+
+  .hero-title-wrap {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    animation: fadeUp 1.4s ease forwards;
+    opacity: 0;
+    animation-delay: 0.6s;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(4rem, 12vw, 10rem);
+    line-height: 0.9;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+  }
+
+  .hero-title .accent {
+    font-style: italic;
+    color: var(--amber-soft);
+    display: block;
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    color: var(--text-dim);
+    margin-top: 20px;
+    letter-spacing: 0.05em;
+  }
+
+  .hero-divider {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 50px 0 30px;
+    animation: fadeUp 1.6s ease forwards;
+    opacity: 0;
+    animation-delay: 0.9s;
+  }
+
+  .hero-divider::before,
+  .hero-divider::after {
+    content: '';
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--amber-dim));
+  }
+
+  .hero-divider::after {
+    background: linear-gradient(to left, transparent, var(--amber-dim));
+  }
+
+  .hero-divider span {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--amber-dim);
+  }
+
+  .hero-meta {
+    position: relative;
+    z-index: 2;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    color: var(--text-dim);
+    animation: fadeUp 1.8s ease forwards;
+    opacity: 0;
+    animation-delay: 1.1s;
+  }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: fadeUp 2s ease forwards;
+    opacity: 0;
+    animation-delay: 1.5s;
+  }
+
+  .scroll-hint span {
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.4em;
+    color: var(--amber-dim);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--amber-dim), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* CONTENT */
+  .article-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 100px 30px 80px;
+  }
+
+  .dropcap-para {
+    position: relative;
+    margin-bottom: 2.4em;
+    line-height: 1.9;
+    font-size: 1.18rem;
+    color: var(--text);
+  }
+
+  .dropcap-para::first-letter {
+    float: left;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5.5rem;
+    line-height: 0.72;
+    color: var(--amber-soft);
+    margin-right: 12px;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+
+  .para {
+    margin-bottom: 2.4em;
+    line-height: 1.9;
+    font-size: 1.18rem;
+    color: var(--text);
+  }
+
+  .para em {
+    font-style: italic;
+    color: var(--text-bright);
+  }
+
+  /* Pull quote */
+  .pull-quote {
+    margin: 3.5em 0;
+    padding: 2.5em 3em;
+    border-left: 2px solid var(--amber);
+    background: linear-gradient(to right, rgba(180, 120, 40, 0.06), transparent);
+    position: relative;
+  }
+
+  .pull-quote::before {
+    content: '\201C';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 6rem;
+    color: var(--amber);
+    opacity: 0.25;
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    line-height: 1;
+  }
+
+  .pull-quote p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--amber-soft);
+    position: relative;
+    z-index: 1;
+  }
+
+  .bold-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--amber-soft);
+    font-size: 1.1em;
+  }
+
+  /* Section dividers */
+  .ornament {
+    text-align: center;
+    color: var(--amber-dim);
+    font-size: 1.2rem;
+    letter-spacing: 1em;
+    margin: 3em 0;
+    opacity: 0.5;
+  }
+
+  /* Stacked short lines for the poetic ending */
+  .poetic {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    line-height: 2.2;
+    color: var(--text-bright);
+    margin: 2.5em 0;
+    padding-left: 2em;
+    border-left: 1px solid var(--amber-dim);
+  }
+
+  .closing-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--amber-soft);
+    text-align: center;
+    margin: 4em 0 2em;
+    letter-spacing: 0.02em;
+  }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid #1e1c18;
+    padding: 60px 30px;
+    text-align: center;
+    background: #0a0908;
+  }
+
+  .author-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: var(--amber-dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .author-bio {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--text-dim);
+    max-width: 400px;
+    margin: 0 auto 30px;
+    line-height: 1.7;
+  }
+
+  .medium-link {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+  }
+
+  .medium-link a {
+    color: var(--amber);
+    text-decoration: none;
+    border-bottom: 1px solid var(--amber-dim);
+    padding-bottom: 1px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .medium-link a:hover {
+    color: var(--amber-soft);
+    border-color: var(--amber-soft);
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Horizontal rule with ornament */
+  .hr-ornament {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 4em 0;
+    opacity: 0.35;
+  }
+
+  .hr-ornament::before,
+  .hr-ornament::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--amber-dim);
+  }
+
+  .hr-ornament span {
+    color: var(--amber);
+    font-size: 0.8rem;
+    letter-spacing: 0.5em;
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+
+  <div class="particles" id="particles"></div>
+
+  <p class="hero-eyebrow">An Essay by Princess</p>
+
+  <div class="hero-title-wrap">
+    <h1 class="hero-title">
+      The<br>
+      <span class="accent">Kindness</span>
+    </h1>
+    <p class="hero-subtitle">I Never Received Back</p>
+  </div>
+
+  <div class="hero-divider"><span>&#10022;</span></div>
+
+  <p class="hero-meta">February 22, 2026 &nbsp;&nbsp;·&nbsp;&nbsp; 3 min read</p>
+
+  <div class="scroll-hint">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- Article -->
+<main class="article-wrap">
+
+  <p class="dropcap-para reveal">
+    There comes a moment when you finally allow yourself to see the truth you kept avoiding: you were kind to people who didn't know how to hold that kindness. You gave softness to hearts that were too hardened to feel it. You offered understanding to people who didn't try to understand you. You showed patience to those who took it for granted. You poured warmth into places that stayed cold no matter how much love you gave. And for the longest time, you wondered why. Why couldn't they give you even a fraction of what you gave them? Why was returning your kindness such a difficult task? Why did loving you gently seem so impossible for them?
+  </p>
+
+  <div class="pull-quote reveal">
+    <p>They didn't lack the ability to be kind, they lacked the willingness to be kind to you.</p>
+  </div>
+
+  <p class="para reveal">
+    And that hurts in a way that's hard to explain. Because you weren't asking for much. Just a little effort. Just a little reciprocity. Just a little softness that matched your own. You weren't expecting perfection. You weren't expecting grand gestures. All you ever wanted was emotional fairness, the kind of kindness that makes love feel safe instead of lonely. But instead, you found yourself giving more than you ever received, stretching your heart in ways no one stretched for you, and carrying emotional weight they never thought to lift.
+  </p>
+
+  <div class="hr-ornament reveal"><span>&#10022;</span></div>
+
+  <p class="para reveal">
+    Still, even in your disappointment, even in your hurt, you never stopped being kind.
+  </p>
+
+  <div class="poetic reveal">
+    And that is your beauty.<br>
+    Your kindness was never conditional.<br>
+    It wasn't something you turned on or off based on how others treated you.<br>
+    It came from your soul, not from their behavior.
+  </div>
+
+  <p class="para reveal">
+    And even though it sometimes made you feel unappreciated, forgotten, or overlooked, your kindness was never wasted, because it revealed something sacred: your heart's character.
+  </p>
+
+  <div class="hr-ornament reveal"><span>&#10022;</span></div>
+
+  <p class="para reveal">
+    God saw every moment you were gentle with someone who wasn't gentle with you. He saw the patience you showed when others responded with indifference. He saw the compassion you offered to people who didn't know how to reciprocate it. He saw how you loved with grace even when you weren't loved the same way. And He wants you to know: <span class="bold-line">nothing you gave was in vain.</span> Your kindness is a reflection of Him, and He will return it to you through people who are capable of receiving it.
+  </p>
+
+  <div class="hr-ornament reveal"><span>&#10022;</span></div>
+
+  <p class="para reveal">
+    One day, My friend, you will meet someone who treats your kindness like treasure. Someone who notices the way you care. Someone who doesn't just appreciate your tenderness, they protect it. Someone who reflects back the gentleness you've been giving the world alone for so long. And when that day comes, you'll finally understand why your kindness was never too much, it was simply being poured into the wrong hearts.
+  </p>
+
+  <div class="poetic reveal">
+    You will not spend your life giving and never receiving.<br>
+    You will not keep loving people who only take.<br>
+    You will not remain in spaces where your kindness is treated as convenience.
+  </div>
+
+  <p class="para reveal">
+    God is sending you people whose hearts match yours, kind, soft, present, intentional. People who know how to give back what you so effortlessly give out.
+  </p>
+
+  <p class="closing-line reveal">
+    Your kindness wasn't wasted, My friend.<br>
+    It was planting seeds for the love you're about to receive.
+  </p>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <p class="author-name">Princess</p>
+  <p class="author-bio">Just a girl named Princess… dreaming of that one soul who stumbles upon her words and finally feels less alone.</p>
+  <p class="medium-link">Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+</footer>
+
+<script>
+  // Particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 2 + 1;
+    p.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      left: ${Math.random() * 100}%;
+      bottom: ${Math.random() * 30}%;
+      animation-duration: ${8 + Math.random() * 14}s;
+      animation-delay: ${Math.random() * 10}s;
+      --dx: ${(Math.random() - 0.5) * 80}px;
+    `;
+    container.appendChild(p);
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

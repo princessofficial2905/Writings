@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dear Heart, It's Time to Rest — Princess</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0806;
+    --bg2: #100d09;
+    --amber: #c8853a;
+    --amber-light: #e8a85a;
+    --amber-dim: #8a5a22;
+    --cream: #e8ddd0;
+    --cream-dim: #a09080;
+    --gold: #d4a257;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'EB Garamond', serif;
+    font-size: 19px;
+    line-height: 1.85;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Grain texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* === HERO === */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 4rem 2rem;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 30%, rgba(200,133,58,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 20% 80%, rgba(200,133,58,0.04) 0%, transparent 60%);
+  }
+
+  .hero-line {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--amber-dim), transparent);
+    margin-bottom: 3rem;
+    animation: fadeIn 2s ease forwards;
+    opacity: 0;
+    animation-delay: 0.3s;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1.2s ease forwards;
+    animation-delay: 0.6s;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    line-height: 1.0;
+    text-align: center;
+    color: var(--cream);
+    opacity: 0;
+    animation: fadeUp 1.4s ease forwards;
+    animation-delay: 0.9s;
+    position: relative;
+  }
+
+  .hero-title span {
+    display: block;
+    color: var(--amber-light);
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    color: var(--cream-dim);
+    margin-top: 1.5rem;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: fadeUp 1.4s ease forwards;
+    animation-delay: 1.2s;
+  }
+
+  .hero-author {
+    margin-top: 3rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--amber-dim);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeIn 1.5s ease forwards;
+    animation-delay: 1.8s;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeIn 1.5s ease forwards;
+    animation-delay: 2.5s;
+  }
+
+  .scroll-hint span {
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--amber-dim);
+    text-transform: uppercase;
+  }
+
+  .scroll-arrow {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--amber-dim), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  /* === PHONE ANIMATION === */
+  .phone-section {
+    display: flex;
+    justify-content: center;
+    padding: 5rem 2rem 3rem;
+    position: relative;
+  }
+
+  .phone-wrap {
+    position: relative;
+    width: 220px;
+  }
+
+  .phone-frame {
+    width: 220px;
+    height: 420px;
+    border: 2px solid var(--amber-dim);
+    border-radius: 36px;
+    background: #0d0b08;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 0 60px rgba(200,133,58,0.12),
+      inset 0 0 20px rgba(0,0,0,0.5);
+  }
+
+  .phone-notch {
+    width: 80px;
+    height: 22px;
+    background: #0d0b08;
+    border-radius: 0 0 14px 14px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    border: 2px solid var(--amber-dim);
+    border-top: none;
+  }
+
+  .phone-screen {
+    position: absolute;
+    inset: 0;
+    padding: 30px 14px 14px;
+    overflow: hidden;
+  }
+
+  .phone-scroll-inner {
+    animation: phoneScroll 12s linear infinite;
+    padding-top: 10px;
+  }
+
+  .phone-line {
+    height: 10px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, var(--amber-dim), transparent);
+    margin-bottom: 10px;
+    opacity: 0.3;
+  }
+
+  .phone-line:nth-child(odd) { width: 90%; opacity: 0.2; }
+  .phone-line:nth-child(3n) { width: 60%; background: linear-gradient(90deg, var(--amber), transparent); opacity: 0.4; }
+
+  .phone-notification {
+    background: rgba(200,133,58,0.08);
+    border: 1px solid rgba(200,133,58,0.2);
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .phone-notif-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--amber);
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .phone-notif-text {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(200,133,58,0.2);
+    width: 100%;
+  }
+
+  .phone-glow {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 40px;
+    background: radial-gradient(ellipse, rgba(200,133,58,0.2), transparent 70%);
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+
+  /* === ARTICLE === */
+  .article-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+    position: relative;
+  }
+
+  .article-divider {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .article-divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--amber-dim));
+  }
+
+  .article-divider-line.right {
+    background: linear-gradient(to left, transparent, var(--amber-dim));
+  }
+
+  .article-divider-ornament {
+    color: var(--amber);
+    font-size: 1.2rem;
+    opacity: 0.6;
+  }
+
+  .salutation {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    color: var(--amber-light);
+    margin-bottom: 2.5rem;
+    display: block;
+  }
+
+  .article-body p {
+    margin-bottom: 1.8rem;
+    color: var(--cream);
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    line-height: 1.95;
+    text-align: justify;
+    hyphens: none;
+  }
+
+  .article-body p.emphasis {
+    font-style: italic;
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    color: var(--amber-light);
+    text-align: center;
+    margin: 2.5rem 0;
+    padding: 0 1rem;
+    position: relative;
+  }
+
+  .article-body p.emphasis::before,
+  .article-body p.emphasis::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--amber-dim);
+    margin: 1rem auto;
+  }
+
+  .rest-callout {
+    border-left: 2px solid var(--amber);
+    padding: 1.5rem 2rem;
+    margin: 3rem 0;
+    background: rgba(200,133,58,0.04);
+    position: relative;
+  }
+
+  .rest-callout::before {
+    content: '"';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 6rem;
+    color: var(--amber);
+    opacity: 0.15;
+    position: absolute;
+    top: -1rem;
+    left: 0.5rem;
+    line-height: 1;
+  }
+
+  .rest-callout p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+    color: var(--amber-light);
+    margin-bottom: 0 !important;
+    line-height: 1.7;
+    text-align: left !important;
+  }
+
+  .sign-off {
+    margin-top: 4rem;
+    text-align: right;
+    border-top: 1px solid rgba(200,133,58,0.15);
+    padding-top: 2.5rem;
+  }
+
+  .sign-off p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    color: var(--cream-dim);
+    margin-bottom: 0.5rem;
+  }
+
+  .sign-off .signature {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    color: var(--amber-light);
+    margin-top: 0.5rem;
+  }
+
+  /* === FOOTER === */
+  .footer {
+    text-align: center;
+    padding: 4rem 2rem 5rem;
+    border-top: 1px solid rgba(200,133,58,0.1);
+    position: relative;
+  }
+
+  .footer::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--amber-dim), transparent);
+    margin: 0 auto 2rem;
+  }
+
+  .footer-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--amber-dim);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+
+  .footer-link {
+    color: var(--amber);
+    text-decoration: none;
+    transition: color 0.3s;
+    border-bottom: 1px solid rgba(200,133,58,0.3);
+    padding-bottom: 1px;
+  }
+
+  .footer-link:hover { color: var(--amber-light); border-color: var(--amber-light); }
+
+  .footer-author {
+    margin-top: 1.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--cream-dim);
+    opacity: 0.6;
+  }
+
+  /* === ANIMATIONS === */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.3); }
+  }
+
+  @keyframes phoneScroll {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-60%); }
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.15); }
+  }
+
+  /* Reveal animation for article paragraphs */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Ambient light effects */
+  .ambient {
+    position: fixed;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(120px);
+    opacity: 0.04;
+  }
+
+  .ambient-1 {
+    background: var(--amber);
+    top: -200px; right: -200px;
+  }
+
+  .ambient-2 {
+    background: #6b3a1a;
+    bottom: -200px; left: -200px;
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient ambient-1"></div>
+<div class="ambient ambient-2"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <p class="hero-eyebrow">A letter to the soul that carries too much</p>
+  <h1 class="hero-title">
+    Dear Heart,
+    <span>It's Time to Rest.</span>
+  </h1>
+  <p class="hero-subtitle">A letter from the soul that is learning to protect you</p>
+  <p class="hero-author">Written by Princess</p>
+
+  <div class="scroll-hint">
+    <span>Read</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- PHONE ANIMATION -->
+<div class="phone-section">
+  <div class="phone-wrap">
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-scroll-inner">
+          <div class="phone-notification"><div class="phone-notif-dot"></div><div class="phone-notif-text"></div></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-notification"><div class="phone-notif-dot"></div><div class="phone-notif-text"></div></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-notification"><div class="phone-notif-dot"></div><div class="phone-notif-text"></div></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-notification"><div class="phone-notif-dot"></div><div class="phone-notif-text"></div></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-notification"><div class="phone-notif-dot"></div><div class="phone-notif-text"></div></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+        </div>
+      </div>
+    </div>
+    <div class="phone-glow"></div>
+  </div>
+</div>
+
+<!-- ARTICLE -->
+<article class="article-wrap">
+  <div class="article-divider">
+    <div class="article-divider-line"></div>
+    <div class="article-divider-ornament">✦</div>
+    <div class="article-divider-line right"></div>
+  </div>
+
+  <span class="salutation reveal">Dear heart,</span>
+
+  <div class="article-body">
+
+    <p class="reveal">I know you're tired. I know you've been beating for everyone else for so long that you've forgotten what it feels like to beat just for yourself.</p>
+
+    <p class="reveal">You've carried so much. So many goodbyes you didn't want to say. So many people who left without explaining why. So many nights when sleep felt like a stranger and worry felt like home.</p>
+
+    <p class="reveal">You've loved people who didn't love you back. You've given chances to those who didn't deserve even one. You've held on when letting go was the only thing that made sense, because that's who you are, you hold on. You always do.</p>
+
+    <div class="rest-callout reveal">
+      <p>I know you're scared that if you rest, you'll miss something. That if you stop caring so much, you'll become cold. That if you stop trying so hard, you'll lose the people you love.</p>
+    </div>
+
+    <p class="reveal">But dear heart, look at you. You're exhausted from carrying burdens that were never yours to carry. You're aching from loving people more than they loved themselves. You're worn out from fighting battles alone while pretending everything is fine.</p>
+
+    <p class="emphasis reveal">It's okay to rest now.</p>
+
+    <p class="reveal">It's okay to stop checking your phone every five minutes hoping for a message from someone who has already shown you they won't send one. It's okay to stop replaying conversations in your mind, wondering what you could have said differently. It's okay to stop making excuses for people who keep hurting you.</p>
+
+    <p class="reveal">You don't have to be strong all the time. You don't have to keep everyone else together while you're falling apart. You don't have to smile when you want to cry. You don't have to say "I'm fine" when you're breaking inside.</p>
+
+    <p class="reveal">Rest doesn't mean you're giving up. Rest means you're giving yourself what you've been giving everyone else, kindness, patience, understanding, and time.</p>
+
+    <p class="emphasis reveal">Rest means you finally matter to yourself as much as everyone else has mattered to you.</p>
+
+    <p class="reveal">So tonight, dear heart, put down the weight. Stop overthinking. Stop worrying about people who aren't worrying about you. Stop holding onto pain because it feels familiar.</p>
+
+    <p class="reveal" style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(1.3rem,2.5vw,1.6rem); text-align:center; color:var(--amber-light); letter-spacing:0.05em;">Just breathe.</p>
+
+    <p class="reveal">You've survived every single hard day so far. You've made it through storms you thought would drown you. You're still here, still beating, still hoping, even when hoping hurts.</p>
+
+    <p class="reveal">That takes courage. That takes strength. That takes a heart like yours.</p>
+
+    <p class="reveal">But even the strongest hearts need rest.</p>
+
+    <p class="reveal">So rest now, dear heart. You've earned it. You've more than earned it.</p>
+
+    <p class="reveal">And when you wake up, you'll still be you, kind, loving, and beautiful. But maybe, just maybe, you'll also be a little more gentle with yourself.</p>
+
+    <p class="reveal">Because you deserve that too.</p>
+
+    <p class="reveal">You always have.</p>
+
+    <div class="sign-off reveal">
+      <p>With love,</p>
+      <p class="signature">The soul that's learning to protect you</p>
+    </div>
+  </div>
+</article>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="footer-text">Originally published on <a href="https://medium.com/@prvaxis" class="footer-link" target="_blank" rel="noopener">Medium</a></p>
+  <p class="footer-author">Written by Princess &nbsp;✦&nbsp; Just a girl dreaming of that one soul who feels less alone</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

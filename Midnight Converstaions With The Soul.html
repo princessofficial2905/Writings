@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midnight Conversations With the Soul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0906;
+    --bg2: #0f0d0a;
+    --amber: #c8922a;
+    --amber-soft: #e8b96a;
+    --amber-dim: #7a5518;
+    --cream: #f0e8d8;
+    --cream-dim: #b8a888;
+    --smoke: #3a3428;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    line-height: 1.85;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.35;
+  }
+
+  /* ---- INTRO SCREEN ---- */
+  #intro {
+    position: fixed;
+    inset: 0;
+    background: #050403;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 1.2s ease, visibility 1.2s ease;
+  }
+
+  #intro.hidden { opacity: 0; visibility: hidden; }
+
+  .clock-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 10vw, 7rem);
+    color: var(--amber);
+    letter-spacing: 0.05em;
+    animation: pulseAmber 3s ease-in-out infinite;
+  }
+
+  .intro-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: var(--cream-dim);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-top: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.8s forwards;
+  }
+
+  @keyframes pulseAmber {
+    0%, 100% { opacity: 1; text-shadow: 0 0 40px rgba(200,146,42,0.4); }
+    50% { opacity: 0.7; text-shadow: 0 0 80px rgba(200,146,42,0.8); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    overflow: hidden;
+    opacity: 0;
+    animation: contentReveal 1.5s ease 2.8s forwards;
+  }
+
+  @keyframes contentReveal {
+    to { opacity: 1; }
+  }
+
+  /* Radial amber glow behind title */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(ellipse, rgba(200,146,42,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 3.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 8vw, 6.5rem);
+    font-weight: 700;
+    line-height: 1.08;
+    text-align: center;
+    color: var(--cream);
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 3.5s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--amber-soft);
+  }
+
+  .hero-divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    margin: 2.5rem auto;
+    opacity: 0;
+    animation: fadeUp 1s ease 3.8s forwards;
+  }
+
+  .hero-meta {
+    font-size: 0.85rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    opacity: 0;
+    animation: fadeUp 1s ease 4s forwards;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 4.5s forwards;
+  }
+
+  .scroll-hint span {
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--amber-dim);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--amber-dim), transparent);
+    animation: scrollDrop 2s ease-in-out infinite 5s;
+  }
+
+  @keyframes scrollDrop {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* ---- PHONE ANIMATION ---- */
+  .phone-scene {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5rem 2rem;
+    position: relative;
+  }
+
+  .phone-wrap {
+    position: relative;
+    display: inline-block;
+  }
+
+  .phone {
+    width: 160px;
+    height: 280px;
+    border: 2px solid var(--amber-dim);
+    border-radius: 28px;
+    background: #0e0c0a;
+    position: relative;
+    box-shadow: 0 0 60px rgba(200,146,42,0.15), inset 0 0 20px rgba(0,0,0,0.8);
+    overflow: hidden;
+  }
+
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 5px;
+    background: var(--smoke);
+    border-radius: 3px;
+  }
+
+  .phone-screen {
+    position: absolute;
+    top: 30px;
+    left: 5px;
+    right: 5px;
+    bottom: 8px;
+    background: #111;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .phone-scroll-content {
+    animation: phoneScroll 8s linear infinite;
+    padding: 10px 8px;
+  }
+
+  @keyframes phoneScroll {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-60%); }
+  }
+
+  .phone-line {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--smoke);
+    margin-bottom: 8px;
+    opacity: 0.6;
+  }
+
+  .phone-line:nth-child(odd) { width: 85%; }
+  .phone-line:nth-child(even) { width: 70%; }
+  .phone-line.highlight { background: var(--amber-dim); width: 50%; }
+
+  .phone-glow {
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(ellipse, rgba(200,146,42,0.12) 0%, transparent 70%);
+    animation: glowPulse 4s ease-in-out infinite;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  .phone-caption {
+    position: absolute;
+    bottom: -3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--amber-dim);
+  }
+
+  /* ---- ARTICLE CONTENT ---- */
+  .article-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 4rem 2rem 6rem;
+  }
+
+  .article-wrap p {
+    margin-bottom: 1.8rem;
+    color: var(--cream);
+    font-size: 1.15rem;
+    line-height: 1.9;
+    font-weight: 300;
+  }
+
+  .article-wrap p:first-child {
+    font-size: 1.6rem;
+    font-style: italic;
+    color: var(--amber-soft);
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: 2.5rem;
+  }
+
+  /* Pull quotes */
+  .pull-quote {
+    border-left: 2px solid var(--amber);
+    padding: 1.5rem 0 1.5rem 2rem;
+    margin: 3rem 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-style: italic;
+    color: var(--amber-soft);
+    line-height: 1.5;
+    position: relative;
+  }
+
+  .pull-quote::before {
+    content: '\201C';
+    font-size: 5rem;
+    color: var(--amber-dim);
+    position: absolute;
+    top: -1rem;
+    left: 0.5rem;
+    line-height: 1;
+    font-family: 'Playfair Display', serif;
+  }
+
+  /* Questions block */
+  .questions-block {
+    background: rgba(200,146,42,0.04);
+    border: 1px solid rgba(200,146,42,0.15);
+    border-radius: 2px;
+    padding: 2.5rem 2.5rem 2rem;
+    margin: 3rem 0;
+  }
+
+  .questions-block p {
+    padding-left: 1rem;
+    border-left: 1px solid var(--amber-dim);
+    font-style: italic;
+    color: var(--cream-dim);
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Letter closing */
+  .letter-close {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--smoke);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--amber-soft);
+    text-align: right;
+    line-height: 2;
+  }
+
+  /* Section breaks */
+  .section-star {
+    text-align: center;
+    color: var(--amber-dim);
+    letter-spacing: 1.5em;
+    font-size: 0.6rem;
+    margin: 3rem 0;
+    opacity: 0.7;
+  }
+
+  /* ---- FOOTER ---- */
+  footer {
+    text-align: center;
+    padding: 4rem 2rem;
+    border-top: 1px solid var(--smoke);
+    position: relative;
+  }
+
+  footer::before {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    margin: 0 auto 3rem;
+  }
+
+  .author-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+
+  .author-tagline {
+    font-size: 0.9rem;
+    color: var(--cream-dim);
+    font-style: italic;
+    margin-bottom: 2rem;
+  }
+
+  .medium-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+  }
+
+  .medium-link a {
+    color: var(--amber);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(200,146,42,0.3);
+    transition: border-color 0.3s, color 0.3s;
+  }
+
+  .medium-link a:hover {
+    color: var(--amber-soft);
+    border-color: var(--amber-soft);
+  }
+
+  /* Reveal on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Highlight hover effect on paragraphs */
+  .article-wrap p:not(:first-child):hover {
+    color: #e8e0d0;
+    transition: color 0.3s;
+  }
+
+  @media (max-width: 600px) {
+    .hero-title { font-size: 2.5rem; }
+    .article-wrap { padding: 2rem 1.2rem 4rem; }
+    .pull-quote { font-size: 1.1rem; padding-left: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Intro Screen -->
+<div id="intro">
+  <div class="clock-text">12:00</div>
+  <div class="intro-sub">a conversation begins</div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-eyebrow">Princess &nbsp;&bull;&nbsp; February 2026</div>
+  <h1 class="hero-title">Midnight Conversations<br><em>With the Soul</em></h1>
+  <div class="hero-divider"></div>
+  <div class="hero-meta">5 minute read &nbsp;&bull;&nbsp; A Letter from Your Deepest Self</div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- Phone Scene -->
+<div class="phone-scene reveal">
+  <div class="phone-wrap">
+    <div class="phone-glow"></div>
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="phone-scroll-content">
+          <div class="phone-line"></div>
+          <div class="phone-line highlight"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line highlight"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line highlight"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line highlight"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line highlight"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line"></div>
+        </div>
+      </div>
+    </div>
+    <div class="phone-caption">don't scroll away</div>
+  </div>
+</div>
+
+<!-- Article -->
+<article class="article-wrap">
+
+  <p class="reveal">It's midnight again.</p>
+
+  <p class="reveal">The world is asleep, but you're awake. And so am I, your soul. The part of you that only speaks when everything else is quiet.</p>
+
+  <p class="reveal">During the day, you're too busy to hear me. Too distracted. Too surrounded by noise and people and things you have to do. You can ignore me then.</p>
+
+  <p class="reveal">But at midnight, when there's nowhere to hide, when the distractions fade away, when you're alone with yourself, that's when I speak.</p>
+
+  <div class="pull-quote reveal">
+    And I know you don't always want to listen. I know sometimes you grab your phone, turn on the TV, find anything to fill the silence so you don't have to hear me.
+  </div>
+
+  <p class="reveal">Because I ask the questions you're afraid to answer.</p>
+
+  <div class="questions-block reveal">
+    <p>"Are you happy?"</p>
+    <p>"Is this the life you wanted?"</p>
+    <p>"Why are you holding onto things that hurt you?"</p>
+    <p>"When did you stop being yourself?"</p>
+  </div>
+
+  <p class="reveal">I know these questions scare you. I know they make you uncomfortable. I know you'd rather pretend everything is fine than face the truth I'm trying to show you.</p>
+
+  <p class="reveal">But I'm not here to hurt you. I'm here to wake you up.</p>
+
+  <p class="reveal">I'm here to remind you of the dreams you buried because someone said they were unrealistic. The passion you gave up because you thought you had to be practical. The person you used to be before life taught you to be smaller.</p>
+
+  <div class="pull-quote reveal">
+    I'm here to tell you that the life you're living isn't the only life you can live.
+  </div>
+
+  <p class="reveal">That job you hate? You don't have to stay there forever. That relationship that drains you? You're allowed to leave. That version of yourself you're pretending to be? You can let it go.</p>
+
+  <p class="reveal">I know you're scared. I know change feels impossible. I know you've built this life, and tearing it down feels like losing everything.</p>
+
+  <p class="reveal">But what if you're not losing anything? What if you're finally finding yourself again?</p>
+
+  <div class="section-star reveal">* * *</div>
+
+  <p class="reveal">I remember who you were before the world told you who to be. Before you learned to dim your light so others wouldn't feel uncomfortable. Before you started living for everyone else's approval.</p>
+
+  <p class="reveal">You were wild. You were free. You were honest. You laughed louder. You cried harder. You felt everything deeply and you weren't afraid of it.</p>
+
+  <p class="reveal">What happened to that person?</p>
+
+  <p class="reveal">I'll tell you what happened. Life happened. Pain happened. Rejection happened. Failure happened.</p>
+
+  <p class="reveal">And you learned to protect yourself by becoming smaller. Quieter. Safer.</p>
+
+  <div class="pull-quote reveal">
+    But safe isn't the same as alive.
+  </div>
+
+  <p class="reveal">And I need you to start living again.</p>
+
+  <p class="reveal">I need you to stop waiting for permission to be yourself. Stop waiting for the perfect moment. Stop waiting until you're ready, because you'll never feel ready.</p>
+
+  <p class="reveal">I need you to stop caring so much what people think. Most of them are too busy worrying about their own lives to judge yours. And the ones who do judge? They're not living in a way that deserves your attention anyway.</p>
+
+  <p class="reveal">I need you to stop being so afraid of making mistakes. You're going to mess up. You're going to fail. You're going to look foolish sometimes. So what? That's called being human.</p>
+
+  <p class="reveal">I need you to stop putting yourself last. Stop giving everything to everyone else until there's nothing left for you. Stop acting like your needs don't matter. They do. You do.</p>
+
+  <div class="section-star reveal">* * *</div>
+
+  <p class="reveal">Listen, I know you're tired. I know you've been through so much. I know you're just trying to survive most days.</p>
+
+  <p class="reveal">But you weren't meant to just survive. You were meant to live. Really live.</p>
+
+  <p class="reveal">Not the life that looks good on social media. Not the life your parents wanted for you. Not the life your friends expect. Not the life that makes sense to everyone else.</p>
+
+  <div class="pull-quote reveal">
+    The life that makes your soul come alive.
+  </div>
+
+  <p class="reveal">The life where you wake up excited instead of exhausted. Where you feel like yourself instead of a stranger in your own skin. Where you're not constantly pretending, performing, or proving your worth.</p>
+
+  <p class="reveal">I know you've forgotten what that feels like. But I haven't forgotten. I hold all your dreams, all your truths, all the parts of you that you've been hiding.</p>
+
+  <p class="reveal">And at midnight, when you can't hide from me anymore, I'm going to keep reminding you.</p>
+
+  <p class="reveal">I'm going to keep asking you the hard questions. I'm going to keep showing you the gap between who you are and who you're pretending to be. I'm going to keep whispering about the life you really want.</p>
+
+  <p class="reveal">Because someone has to. And everyone else in your life is too polite, too comfortable, too invested in who you are now to tell you that you can be someone different.</p>
+
+  <p class="reveal">But I can tell you. Because I'm not afraid of your transformation. I'm not afraid of your truth. I'm not afraid of who you might become.</p>
+
+  <p class="reveal">I'm excited for it.</p>
+
+  <div class="section-star reveal">* * *</div>
+
+  <p class="reveal">So tonight, don't run from me. Don't scroll away. Don't turn on another episode just to avoid this feeling.</p>
+
+  <p class="reveal">Sit with me. Listen to me. Let me remind you of who you really are underneath all the layers of who you've had to be.</p>
+
+  <p class="reveal">Ask yourself the questions:</p>
+
+  <div class="questions-block reveal">
+    <p>What do I really want? Not what I should want, but what I actually want.</p>
+    <p>What makes me come alive? Not what makes me look good, but what genuinely lights me up inside.</p>
+    <p>Who am I without all the roles I play? Not the employee, the parent, the partner, the friend, just me. Who is that person?</p>
+    <p>What would I do if I wasn't afraid? If money wasn't an issue? If no one was watching? If failure wasn't possible?</p>
+    <p>What do I need to let go of? What relationship, what habit, what belief, what version of myself is it time to release?</p>
+  </div>
+
+  <p class="reveal">These are the questions I ask you at midnight. Not to torture you. But to free you.</p>
+
+  <p class="reveal">Because I love you. More than anyone else ever could. Because I am you. The truest, deepest, most honest version of you.</p>
+
+  <p class="reveal">And I can't watch you live a life that's killing you slowly anymore.</p>
+
+  <p class="reveal">I can't watch you sacrifice your dreams for security. I can't watch you shrink yourself to fit into spaces that were never meant for you. I can't watch you give your life to people who don't cherish it.</p>
+
+  <div class="pull-quote reveal">
+    You deserve more. You deserve everything.
+  </div>
+
+  <p class="reveal">And it starts with listening to me. These midnight conversations we have. This uncomfortable honesty. This truth that won't stay buried no matter how hard you try.</p>
+
+  <p class="reveal">So the next time you're awake at midnight, don't be afraid.</p>
+
+  <p class="reveal">It's just me. Your soul. Trying to lead you back home. Back to yourself.</p>
+
+  <p class="reveal">And I promise you, once you start listening, once you start following where I'm leading, once you start living the truth instead of the lie,</p>
+
+  <p class="reveal">You'll finally sleep peacefully at night.</p>
+
+  <p class="reveal">Because you'll finally be at peace with yourself.</p>
+
+  <p class="reveal">Until then, I'll keep meeting you here. At midnight. In the quiet. In the darkness.</p>
+
+  <p class="reveal">Waiting for you to finally listen.</p>
+
+  <p class="reveal">Waiting for you to come home.</p>
+
+  <div class="letter-close reveal">
+    With love, always,<br>
+    <em>Your Soul</em>
+  </div>
+
+</article>
+
+<!-- Footer -->
+<footer>
+  <div class="author-name reveal">Princess</div>
+  <div class="author-tagline reveal">Just a girl named Princess… dreaming of that one soul who stumbles upon her words and finally feels less alone.</div>
+  <div class="medium-link reveal">
+    Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+  </div>
+</footer>
+
+<script>
+  // Intro fade out
+  setTimeout(() => {
+    document.getElementById('intro').classList.add('hidden');
+  }, 2400);
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Live clock in intro
+  const clockEl = document.querySelector('.clock-text');
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  clockEl.textContent = h + ':' + m;
+</script>
+</body>
+</html>

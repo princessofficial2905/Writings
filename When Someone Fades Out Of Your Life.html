@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>When Someone Fades Out of Your Life</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0806;
+    --surface: #100e0b;
+    --amber: #c8923a;
+    --amber-dim: #8a6225;
+    --amber-glow: rgba(200, 146, 58, 0.12);
+    --text: #d4c5a9;
+    --text-dim: #7a6e5f;
+    --white: #f0e6d3;
+    --rule: rgba(200, 146, 58, 0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ── CINEMATIC INTRO ── */
+  .intro-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: introFade 0.8s ease 3.5s forwards;
+  }
+
+  @keyframes introFade {
+    to { opacity: 0; pointer-events: none; }
+  }
+
+  .intro-line {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(10px, 1.2vw, 13px);
+    letter-spacing: 0.4em;
+    color: var(--amber-dim);
+    opacity: 0;
+    animation: lineFade 1s ease forwards;
+  }
+
+  .intro-line:nth-child(1) { animation-delay: 0.3s; }
+  .intro-line:nth-child(2) {
+    font-size: clamp(24px, 5vw, 52px);
+    color: var(--white);
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    margin: 18px 0 6px;
+    animation-delay: 0.8s;
+    text-align: center;
+    padding: 0 20px;
+  }
+  .intro-line:nth-child(3) { animation-delay: 1.3s; font-style: italic; color: var(--amber); letter-spacing: 0.5em; font-size: clamp(9px, 1vw, 11px); }
+
+  @keyframes lineFade {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Amber candle flicker dots */
+  .intro-dots {
+    display: flex;
+    gap: 8px;
+    margin-top: 40px;
+    animation: lineFade 1s ease 2s forwards;
+    opacity: 0;
+  }
+
+  .intro-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--amber);
+    animation: flicker 1.5s ease-in-out infinite;
+  }
+  .intro-dot:nth-child(2) { animation-delay: 0.3s; }
+  .intro-dot:nth-child(3) { animation-delay: 0.6s; }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.7); }
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px;
+    padding-top: 120px;
+    padding-bottom: 100px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    margin-bottom: 70px;
+    opacity: 0;
+    animation: riseIn 1.2s ease 4.2s forwards;
+  }
+
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.5em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .eyebrow::before,
+  .eyebrow::after {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  h1 {
+    font-family: 'IM Fell English', 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 7vw, 72px);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+  }
+
+  .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 2.5vw, 20px);
+    font-style: italic;
+    color: var(--amber-dim);
+    letter-spacing: 0.15em;
+    margin-top: 14px;
+    margin-bottom: 30px;
+  }
+
+  .meta {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .meta span { color: var(--amber-dim); }
+
+  /* Decorative amber rule */
+  .ornament {
+    text-align: center;
+    margin: 48px 0;
+    opacity: 0;
+    animation: riseIn 1s ease 4.8s forwards;
+  }
+
+  .ornament svg {
+    width: 120px;
+    height: 24px;
+  }
+
+  /* ── PHONE ANIMATION ── */
+  .phone-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 0 0 64px;
+    opacity: 0;
+    animation: riseIn 1s ease 5s forwards;
+  }
+
+  .phone {
+    width: 120px;
+    height: 200px;
+    border: 1.5px solid var(--amber-dim);
+    border-radius: 22px;
+    background: #0d0b08;
+    position: relative;
+    box-shadow: 0 0 40px rgba(200, 146, 58, 0.08), inset 0 0 20px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--amber-dim);
+    opacity: 0.6;
+  }
+
+  .phone-screen {
+    position: absolute;
+    top: 28px;
+    left: 8px;
+    right: 8px;
+    bottom: 12px;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+
+  .phone-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px 6px;
+    animation: phoneScroll 8s ease-in-out infinite;
+  }
+
+  @keyframes phoneScroll {
+    0%, 20% { transform: translateY(0); }
+    60%, 80% { transform: translateY(-80px); }
+    100% { transform: translateY(0); }
+  }
+
+  .msg {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--amber-glow);
+    border: 1px solid rgba(200, 146, 58, 0.15);
+  }
+
+  .msg.long { width: 80%; }
+  .msg.short { width: 50%; }
+  .msg.med { width: 65%; }
+  .msg.right { align-self: flex-end; background: rgba(200, 146, 58, 0.06); }
+
+  .msg.fading { opacity: 0.2; }
+  .msg.more-fading { opacity: 0.08; }
+
+  .phone-glow {
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(to top, #0d0b08, transparent);
+    pointer-events: none;
+  }
+
+  /* ── TYPOGRAPHY ── */
+  .content {
+    opacity: 0;
+    animation: riseIn 1.2s ease 5.2s forwards;
+  }
+
+  .drop-cap::first-letter {
+    font-family: 'IM Fell English', serif;
+    font-size: 5.2em;
+    float: left;
+    line-height: 0.75;
+    margin: 6px 12px 0 0;
+    color: var(--amber);
+    font-weight: 400;
+  }
+
+  p {
+    font-size: clamp(17px, 2.2vw, 21px);
+    line-height: 1.85;
+    color: var(--text);
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+
+  .section-break {
+    text-align: center;
+    margin: 48px 0;
+    color: var(--amber-dim);
+    font-size: 22px;
+    letter-spacing: 0.5em;
+  }
+
+  .divine-paragraph {
+    border-left: 1px solid var(--amber);
+    padding-left: 28px;
+    margin-left: 0;
+    margin-bottom: 0;
+  }
+
+  .divine-paragraph p {
+    color: var(--white);
+    font-size: clamp(16px, 2vw, 19px);
+    line-height: 1.9;
+    font-style: italic;
+    margin-bottom: 22px;
+  }
+
+  .divine-paragraph p:last-child { margin-bottom: 0; }
+
+  .bold-truth {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(18px, 2.5vw, 24px);
+    font-style: italic;
+    color: var(--amber);
+    font-weight: 400;
+    display: block;
+    margin-bottom: 22px;
+  }
+
+  .stanza {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stanza-line {
+    font-size: clamp(15px, 1.9vw, 19px);
+    line-height: 2;
+    color: var(--text-dim);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .stanza-line.lit {
+    color: var(--text);
+    font-style: normal;
+  }
+
+  /* ── CLOSING ── */
+  .closing {
+    margin-top: 80px;
+    text-align: center;
+    border-top: 1px solid var(--rule);
+    padding-top: 60px;
+    opacity: 0;
+    animation: riseIn 1s ease 5.6s forwards;
+  }
+
+  .closing-quote {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(22px, 3.5vw, 36px);
+    font-style: italic;
+    color: var(--white);
+    line-height: 1.5;
+    margin-bottom: 48px;
+    position: relative;
+    display: inline-block;
+  }
+
+  .closing-quote::before {
+    content: '\201C';
+    font-size: 4em;
+    color: var(--amber);
+    opacity: 0.25;
+    position: absolute;
+    top: -30px;
+    left: -20px;
+    font-family: 'IM Fell English', serif;
+    line-height: 1;
+  }
+
+  .author-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+
+  .author-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--amber);
+    letter-spacing: 0.05em;
+  }
+
+  .medium-link {
+    display: inline-block;
+    margin-top: 40px;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.5em;
+    color: var(--text-dim);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 3px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .medium-link:hover {
+    color: var(--amber);
+    border-color: var(--amber);
+  }
+
+  .medium-link .medium-word {
+    color: var(--amber-dim);
+  }
+
+  /* Ambient glow top */
+  .ambient-top {
+    position: fixed;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 300px;
+    background: radial-gradient(ellipse at center top, rgba(200, 146, 58, 0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Scroll progress bar */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--amber), transparent);
+    width: 0%;
+    transition: width 0.1s;
+    z-index: 100;
+  }
+
+  @media (max-width: 600px) {
+    main { padding: 80px 20px 80px; }
+    h1 { font-size: 38px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient-top"></div>
+<div class="progress-bar" id="progress"></div>
+
+<!-- Cinematic intro -->
+<div class="intro-screen">
+  <div class="intro-line">A meditation on loss</div>
+  <div class="intro-line">When Someone<br>Fades Out of Your Life</div>
+  <div class="intro-line">by Princess</div>
+  <div class="intro-dots">
+    <div class="intro-dot"></div>
+    <div class="intro-dot"></div>
+    <div class="intro-dot"></div>
+  </div>
+</div>
+
+<main>
+
+  <header class="header">
+    <div class="eyebrow">An Essay on Quiet Grief</div>
+    <h1>When Someone Fades Out of Your Life</h1>
+    <p class="subtitle">Without Explanation</p>
+    <div class="meta">
+      <span>Princess</span>
+      &nbsp;·&nbsp;
+      February 2026
+      &nbsp;·&nbsp;
+      <span>3 min read</span>
+    </div>
+  </header>
+
+  <!-- Ornamental divider -->
+  <div class="ornament">
+    <svg viewBox="0 0 120 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="12" x2="45" y2="12" stroke="#8a6225" stroke-width="0.5"/>
+      <circle cx="52" cy="12" r="3" stroke="#c8923a" stroke-width="0.8" fill="none"/>
+      <circle cx="60" cy="12" r="5" stroke="#c8923a" stroke-width="0.8" fill="none"/>
+      <circle cx="68" cy="12" r="3" stroke="#c8923a" stroke-width="0.8" fill="none"/>
+      <line x1="75" y1="12" x2="120" y2="12" stroke="#8a6225" stroke-width="0.5"/>
+    </svg>
+  </div>
+
+  <!-- Phone animation -->
+  <div class="phone-wrapper">
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="phone-messages">
+          <div class="msg long"></div>
+          <div class="msg short right"></div>
+          <div class="msg med"></div>
+          <div class="msg long right"></div>
+          <div class="msg short"></div>
+          <div class="msg med right fading"></div>
+          <div class="msg long fading"></div>
+          <div class="msg short right more-fading"></div>
+          <div class="msg med more-fading"></div>
+        </div>
+      </div>
+      <div class="phone-glow"></div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <p class="drop-cap">There are people who don't leave, they just slowly stop showing up. One day, they're laughing with you, calling you, sharing pieces of their world with you… and then, without any warning, their presence becomes lighter, softer, distant, almost transparent. Their messages get shorter. Their calls get fewer. Their energy shifts. They respond out of obligation instead of affection. They become a shadow of who they were in your life, drifting further away each day until all you're left with are memories of someone who still exists… just not for you.</p>
+
+    <p>It hurts in a way you can't quite describe, because how do you grieve someone who didn't really leave? How do you mourn a relationship that didn't end with a fight, or a goodbye, or a reason? Their fading feels like confusion more than heartbreak, like silence more than closure. A part of you keeps hoping they'll come back, that they'll explain, that they'll say, "It wasn't you." But deep down, you know the truth: they've already gone, just quietly.</p>
+
+    <p>And that quietness is what hurts the most.<br>
+    It makes you question your worth, doubt your importance, and wonder if you imagined the closeness you once shared. You start replaying every moment, searching for what you did wrong, trying to find the exact second when their heart started drifting. But sometimes people don't leave because of something you did. They leave because of who they are. They leave because they outgrow the connection. They leave because they can't sustain the intimacy they once created. They leave because disappearing is easier for them than being honest.</p>
+
+    <div class="section-break">· · ·</div>
+
+    <p>But here's what God wants you to know:</p>
+
+    <div class="divine-paragraph">
+      <p>
+        <span class="bold-truth">A person who slowly fades was never meant to stay.</span>
+        Their quiet exit is not a reflection of your value, it is a reflection of their capacity. You didn't lose anything meant for your future. You didn't lose someone who was capable of loving you the way you deserve. You didn't lose a blessing, you lost a distraction, a temporary presence, a door God needed to close gently.
+      </p>
+
+      <p>Sometimes He lets people fade instead of break you.<br>
+      Sometimes He removes people softly to protect the softness of your heart.<br>
+      Sometimes He allows distance so He can bring the right souls closer.</p>
+    </div>
+
+    <div class="section-break">· · ·</div>
+
+    <p>And one day, you'll look back at the people who became ghosts and realize you didn't need them in your life as much as you needed the lesson they left behind:</p>
+
+    <div class="stanza">
+      <span class="stanza-line">that your worth isn't measured by who stays,</span>
+      <span class="stanza-line">that your value isn't determined by who drifts away,</span>
+      <span class="stanza-line lit">and that your story is still unfolding beautifully without the ones who chose not to grow with you.</span>
+    </div>
+
+    <br><br>
+
+    <p>You're not meant to chase ghosts, my friend.<br>
+    You're meant to welcome the souls God is sending<br>
+    the ones who won't fade, won't disappear, won't drift…<br>
+    the ones who stay.</p>
+
+  </div>
+
+  <!-- Closing -->
+  <div class="closing">
+    <div class="closing-quote">
+      You're not meant to chase ghosts.<br>You're meant to welcome the souls<br>God is sending.
+    </div>
+    <div class="author-tag">Written by</div>
+    <div class="author-name">Princess</div>
+    <br>
+    <a class="medium-link" href="https://medium.com/@prvaxis" target="_blank" rel="noopener">
+      Originally published on <span class="medium-word">Medium</span>
+    </a>
+  </div>
+
+</main>
+
+<script>
+  // Scroll progress
+  const bar = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const max = document.body.scrollHeight - window.innerHeight;
+    bar.style.width = (scrolled / max * 100) + '%';
+  });
+
+  // Subtle parallax on ambient glow
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    document.querySelector('.ambient-top').style.transform =
+      `translateX(-50%) translateY(${y * 0.1}px)`;
+  });
+</script>
+</body>
+</html>

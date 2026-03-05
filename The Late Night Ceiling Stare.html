@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Late Night Ceiling Stare</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Crimson+Pro:ital,wght@0,200;0,300;1,200;1,300&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0b09;
+    --bg2: #111009;
+    --amber: #c8892a;
+    --amber-dim: #a06c1a;
+    --amber-glow: rgba(200, 137, 42, 0.12);
+    --cream: #e8dcc8;
+    --muted: #7a6f5e;
+    --faint: #3a342a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'Crimson Pro', serif;
+    font-weight: 200;
+    font-size: 1.22rem;
+    line-height: 1.9;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 4rem 2rem;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 60%, rgba(200,137,42,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 80% 40% at 50% 100%, rgba(200,137,42,0.04) 0%, transparent 60%);
+  }
+
+  /* Stars */
+  .stars {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    background: var(--amber);
+    border-radius: 50%;
+    animation: twinkle var(--dur) ease-in-out infinite;
+    opacity: 0;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: var(--peak); }
+  }
+
+  .time-stamp {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.4em;
+    color: var(--amber);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.3s forwards;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-title {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(2.8rem, 8vw, 6.5rem);
+    font-weight: 400;
+    text-align: center;
+    color: var(--cream);
+    line-height: 1.1;
+    opacity: 0;
+    animation: fadeUp 1.4s ease 0.6s forwards;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--amber);
+  }
+
+  .hero-divider {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, var(--amber), transparent);
+    margin: 3rem auto;
+    opacity: 0;
+    animation: fadeUp 1s ease 1s forwards;
+  }
+
+  .hero-meta {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+    text-align: center;
+  }
+
+  .hero-meta span {
+    color: var(--amber-dim);
+  }
+
+  /* ===== PHONE ANIMATION ===== */
+  .phone-scene {
+    position: relative;
+    z-index: 2;
+    margin: 2rem auto 0;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.4s forwards;
+  }
+
+  .phone {
+    width: 56px;
+    height: 96px;
+    border: 1.5px solid var(--faint);
+    border-radius: 10px;
+    background: #0a0908;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+  }
+
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 18px; height: 3px;
+    background: var(--faint);
+    border-radius: 0 0 3px 3px;
+  }
+
+  .phone-screen {
+    position: absolute;
+    inset: 6px 4px;
+    overflow: hidden;
+  }
+
+  .phone-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    animation: phoneScroll 6s ease-in-out infinite alternate;
+  }
+
+  @keyframes phoneScroll {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-60%); }
+  }
+
+  .phone-line {
+    height: 3px;
+    background: var(--faint);
+    border-radius: 2px;
+    margin: 4px 2px;
+    opacity: 0.6;
+  }
+
+  .phone-line.bright { background: rgba(200,137,42,0.3); opacity: 1; }
+  .phone-line.short { width: 60%; }
+  .phone-line.med { width: 80%; }
+
+  .phone-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, rgba(200,137,42,0.04), transparent 70%);
+    border-radius: 10px;
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* ===== CONTENT ===== */
+  .content-wrapper {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 2rem 8rem;
+    position: relative;
+  }
+
+  /* Ambient side line */
+  .content-wrapper::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--faint) 20%, var(--faint) 80%, transparent);
+    opacity: 0.4;
+  }
+
+  .chapter-marker {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 5rem 0 3rem;
+    padding-left: 2rem;
+  }
+
+  .chapter-marker::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--amber);
+    flex-shrink: 0;
+  }
+
+  .chapter-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.4em;
+    color: var(--amber);
+    text-transform: uppercase;
+  }
+
+  .article-body {
+    padding: 0 0 0 2rem;
+  }
+
+  p {
+    margin-bottom: 1.8em;
+    color: rgba(232, 220, 200, 0.85);
+    opacity: 0;
+    animation: revealPara 0.8s ease forwards;
+    animation-play-state: paused;
+  }
+
+  p.visible {
+    animation-play-state: running;
+  }
+
+  @keyframes revealPara {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Opening line special treatment */
+  .opening {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.55rem;
+    color: var(--cream) !important;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  .opening em {
+    color: var(--amber);
+    font-style: italic;
+  }
+
+  /* Short punchy lines */
+  .staccato {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.45rem;
+    font-style: italic;
+    color: rgba(232,220,200,0.5) !important;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.2em !important;
+  }
+
+  /* Dialogue / questions */
+  .questions {
+    border-left: 1px solid var(--amber-dim);
+    padding: 1.5rem 0 1.5rem 2rem;
+    margin: 2.5rem 0;
+    opacity: 0;
+    animation: revealPara 0.8s ease forwards;
+    animation-play-state: paused;
+  }
+
+  .questions.visible {
+    animation-play-state: running;
+  }
+
+  .questions p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: rgba(200,137,42,0.75) !important;
+    margin-bottom: 0.6em !important;
+    opacity: 1;
+    animation: none;
+  }
+
+  /* Closing blessing */
+  .closing-block {
+    text-align: center;
+    padding: 4rem 2rem;
+    border-top: 1px solid var(--faint);
+    border-bottom: 1px solid var(--faint);
+    margin: 4rem 0;
+    position: relative;
+  }
+
+  .closing-block::before,
+  .closing-block::after {
+    content: '✦';
+    position: absolute;
+    color: var(--amber);
+    font-size: 0.6rem;
+    top: -0.5em;
+  }
+
+  .closing-block::before { left: 2rem; }
+  .closing-block::after { right: 2rem; }
+
+  .closing-line {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--amber);
+    line-height: 1.7;
+    opacity: 0;
+    animation: revealPara 1s ease forwards;
+    animation-play-state: paused;
+  }
+
+  .closing-line.visible {
+    animation-play-state: running;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    text-align: center;
+    padding: 3rem 2rem 5rem;
+    border-top: 1px solid var(--faint);
+  }
+
+  .footer-byline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .author-name {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.1rem;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+
+  .author-bio {
+    font-size: 0.95rem;
+    color: var(--muted);
+    font-style: italic;
+    max-width: 400px;
+    margin: 0 auto 2rem;
+    line-height: 1.7;
+  }
+
+  .medium-link {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    text-decoration: none;
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--faint);
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .medium-link a {
+    color: var(--amber);
+    text-decoration: none;
+    transition: opacity 0.3s;
+  }
+
+  .medium-link a:hover {
+    opacity: 0.7;
+  }
+
+  /* ===== UTILS ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .amber { color: var(--amber); }
+
+  /* Scroll progress */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 1px;
+    background: var(--amber);
+    z-index: 999;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 8px var(--amber);
+  }
+
+  /* Reading time indicator */
+  .reading-badge {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    opacity: 0.6;
+    z-index: 100;
+  }
+
+  @media (max-width: 600px) {
+    body { font-size: 1.1rem; }
+    .hero-title { font-size: clamp(2.2rem, 10vw, 3.5rem); }
+    .content-wrapper { padding: 0 1.5rem 6rem; }
+    .article-body { padding-left: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+<div class="reading-badge">6 min read</div>
+
+<!-- Stars -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="stars" id="stars"></div>
+
+  <div class="time-stamp">3 : 0 0 &nbsp; A M</div>
+
+  <h1 class="hero-title">
+    The Late Night<br><em>Ceiling Stare</em>
+  </h1>
+
+  <div class="hero-divider"></div>
+
+  <div class="hero-meta">
+    By <span>Princess</span> &nbsp;&bull;&nbsp; March 2026 &nbsp;&bull;&nbsp; <span>6 min read</span>
+  </div>
+
+  <div class="phone-scene">
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="phone-content">
+          <div class="phone-line bright"></div>
+          <div class="phone-line short"></div>
+          <div class="phone-line med"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line short"></div>
+          <div class="phone-line bright med"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line short"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line med"></div>
+          <div class="phone-line bright short"></div>
+          <div class="phone-line"></div>
+          <div class="phone-line med"></div>
+          <div class="phone-line short"></div>
+          <div class="phone-line bright"></div>
+        </div>
+      </div>
+      <div class="phone-glow"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Article -->
+<div class="content-wrapper">
+  <div class="chapter-marker">
+    <span class="chapter-label">The hour no one talks about</span>
+  </div>
+
+  <div class="article-body">
+
+    <p class="opening">It's <em>3 AM</em> and you're staring at the ceiling.</p>
+
+    <p class="staccato">Again.</p>
+
+    <p>Everyone else is asleep. The world is quiet. And your brain decides now, right now, is the perfect time to replay every mistake you've ever made, every awkward thing you've ever said, every person you've ever hurt or disappointed or lost.</p>
+
+    <p>This is your ritual. The late night ceiling stare. The time when all your thoughts, all your worries, all your regrets come flooding in with perfect clarity and relentless detail.</p>
+
+    <p>During the day, you're fine. You're busy. You're distracted. You're managing. You're functioning. You're convincing everyone, including yourself, that you're okay.</p>
+
+    <p>But at night? At night, when the distractions fade and the noise stops and you're alone with yourself? That's when it all catches up.</p>
+
+    <p>That's when you remember the thing you said five years ago that still makes you cringe. That's when you think about the relationship that ended and wonder if it was your fault. That's when you calculate how far behind you are in life compared to where you thought you'd be.</p>
+
+    <p>That's when you question everything. Every choice. Every path. Every version of yourself you've ever been or tried to be or failed to be.</p>
+
+    <div class="questions">
+      <p>"Am I doing this right?"</p>
+      <p>"Am I a good person?"</p>
+      <p>"Have I wasted my life?"</p>
+      <p>"Does anyone actually care about me?"</p>
+      <p>"What if I never figure it out?"</p>
+      <p>"What if this is as good as it gets?"</p>
+    </div>
+
+    <p>The questions pour in like water through a broken dam. And you can't stop them. You can't shut your brain off. You can't make it quiet.</p>
+
+    <p>You try. You try to think about something else. You try to focus on your breathing. You try counting sheep or repeating mantras or distracting yourself with your phone.</p>
+
+    <p>But the thoughts keep coming. Louder. More insistent. More convincing in the dark than they ever are in the daylight.</p>
+
+    <p>Everything feels worse at 3 AM. Everything feels heavier. More permanent. More hopeless.</p>
+
+    <p>That problem you have? At 3 AM it feels unsolvable. That mistake you made? At 3 AM it feels unforgivable. That fear you carry? At 3 AM it feels inevitable.</p>
+
+    <p>The ceiling becomes a screen where your brain projects every worst-case scenario. Every regret. Every "what if" and "why didn't I" and "I should have."</p>
+
+    <p>You think about people you've lost. People who left. People who died. People who just drifted away. And you miss them with an intensity that only exists in the middle of the night.</p>
+
+    <p>You think about all the versions of yourself you used to be. The you before trauma. The you before heartbreak. The you who still believed things would work out. And you grieve them.</p>
+
+    <p>You think about your body. How it's changing. How it hurts. How it's not what it used to be. How it's failing you or you're failing it.</p>
+
+    <p>You think about your life. How it's not what you planned. How you're not where you thought you'd be. How time is passing and you're still stuck or lost or searching or surviving.</p>
+
+    <p>You think about death. Your own mortality. The fact that everyone you love will die. That you will die. That nothing lasts. That time is running out.</p>
+
+    <p>And suddenly you're not just awake. You're spiraling. You're panicking. You're suffocating under the weight of thoughts you can't control.</p>
+
+    <p>Your chest tightens. Your heart races. Your breathing gets shallow. And you're not just staring at the ceiling anymore. You're fighting. Fighting to stay calm. Fighting to survive your own mind.</p>
+
+    <p>This is the late night ceiling stare. And it's exhausting. It's lonely. It's terrifying.</p>
+
+    <p>Because during the day, you can pretend you're fine. You can push it down. You can distract yourself. You can function.</p>
+
+    <p>But at night, there's nowhere to hide. No distractions strong enough. No walls thick enough. No performance convincing enough.</p>
+
+    <p>At night, you're forced to face yourself. All of yourself. The parts you hide. The parts you're ashamed of. The parts you're scared of. The parts you don't know what to do with.</p>
+
+    <p>And you're alone with it. Everyone else is sleeping peacefully while you're waging war with your own thoughts.</p>
+
+    <p>You wonder if anyone else does this. If anyone else lies awake questioning everything. If anyone else feels this broken, this lost, this overwhelmed.</p>
+
+    <p>The answer is yes. So many people are doing this right now. Staring at their own ceilings. Fighting their own thoughts. Feeling just as alone as you do.</p>
+
+    <p>But knowing that doesn't make it easier, does it? Because in this moment, at 3 AM, you feel like the only person in the world who's awake and struggling and falling apart.</p>
+
+    <p>You feel isolated. Disconnected. Like you're the only one who can't get their brain to shut up. Like everyone else has figured out how to sleep peacefully while you're stuck in this hell.</p>
+
+    <p>And you're tired. So tired. Not just physically. Mentally. Emotionally. Existentially tired.</p>
+
+    <p>Tired of fighting your own mind. Tired of reliving the past. Tired of worrying about the future. Tired of never feeling at peace. Tired of these late night battles you never win.</p>
+
+    <p>You just want to sleep. You want your brain to be quiet. You want to not feel so much. You want to wake up and feel rested instead of already defeated by your own thoughts before the day even begins.</p>
+
+    <p>But for now, you're here. Staring at the ceiling. Again. Hoping eventually exhaustion will win. Hoping tomorrow will be easier. Hoping one day you'll figure out how to silence the thoughts that won't let you rest.</p>
+
+    <p>And maybe you will. Maybe therapy will help. Maybe medication will help. Maybe time will help. Maybe you'll learn coping strategies that actually work. Maybe you'll heal enough that the nights become peaceful instead of terrifying.</p>
+
+    <p>Or maybe you won't. Maybe this will always be part of your life. The late night ceiling stare. The 3 AM spiral. The fight with your own mind that happens when everyone else is sleeping.</p>
+
+    <p>If that's the case, I want you to know: You're not alone. You're not broken. You're not crazy. You're human.</p>
+
+    <p>And humans carry heavy things. Regrets. Fears. Questions. Pain. Memories. Worries about the future and ghosts from the past.</p>
+
+    <p>And sometimes those heavy things show up at night. When we're vulnerable. When we're tired. When our defenses are down and our distractions are gone.</p>
+
+    <p>It doesn't mean you're failing. It doesn't mean you're weak. It doesn't mean you're doing life wrong.</p>
+
+    <p>It just means you're human. Carrying human things. Processing human experiences. Living a human life that's complicated and messy and sometimes overwhelming.</p>
+
+    <p>So when you're staring at the ceiling at 3 AM, remember: This will pass. The sun will rise. The thoughts will quiet eventually. You'll sleep eventually.</p>
+
+    <p>And when you do, your brain will reset. Tomorrow will come. The thoughts won't feel as heavy in the daylight.</p>
+
+    <p>You'll get through this night. Just like you've gotten through every other night. Just like you'll get through the next one.</p>
+
+    <p>One ceiling stare at a time. One sleepless night at a time. One spiral at a time.</p>
+
+    <p>You're doing better than you think. You're stronger than you know. You're surviving things that feel unsurvivable.</p>
+
+    <p>And that counts. That matters. That's enough.</p>
+
+    <p>Even at 3 AM when it doesn't feel like it. Even when you're staring at the ceiling wondering how you're going to make it through another day.</p>
+
+    <div class="closing-block">
+      <p class="closing-line">You will. You always do.<br><br>You're here. You're fighting. You're trying.<br><br>And that's enough. You're enough.<br><br>Even in the late night ceiling stare.<br><br>You're enough. You'll be okay. Morning is coming.</p>
+    </div>
+
+    <p>Hold on. Breathe. Survive this night.</p>
+
+    <p>Because you've survived every other night. And you'll survive this one too.</p>
+
+    <p>The ceiling will still be there tomorrow. But so will you.</p>
+
+    <p>And that's what matters. You're still here.</p>
+
+    <p>Fighting. Surviving. Existing.</p>
+
+    <p>One late night at a time.</p>
+
+    <p>You're going to be okay.</p>
+
+    <p>Even when it doesn't feel like it. Even at 3 AM.</p>
+
+    <p>You're going to be okay.</p>
+
+    <p>Just hold on. Just breathe. Just make it to morning.</p>
+
+    <p>You can do this. You've done it before. You'll do it again.</p>
+
+    <p>The late night ceiling stare is hard. But you're harder.</p>
+
+    <p>You're still here. You're still fighting.</p>
+
+    <p class="staccato">And that's everything.</p>
+
+    <p>Keep going. Keep breathing. Keep surviving.</p>
+
+    <p>Morning is coming. Sleep is coming. Peace is coming.</p>
+
+    <p>Hold on. Just a little bit longer.</p>
+
+    <p>You're going to be okay.</p>
+
+    <p style="font-family:'IM Fell English',serif; font-style:italic; color:var(--amber); font-size:1.2rem;">I promise.</p>
+
+    <p>You're going to be okay.</p>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-byline">Written by</div>
+  <div class="author-name">Princess</div>
+  <div class="author-bio">Just a girl named Princess&hellip; dreaming of that one soul who stumbles upon her words and finally feels less alone.</div>
+  <div class="medium-link">
+    Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+  </div>
+</footer>
+
+<script>
+  // Generate stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.cssText = `
+      left: ${Math.random() * 100}%;
+      top: ${Math.random() * 100}%;
+      --dur: ${3 + Math.random() * 5}s;
+      --peak: ${0.1 + Math.random() * 0.4};
+      animation-delay: ${Math.random() * 6}s;
+      ${Math.random() > 0.85 ? 'width:2px;height:2px;' : ''}
+    `;
+    starsEl.appendChild(star);
+  }
+
+  // Scroll progress bar
+  const progress = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    progress.style.width = pct + '%';
+  });
+
+  // Intersection observer for paragraph reveals
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('p, .questions, .closing-line').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pain showed me parts of myself</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0907;
+      --surface: #111009;
+      --amber: #c8922a;
+      --amber-light: #e8b045;
+      --amber-glow: rgba(200, 146, 42, 0.12);
+      --text: #d4c9b0;
+      --text-muted: #7a6f5a;
+      --text-dim: #4a4438;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.85;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.35;
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 60%, rgba(200,146,42,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Floating particles */
+    .particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--amber);
+      border-radius: 50%;
+      opacity: 0;
+      animation: float-up linear infinite;
+    }
+
+    @keyframes float-up {
+      0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.2; }
+      100% { transform: translateY(-10vh) translateX(30px); opacity: 0; }
+    }
+
+    .particle:nth-child(1)  { left: 10%; animation-duration: 12s; animation-delay: 0s; }
+    .particle:nth-child(2)  { left: 20%; animation-duration: 18s; animation-delay: 3s; width: 1px; height: 1px; }
+    .particle:nth-child(3)  { left: 35%; animation-duration: 14s; animation-delay: 1s; }
+    .particle:nth-child(4)  { left: 50%; animation-duration: 20s; animation-delay: 5s; width: 3px; height: 3px; opacity: 0.3; }
+    .particle:nth-child(5)  { left: 65%; animation-duration: 16s; animation-delay: 2s; }
+    .particle:nth-child(6)  { left: 78%; animation-duration: 11s; animation-delay: 7s; width: 1px; }
+    .particle:nth-child(7)  { left: 88%; animation-duration: 15s; animation-delay: 4s; }
+    .particle:nth-child(8)  { left: 42%; animation-duration: 22s; animation-delay: 9s; width: 1px; }
+
+    .eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--amber);
+      opacity: 0.8;
+      margin-bottom: 32px;
+      animation: fadeInDown 1.2s ease both;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 0.8; transform: translateY(0); }
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(38px, 7vw, 88px);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.1;
+      color: #f0e6d0;
+      max-width: 820px;
+      animation: fadeInUp 1.4s ease both 0.2s;
+      text-shadow: 0 0 80px rgba(200,146,42,0.15);
+    }
+
+    .hero-title span {
+      color: var(--amber-light);
+      display: block;
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-divider {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, var(--amber), transparent);
+      margin: 48px auto;
+      animation: grow 1.6s ease both 0.6s;
+    }
+    @keyframes grow {
+      from { height: 0; opacity: 0; }
+      to { height: 80px; opacity: 1; }
+    }
+
+    .hero-meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      animation: fadeInUp 1.4s ease both 0.8s;
+    }
+
+    /* Scroll indicator */
+    .scroll-cue {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      animation: fadeInUp 1.4s ease both 1.2s;
+    }
+    .scroll-cue span {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--text-dim), transparent);
+      animation: pulse-line 2s ease-in-out infinite;
+    }
+    @keyframes pulse-line {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.1); }
+    }
+
+    /* Article */
+    article {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 80px 32px 120px;
+    }
+
+    .verse {
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .verse.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .verse p {
+      font-size: 1.1rem;
+      line-height: 1.9;
+      color: var(--text);
+    }
+
+    /* Opening verse — large drop cap style */
+    .verse.opening p {
+      font-size: 1.18rem;
+      color: #ddd3bc;
+    }
+    .verse.opening p::first-letter {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 4.5rem;
+      font-weight: 700;
+      color: var(--amber-light);
+      float: left;
+      line-height: 0.75;
+      margin-right: 12px;
+      margin-top: 10px;
+    }
+
+    /* Line-by-line stanza */
+    .stanza {
+      margin-bottom: 56px;
+      padding-left: 32px;
+      border-left: 1px solid rgba(200,146,42,0.25);
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .stanza.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stanza p {
+      font-size: 1rem;
+      line-height: 2.1;
+      color: #b8aa90;
+      font-style: italic;
+    }
+
+    /* Pull quote */
+    .pullquote {
+      text-align: center;
+      padding: 48px 0;
+      margin: 48px 0;
+      position: relative;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .pullquote.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .pullquote::before, .pullquote::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--amber);
+      margin: 0 auto 24px;
+      opacity: 0.5;
+    }
+    .pullquote::after { margin: 24px auto 0; }
+    .pullquote p {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.3rem, 3vw, 1.9rem);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--amber-light);
+      line-height: 1.5;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Closing poem */
+    .closing-poem {
+      text-align: center;
+      padding: 72px 0 48px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    .closing-poem.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .closing-poem p {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: #e8d9bc;
+      line-height: 2.2;
+    }
+    .closing-poem p span {
+      color: var(--amber-light);
+      font-weight: 700;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 80px 24px 60px;
+      border-top: 1px solid var(--text-dim);
+      position: relative;
+    }
+    footer::before {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--amber), transparent);
+      margin: 0 auto 40px;
+    }
+
+    .author-block {
+      margin-bottom: 32px;
+    }
+    .author-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.1rem;
+      color: #e0d4bc;
+      letter-spacing: 1px;
+    }
+    .author-bio {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-style: italic;
+      max-width: 380px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.7;
+    }
+
+    .medium-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .medium-link a {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200,146,42,0.3);
+      padding-bottom: 1px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .medium-link a:hover {
+      color: var(--amber-light);
+      border-color: var(--amber-light);
+    }
+
+    /* Ambient glow orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(80px);
+      z-index: 0;
+    }
+    .orb-1 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(200,146,42,0.06), transparent 70%);
+      top: 20%; left: -100px;
+    }
+    .orb-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(200,146,42,0.04), transparent 70%);
+      bottom: 10%; right: -150px;
+    }
+
+    @media (max-width: 600px) {
+      article { padding: 60px 20px 80px; }
+      .hero { padding: 60px 20px; }
+      .verse.opening p::first-letter { font-size: 3.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="particles">
+      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div>
+    </div>
+
+    <p class="eyebrow">A meditation on becoming</p>
+    <h1 class="hero-title">
+      Pain showed me<br>parts of myself
+      <span>comfort could never introduce.</span>
+    </h1>
+    <div class="hero-divider"></div>
+    <p class="hero-meta">By Princess &nbsp;&bull;&nbsp; February 14, 2026</p>
+
+    <div class="scroll-cue">
+      <span>Read</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Article Body -->
+  <article>
+
+    <div class="verse opening">
+      <p>There comes a moment when you finally look back at the pain you once begged God to take away, the heartbreak, the disappointment, the abandonment, the confusion, and you realize that it didn't just wound you&hellip; it revealed you. Pain has a way of stripping everything untrue, everything temporary, everything superficial, until all that's left is the core of who you really are. You didn't know your strength until something tried to break you. You didn't know your resilience until life gave you no choice but to rise. You didn't know your depth until someone couldn't meet it. You didn't know your worth until someone made you question it. Pain didn't define you, it uncovered you.</p>
+    </div>
+
+    <div class="stanza">
+      <p>There were days when you felt lost inside your own heart, unsure of who you were becoming.</p>
+      <p>Days when the hurt was so heavy, you thought you'd never feel like yourself again.</p>
+      <p>Days when you thought the pain was destroying you, when really, it was shaping you into someone wiser, gentler, softer, stronger.</p>
+      <p>Pain forced you to see parts of yourself you might have ignored otherwise, the parts that needed healing, the parts that needed boundaries, the parts that needed love, the parts that needed God more than ever.</p>
+    </div>
+
+    <div class="verse">
+      <p>And in the middle of it all, even when you felt forgotten, God was working quietly within you. He was removing what dimmed your spirit. He was reshaping what life had shattered. He was strengthening what had grown weak. He was revealing what was always meant to remain. Pain was not the punishment, it was the pruning. It was God clearing away what you thought you needed so you could become who you were meant to be.</p>
+    </div>
+
+    <div class="pullquote">
+      <p>Pain was not the punishment. It was the pruning.</p>
+    </div>
+
+    <div class="stanza">
+      <p>You learned that you are not just someone who survives, you are someone who transforms.</p>
+      <p>You learned that your heart can break and still stay tender.</p>
+      <p>You learned that your soul can ache and still choose love.</p>
+      <p>You learned that even after the deepest wounds, there is a version of yourself waiting on the other side, wiser, calmer, more grounded, more aligned with God's purpose.</p>
+      <p>You discovered your strength in the places you once felt the weakest.</p>
+    </div>
+
+    <div class="verse">
+      <p>One day, My friend, you will look back at the pain that once consumed you and feel something you never expected: gratitude. Not because it didn't hurt, it did. Not because it was fair, it wasn't. But because it transformed you into a woman who knows herself now, truly and deeply. The pain didn't destroy you; it revealed the depth of your spirit, the softness of your heart, and the strength of your soul.</p>
+    </div>
+
+    <div class="closing-poem">
+      <p>The pain you lived through</p>
+      <p>is the proof of the woman you've become,</p>
+      <p><span>not broken&hellip; but beautifully rebuilt.</span></p>
+    </div>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <div class="author-block">
+      <p class="author-name">Princess</p>
+      <p class="author-bio">Just a girl named Princess&hellip; dreaming of that one soul who stumbles upon her words and finally feels less alone.</p>
+    </div>
+    <p class="medium-link">Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+  </footer>
+
+  <script>
+    // Intersection Observer for scroll animations
+    const elements = document.querySelectorAll('.verse, .stanza, .pullquote, .closing-poem');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    elements.forEach(el => observer.observe(el));
+
+    // Parallax subtle on hero title
+    window.addEventListener('scroll', () => {
+      const hero = document.querySelector('.hero');
+      const scrolled = window.scrollY;
+      if (hero) hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+    });
+  </script>
+
+</body>
+</html>

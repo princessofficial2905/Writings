@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>You Are More Than — Princess</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=Cormorant+Infant:ital,wght@0,300;1,300;1,400&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0b0a08;
+    --bg2: #100f0c;
+    --gold: #c9a84c;
+    --gold-light: #e2c47a;
+    --gold-dim: #7a6330;
+    --cream: #f0e8d8;
+    --muted: #7a7060;
+    --text: #d8cfc0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── CANVAS PARTICLES ── */
+  #canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.45;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201,168,76,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(4rem, 12vw, 11rem);
+    font-weight: 900;
+    line-height: 0.88;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: fadeUp 1.1s 0.5s forwards;
+  }
+
+  .hero-title em {
+    display: block;
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .hero-sub {
+    font-family: 'Cormorant Infant', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.55rem);
+    font-style: italic;
+    color: var(--gold-dim);
+    margin-top: 2.2rem;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: fadeUp 1s 0.8s forwards;
+  }
+
+  .hero-line {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    margin: 3rem auto 0;
+    opacity: 0;
+    animation: fadeUp 1s 1.1s forwards;
+  }
+
+  .scroll-hint {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-top: 1rem;
+    opacity: 0;
+    animation: fadeUp 1s 1.3s forwards;
+  }
+
+  /* ── ARTICLE BODY ── */
+  .article {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 6rem 2.5rem 4rem;
+  }
+
+  /* opening statement */
+  .opening {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--cream);
+    margin-bottom: 3.5rem;
+    border-left: 3px solid var(--gold);
+    padding-left: 1.8rem;
+  }
+
+  p {
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
+    line-height: 1.9;
+    color: var(--text);
+    margin-bottom: 1.6rem;
+  }
+
+  /* pull quotes */
+  .pull {
+    font-family: 'Cormorant Infant', serif;
+    font-style: italic;
+    font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+    line-height: 1.35;
+    color: var(--gold-light);
+    text-align: center;
+    margin: 4rem 0;
+    padding: 2.5rem 1.5rem;
+    border-top: 1px solid var(--gold-dim);
+    border-bottom: 1px solid var(--gold-dim);
+    position: relative;
+  }
+
+  .pull::before {
+    content: '\201C';
+    font-size: 6rem;
+    line-height: 0;
+    color: var(--gold-dim);
+    position: absolute;
+    top: 2.2rem;
+    left: 1rem;
+    opacity: 0.4;
+  }
+
+  /* section divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 3rem 0;
+    color: var(--gold-dim);
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-dim));
+  }
+  .divider::after {
+    background: linear-gradient(to left, transparent, var(--gold-dim));
+  }
+
+  /* bold emphasis paragraph */
+  .bold-line {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.6;
+    margin-bottom: 1.6rem;
+  }
+
+  /* finale section */
+  .finale {
+    text-align: center;
+    padding: 5rem 0 2rem;
+  }
+
+  .finale p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--gold-light);
+    line-height: 1.55;
+    margin-bottom: 1.2rem;
+  }
+
+  .finale .last-line {
+    font-size: clamp(1.6rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: var(--cream);
+    font-style: normal;
+    margin-top: 1.5rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 4rem 2rem 5rem;
+    border-top: 1px solid #1e1c18;
+  }
+
+  .author-line {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+  }
+
+  .author-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+
+  .author-desc {
+    font-family: 'Cormorant Infant', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--gold-dim);
+    max-width: 420px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+  }
+
+  .medium-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold-dim);
+    padding-bottom: 2px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .medium-link:hover { color: var(--gold-light); border-color: var(--gold-light); }
+
+  .medium-link span {
+    color: var(--gold);
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.85s ease, transform 0.85s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(to right, var(--gold-dim), var(--gold-light));
+    z-index: 100;
+    transition: width 0.1s linear;
+  }
+
+  /* ── KEYFRAMES ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 600px) {
+    .article { padding: 4rem 1.4rem 3rem; }
+    .pull::before { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<canvas id="canvas"></canvas>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">An essay by Princess</p>
+  <h1 class="hero-title">
+    You Are<br>
+    <em>More Than</em>
+  </h1>
+  <p class="hero-sub">What You Can Do for Others</p>
+  <div class="hero-line"></div>
+  <p class="scroll-hint">Scroll to read</p>
+</section>
+
+<!-- ARTICLE -->
+<article class="article">
+
+  <p class="opening reveal">You measure your worth by your usefulness.</p>
+
+  <p class="reveal">By what you can give. What you can do. How you can help. How you can serve. How you can make other people's lives easier.</p>
+
+  <p class="reveal">You've built your entire identity around being needed. Being helpful. Being the one people can count on. The one who shows up. The one who gives.</p>
+
+  <p class="reveal">And when you can't do something for someone, when you can't help, when you can't be useful, you feel worthless.</p>
+
+  <p class="reveal">Like if you're not giving, you have no value. Like if you're not helping, you have no purpose. Like if you're not needed, you don't matter.</p>
+
+  <div class="pull reveal">But here's the truth you need to hear: You are more than what you can do for others.</div>
+
+  <p class="reveal">Your worth is not measured by your productivity. Your value doesn't come from your usefulness. You don't have to earn your right to exist by constantly giving.</p>
+
+  <p class="reveal">You matter. Just because you're here. Just because you're you. Not because of what you do or give or provide.</p>
+
+  <p class="reveal">You matter when you're helping. And you matter when you're resting. You matter when you're giving. And you matter when you have nothing left to give.</p>
+
+  <p class="bold-line reveal">Your value is inherent. It's not conditional. It's not based on performance or output or how many people you can serve in a day.</p>
+
+  <p class="reveal">You are valuable simply because you exist. Because you're human. Because you're alive.</p>
+
+  <div class="divider reveal">The Weight of Earning Love</div>
+
+  <p class="reveal">But you don't believe that, do you? Because you've been taught that your worth is tied to your usefulness.</p>
+
+  <p class="reveal">Maybe it started young. Maybe you learned that love was conditional. That attention had to be earned. That the way to matter was to make yourself indispensable.</p>
+
+  <p class="reveal">Maybe you learned that being helpful meant being loved. That being needed meant being wanted. That being useful meant being valued.</p>
+
+  <p class="reveal">So you became the helper. The giver. The one everyone could count on. The one who never said no. The one who sacrificed their own needs to meet everyone else's.</p>
+
+  <p class="reveal">And people praised you for it. "You're so selfless." "You're so giving." "You're so reliable." "What would we do without you?"</p>
+
+  <p class="reveal">And that praise felt good. It felt like proof. Proof that you mattered. Proof that you had value. Proof that you were worthy.</p>
+
+  <p class="reveal">So you kept doing it. You kept giving. You kept helping. You kept making yourself available, useful, needed.</p>
+
+  <p class="reveal">Even when you were exhausted. Even when you had nothing left. Even when it was hurting you.</p>
+
+  <div class="pull reveal">Because if you stopped, who would you be? If you weren't the helper, what would your purpose be?</div>
+
+  <p class="reveal">The fear is real. The fear that if you stop doing things for others, they'll stop caring about you. That your relationships are built on what you can provide, not who you actually are.</p>
+
+  <p class="reveal">And sometimes that fear is justified. Because some people in your life do only value you for what you can do for them.</p>
+
+  <p class="reveal">They call when they need something. They reach out when they want help. But when you need something? Silence.</p>
+
+  <p class="reveal">Those people taught you that your worth is transactional. That love is earned through service. That you have to keep giving to keep mattering.</p>
+
+  <div class="divider reveal">What Real Love Looks Like</div>
+
+  <p class="bold-line reveal">But that's not love. That's not a real relationship. That's using someone and calling it friendship.</p>
+
+  <p class="reveal">Real love doesn't require you to constantly prove your worth. Real relationships don't demand that you exhaust yourself to earn your place. Real connection happens because of who you are, not what you can do.</p>
+
+  <p class="reveal">You've been so busy being useful that you've forgotten you're also valuable just as a person. As a human being with thoughts and feelings and dreams and needs.</p>
+
+  <p class="reveal">You've been so focused on what you give that you've neglected who you are underneath all that giving.</p>
+
+  <p class="reveal">And I need you to hear this: Who you are is enough. Even if you never did another thing for anyone. Even if you never helped another person. Even if you stopped being useful entirely.</p>
+
+  <div class="pull reveal">You would still matter. You would still be valuable. You would still deserve love and care and respect.</div>
+
+  <p class="reveal">Not because of what you do. But because of who you are. A human being. Worthy of dignity. Worthy of kindness. Worthy of rest.</p>
+
+  <p class="reveal">You don't owe the world your constant service. You don't owe people your exhaustion. You don't owe anyone your depletion.</p>
+
+  <p class="reveal">You're allowed to rest. You're allowed to say no. You're allowed to prioritize yourself without guilt.</p>
+
+  <p class="reveal">You're allowed to exist without constantly proving your worth through acts of service.</p>
+
+  <p class="reveal">And if people only value you when you're useful, if they only care about you when you're giving, if they disappear when you set boundaries, they never valued you at all. They valued what you could do for them.</p>
+
+  <div class="divider reveal">The Freedom in Knowing</div>
+
+  <p class="reveal">And that's painful to realize. That some of your relationships are built on what you provide rather than who you are.</p>
+
+  <p class="reveal">But it's also freeing. Because now you know. Now you can choose. Now you can decide that you're worth more than being someone's source of free labor, free therapy, free help.</p>
+
+  <p class="reveal">You can start building relationships with people who see you as more than what you can do for them. People who value you for who you are. People who care about you even when you can't give them anything.</p>
+
+  <p class="reveal">You can start seeing yourself as more than a tool. More than a resource. More than a means to an end.</p>
+
+  <p class="bold-line reveal">You are a whole person. With needs and wants and limits and feelings. And all of those things matter. Not just what you can provide to others.</p>
+
+  <p class="reveal">Your needs matter. Your rest matters. Your boundaries matter. Your wellbeing matters.</p>
+
+  <p class="reveal">Just as much as everyone else's. Maybe more. Because you can't pour from an empty cup. You can't help others if you're depleted. You can't be there for everyone else if you're never there for yourself.</p>
+
+  <p class="reveal">So start being there for yourself. Start valuing yourself the way you value others. Start giving yourself the same care and attention and compassion you freely give to everyone else.</p>
+
+  <p class="reveal">You deserve it. Not because you've earned it through service. But because you're human. And humans need care. Including you.</p>
+
+  <div class="divider reveal">Who You Are Is Enough</div>
+
+  <p class="reveal">Stop measuring your worth by your usefulness. Stop defining yourself by what you can do for others.</p>
+
+  <p class="reveal">You are so much more than that. You are a person with inherent value. You are worthy of love and respect and care just for existing.</p>
+
+  <p class="pull reveal">Not for doing. Not for giving. Not for serving. Just for being.</p>
+
+  <p class="reveal">You are more than what you can do for others. You always have been. You always will be.</p>
+
+  <p class="reveal">And the people who can't see that? Who only value you for what you provide? Who disappear when you stop giving?</p>
+
+  <p class="bold-line reveal">They don't deserve you. They never did.</p>
+
+  <p class="reveal">You deserve people who love you for who you are. Who value you even when you have nothing to give. Who stick around when you need to receive instead of constantly give.</p>
+
+  <p class="reveal">Those people exist. And you'll find them when you stop exhausting yourself trying to earn love from people who only value your utility.</p>
+
+  <div class="finale reveal">
+    <p>You are more than useful. You are valuable.</p>
+    <p>You are worthy. You are enough.</p>
+    <p>Just as you are. Right now.</p>
+    <p>Even if you never did another thing for anyone.</p>
+    <p>You matter. You've always mattered.</p>
+    <p>Not because of what you do.</p>
+    <p>But because of who you are.</p>
+    <p>And who you are is more than enough.</p>
+    <p>Remember that. Believe that. Live that.</p>
+    <p class="last-line">It's always been enough.<br>And it always will be.</p>
+  </div>
+
+</article>
+
+<!-- FOOTER -->
+<footer>
+  <p class="author-line">Written by</p>
+  <p class="author-name">Princess</p>
+  <p class="author-desc">Just a girl named Princess… dreaming of that one soul who stumbles upon her words and finally feels less alone.</p>
+  <a class="medium-link" href="https://medium.com/@prvaxis" target="_blank" rel="noopener">
+    Originally published on <span>Medium</span>
+  </a>
+</footer>
+
+<script>
+  // ── PARTICLE CANVAS ──
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.r = Math.random() * 1.2 + 0.2;
+      this.alpha = Math.random() * 0.5 + 0.1;
+      this.vy = -(Math.random() * 0.25 + 0.05);
+      this.vx = (Math.random() - 0.5) * 0.1;
+      this.life = 1;
+      this.decay = Math.random() * 0.002 + 0.0005;
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.life -= this.decay;
+      if (this.life <= 0 || this.y < -10) this.reset();
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha * this.life;
+      ctx.fillStyle = '#c9a84c';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(loop);
+  }
+  loop();
+
+  // ── SCROLL PROGRESS ──
+  const bar = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const max = document.body.scrollHeight - window.innerHeight;
+    bar.style.width = (window.scrollY / max * 100) + '%';
+  });
+
+  // ── SCROLL REVEAL ──
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Slow, Quiet Process of Letting Go</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300;400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0804;
+      --bg2: #0f0c08;
+      --amber: #c8902a;
+      --amber-light: #e8b84b;
+      --amber-dim: #7a5518;
+      --cream: #f0e6cc;
+      --muted: #8a7a60;
+      --faint: #2a2218;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--cream);
+      font-family: 'Cormorant Infant', Georgia, serif;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.35;
+    }
+
+    /* ── ambient glow ── */
+    .ambient {
+      position: fixed;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,144,42,0.07) 0%, transparent 70%);
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      z-index: 0;
+      animation: pulse 8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+      50%      { opacity: 1;   transform: translateX(-50%) scale(1.1); }
+    }
+
+    /* ── reading progress bar ── */
+    #progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--amber-dim), var(--amber-light));
+      z-index: 1000;
+      transition: width 0.1s linear;
+    }
+
+    /* ── hero ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 200px;
+      background: linear-gradient(to bottom, transparent, var(--bg));
+      pointer-events: none;
+    }
+
+    .hero-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 1s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Infant', serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(3rem, 9vw, 8rem);
+      line-height: 1.05;
+      color: var(--cream);
+      max-width: 900px;
+      opacity: 0;
+      animation: fadeUp 1.2s 0.6s forwards;
+      text-shadow: 0 0 80px rgba(200,144,42,0.15);
+    }
+
+    .hero-title em {
+      font-style: normal;
+      color: var(--amber);
+    }
+
+    .hero-divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--amber), transparent);
+      margin: 40px auto;
+      opacity: 0;
+      animation: fadeUp 1s 1s forwards;
+    }
+
+    .hero-meta {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 200;
+      letter-spacing: 4px;
+      color: var(--muted);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 1s 1.2s forwards;
+    }
+
+    /* ── floating petal particles ── */
+    .petals {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .petal {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: var(--amber);
+      border-radius: 50%;
+      opacity: 0;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0%   { opacity: 0;    transform: translateY(-20px) translateX(0) scale(0); }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.2; }
+      100% { opacity: 0;    transform: translateY(100vh) translateX(80px) scale(0.5); }
+    }
+
+    /* ── article wrapper ── */
+    .article-wrap {
+      position: relative;
+      z-index: 10;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 60px 32px 120px;
+    }
+
+    /* ── opening quote decoration ── */
+    .opening-mark {
+      font-family: 'Cinzel', serif;
+      font-size: 120px;
+      color: var(--amber-dim);
+      line-height: 0.6;
+      margin-bottom: 24px;
+      opacity: 0.4;
+      display: block;
+      transform: translateX(-16px);
+    }
+
+    /* ── paragraph styles ── */
+    .para {
+      font-size: clamp(1.15rem, 2.5vw, 1.35rem);
+      line-height: 1.95;
+      font-weight: 300;
+      color: #d4c5a9;
+      margin-bottom: 2.4rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .para.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── verse block ── */
+    .verse {
+      border-left: 1px solid var(--amber-dim);
+      padding: 24px 32px;
+      margin: 3rem 0;
+      font-style: italic;
+      font-size: clamp(1.2rem, 2.8vw, 1.5rem);
+      line-height: 2.1;
+      color: var(--cream);
+      background: linear-gradient(135deg, rgba(200,144,42,0.04), transparent);
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    .verse.visible { opacity: 1; transform: translateX(0); }
+
+    /* ── bold divine section ── */
+    .divine {
+      text-align: center;
+      padding: 60px 24px;
+      margin: 4rem 0;
+      position: relative;
+    }
+    .divine::before, .divine::after {
+      content: '';
+      position: absolute;
+      left: 50%; transform: translateX(-50%);
+      height: 1px;
+      width: 100px;
+      background: linear-gradient(90deg, transparent, var(--amber-dim), transparent);
+    }
+    .divine::before { top: 0; }
+    .divine::after  { bottom: 0; }
+
+    .divine-text {
+      font-family: 'Cormorant Infant', serif;
+      font-weight: 600;
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      line-height: 1.8;
+      color: var(--amber-light);
+      opacity: 0;
+      transform: scale(0.97);
+      transition: opacity 1.1s ease, transform 1.1s ease;
+    }
+    .divine-text.visible { opacity: 1; transform: scale(1); }
+
+    /* ── closing lines ── */
+    .closing {
+      text-align: center;
+      padding-top: 3rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
+    .closing.visible { opacity: 1; transform: translateY(0); }
+
+    .closing-line {
+      font-family: 'Cormorant Infant', serif;
+      font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+      font-style: italic;
+      font-weight: 300;
+      line-height: 2;
+      color: #c8b896;
+    }
+    .closing-line strong {
+      color: var(--amber-light);
+      font-weight: 600;
+      font-style: normal;
+    }
+
+    /* ── section divider ── */
+    .sep {
+      text-align: center;
+      color: var(--amber-dim);
+      font-size: 20px;
+      letter-spacing: 12px;
+      margin: 3rem 0;
+      opacity: 0.5;
+    }
+
+    /* ── footer ── */
+    footer {
+      border-top: 1px solid var(--faint);
+      padding: 48px 32px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .footer-inner {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 200;
+      letter-spacing: 3px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .footer-inner a {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid var(--amber-dim);
+      padding-bottom: 1px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .footer-inner a:hover {
+      color: var(--amber-light);
+      border-color: var(--amber-light);
+    }
+
+    .footer-logo {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-size: 28px;
+      color: var(--amber-dim);
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+
+    /* ── scroll down indicator ── */
+    .scroll-cue {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeUp 1s 2s forwards;
+    }
+    .scroll-cue span {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 9px;
+      letter-spacing: 4px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--amber-dim), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { opacity: 0.4; transform: scaleY(1); }
+      50%      { opacity: 1;   transform: scaleY(1.2); }
+    }
+
+    /* ── keyframes ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── responsive ── */
+    @media (max-width: 600px) {
+      .article-wrap { padding: 40px 20px 80px; }
+      .opening-mark { font-size: 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div class="ambient"></div>
+<div class="petals" id="petals"></div>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <p class="hero-label">A Personal Essay &nbsp;·&nbsp; February 2026</p>
+  <h1 class="hero-title">
+    The Slow, Quiet<br/>
+    Process of <em>Letting Go</em><br/>
+    of Someone You Still Love
+  </h1>
+  <div class="hero-divider"></div>
+  <p class="hero-meta">by Princess &nbsp;·&nbsp; 2 min read</p>
+
+  <div class="scroll-cue">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ── ARTICLE ── -->
+<main class="article-wrap">
+
+  <span class="opening-mark">"</span>
+
+  <p class="para">
+    Letting go isn't a moment, it's a process. A slow, quiet, painful unraveling of feelings that once felt permanent. People think moving on means waking up one day suddenly healed, suddenly free, suddenly untouched by memories… but it doesn't work like that. Letting go happens in pieces. You stop checking their social media one week. You stop hoping for their message the next. You stop replaying certain memories. You stop imagining them in your future. And slowly, without realizing it, the space they took in your heart begins to loosen. Not disappear, just loosen.
+  </p>
+
+  <p class="para">
+    There's a grief in this process that no one prepares you for. Because unloving someone isn't hating them; it's accepting that the love you still feel no longer has a place to go. It's accepting that holding on hurts more than letting go. It's accepting that they are living their life without you, and you must learn to do the same. You miss them even when you don't want to. You remember their voice when you least expect it. You think of what you wanted with them, the version of life that almost happened, and your heart aches, not because they deserve your love, but because they once had it.
+  </p>
+
+  <div class="verse">
+    And the hardest part?<br/>
+    You don't decide to stop loving someone.<br/>
+    Your heart learns to stop expecting them.
+  </div>
+
+  <div class="verse">
+    That's what letting go truly is,<br/>
+    not erasing the love,<br/>
+    but releasing the hope.
+  </div>
+
+  <div class="sep">· · ·</div>
+
+  <p class="para">
+    And even though it feels unfair, even though it feels heavy, God is guiding this process more than you realize. He knows how tightly you held on, how deeply you cared, how long you waited for something that wasn't meant to return. He saw every silent tear, every quiet disappointment, every moment you convinced yourself that maybe, just maybe, things would change.
+  </p>
+
+  <div class="divine">
+    <p class="divine-text">
+      But He also knew what your heart couldn't yet understand:<br/>
+      you were loving someone who couldn't meet you where you were going.<br/><br/>
+      Unloving them isn't punishment, it's protection.<br/>
+      It's God clearing space in your heart for a love that won't make you shrink, guess, wait, or ache.
+    </p>
+  </div>
+
+  <p class="para">
+    And one day, sooner than you expect, you'll wake up and realize that the pain has softened. The memories feel lighter. The longing has loosened. Your heart will beat without their shadow. And you'll understand that letting go wasn't losing them…
+  </p>
+
+  <div class="closing">
+    <p class="closing-line">it was finding yourself again.</p>
+    <br/>
+    <p class="closing-line">
+      You're not failing because you still feel something.<br/>
+      <strong>You're healing</strong>, just slowly, beautifully, and in God's timing.
+    </p>
+  </div>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">Princess</div>
+  <div class="footer-inner">
+    Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+    &nbsp;·&nbsp; All words belong to their author
+  </div>
+</footer>
+
+<script>
+  // Reading progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+    document.getElementById('progress').style.width = (scrolled * 100) + '%';
+  });
+
+  // Scroll-reveal observer
+  const revealEls = document.querySelectorAll('.para, .verse, .divine-text, .closing');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // Floating particle petals
+  const container = document.getElementById('petals');
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    const size = Math.random() * 3 + 1;
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      width: ${size}px;
+      height: ${size}px;
+      opacity: 0;
+      animation-duration: ${12 + Math.random() * 18}s;
+      animation-delay: ${Math.random() * 20}s;
+    `;
+    container.appendChild(p);
+  }
+</script>
+</body>
+</html>

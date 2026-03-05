@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Day You Realized — Princess</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0a0806;
+      --surface: #110e0a;
+      --amber: #c8903a;
+      --amber-soft: #e4b96a;
+      --amber-dim: #7a5520;
+      --cream: #e8d9c0;
+      --muted: #6b5d4a;
+      --text: #cfc0a6;
+      --text-dim: #8a7a66;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.85;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.35;
+    }
+
+    /* Reading progress bar */
+    #progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--amber-dim), var(--amber), var(--amber-soft));
+      z-index: 1000;
+      transition: width 0.1s linear;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-start;
+      padding: clamp(3rem, 8vw, 7rem) clamp(1.5rem, 8vw, 8rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 80% 30%, rgba(200,144,58,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 80% at 10% 80%, rgba(200,144,58,0.04) 0%, transparent 60%),
+        linear-gradient(170deg, #0e0b07 0%, #0a0806 60%, #06040202 100%);
+    }
+
+    .hero-number {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(120px, 25vw, 280px);
+      font-weight: 600;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(200,144,58,0.12);
+      position: absolute;
+      top: -0.1em;
+      right: -0.05em;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(9px, 1.2vw, 11px);
+      letter-spacing: 0.35em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 7rem);
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      max-width: 14ch;
+      opacity: 0;
+      animation: fadeUp 1s 0.5s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--amber-soft);
+    }
+
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      font-style: italic;
+      color: var(--muted);
+      margin-top: 1.2rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.7s forwards;
+    }
+
+    .hero-meta {
+      margin-top: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.9s forwards;
+    }
+
+    .hero-author {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--amber-dim);
+      text-transform: uppercase;
+    }
+
+    .hero-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--amber-dim);
+    }
+
+    .hero-read-time {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 14px;
+      color: var(--text-dim);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      right: clamp(1.5rem, 8vw, 8rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeIn 1.5s 1.5s forwards;
+    }
+
+    .scroll-hint span {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      color: var(--amber-dim);
+      writing-mode: vertical-rl;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(var(--amber-dim), transparent);
+      animation: lineGrow 2s 1.5s infinite;
+    }
+
+    /* Section divider */
+    .ornament {
+      text-align: center;
+      padding: 3rem 0;
+      color: var(--amber-dim);
+      font-size: 18px;
+      letter-spacing: 1rem;
+      opacity: 0.6;
+    }
+
+    /* Article */
+    article {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: clamp(3rem, 8vw, 7rem) clamp(1.5rem, 6vw, 2rem);
+    }
+
+    .drop-cap::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 5.5em;
+      font-weight: 900;
+      float: left;
+      line-height: 0.75;
+      margin-right: 0.1em;
+      margin-top: 0.1em;
+      color: var(--amber);
+    }
+
+    p {
+      margin-bottom: 1.8em;
+      color: var(--text);
+      font-weight: 300;
+    }
+
+    .pull-quote {
+      border-left: 2px solid var(--amber);
+      padding: 1.5rem 0 1.5rem 2.5rem;
+      margin: 3rem 0;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+      color: var(--cream);
+      line-height: 1.4;
+      position: relative;
+    }
+
+    .pull-quote::before {
+      content: '\201C';
+      position: absolute;
+      left: -0.1em;
+      top: -0.3em;
+      font-size: 4em;
+      color: var(--amber);
+      opacity: 0.3;
+      line-height: 1;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .section-break {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin: 3rem 0;
+    }
+
+    .section-break::before,
+    .section-break::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--amber-dim), transparent);
+    }
+
+    .section-break-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--amber);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--amber);
+    }
+
+    /* Emphasis lines */
+    .emphasis {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.15em;
+      color: var(--cream);
+    }
+
+    /* Footer */
+    footer {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: clamp(2rem, 5vw, 5rem) clamp(1.5rem, 6vw, 2rem) clamp(4rem, 8vw, 8rem);
+      border-top: 1px solid rgba(200,144,58,0.15);
+    }
+
+    .sign-off {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+    }
+
+    .sign-off strong {
+      color: var(--amber-soft);
+      font-style: normal;
+    }
+
+    .medium-credit {
+      margin-top: 3rem;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .medium-credit a {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200,144,58,0.3);
+      padding-bottom: 1px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+
+    .medium-credit a:hover {
+      color: var(--amber-soft);
+      border-color: var(--amber-soft);
+    }
+
+    /* Candlelight floating particles */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      bottom: -10px;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: var(--amber);
+      opacity: 0;
+      animation: rise linear infinite;
+    }
+
+    @keyframes rise {
+      0%   { transform: translateY(0) translateX(0); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.1; }
+      100% { transform: translateY(-100vh) translateX(var(--drift)); opacity: 0; }
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes lineGrow {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    /* Reveal on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .hero-number { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress"></div>
+
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-number" aria-hidden="true">∞</div>
+
+    <p class="hero-eyebrow">An Essay by Princess</p>
+    <h1 class="hero-title">The Day You <em>Realized</em></h1>
+    <p class="hero-subtitle">Your Parents Are Just Scared Kids, Too</p>
+
+    <div class="hero-meta">
+      <span class="hero-author">Princess</span>
+      <div class="hero-divider"></div>
+      <span class="hero-read-time">6 min read</span>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      <span>Read</span>
+    </div>
+  </section>
+
+  <!-- Body -->
+  <article>
+
+    <p class="drop-cap reveal">There is a moment in adulthood that nobody prepares you for.</p>
+
+    <p class="reveal">It is not a birthday. It is not a milestone. It is not something you can mark on a calendar.</p>
+
+    <p class="reveal">It is the moment you look at your parents and suddenly see them differently.</p>
+
+    <div class="pull-quote reveal">
+      Not as the all-knowing, all-powerful figures they were when you were five. Not as the heroes who could fix anything, answer any question, make everything okay.
+    </div>
+
+    <p class="reveal">But as people. Flawed, scared, confused people who were just making it up as they went along.</p>
+
+    <p class="reveal">Just like you are now.</p>
+
+    <p class="reveal">And that realization? It shatters something inside you.</p>
+
+    <p class="reveal">Because your entire childhood, you believed they had all the answers. That they knew what they were doing. That their choices were made with certainty and wisdom.</p>
+
+    <p class="reveal">You believed they were strong. Unbreakable. The foundation you built your world on.</p>
+
+    <div class="section-break reveal"><div class="section-break-dot"></div></div>
+
+    <p class="reveal">And then one day, you are having a conversation with them, and you see it.</p>
+
+    <p class="reveal">The fear in their eyes. The uncertainty in their voice. The same worry you carry about whether you are doing things right.</p>
+
+    <p class="reveal">Or maybe you are facing a situation they faced years ago, and you suddenly understand: they did not know what they were doing either. They were just as scared as you are now. Just as lost. Just as human.</p>
+
+    <p class="reveal">And everything shifts.</p>
+
+    <p class="reveal">All those decisions they made that you did not understand? They were guessing.</p>
+    <p class="reveal">All those times they seemed so sure? They were pretending.</p>
+    <p class="reveal">All those moments they said "because I said so"? They did not have a better answer.</p>
+
+    <p class="reveal">They were winging it. The whole time. Your entire childhood.</p>
+
+    <p class="reveal emphasis">And suddenly, everything makes sense in a way that breaks your heart.</p>
+
+    <div class="section-break reveal"><div class="section-break-dot"></div></div>
+
+    <p class="reveal">The reason they were so strict? They were scared of losing you.</p>
+    <p class="reveal">The reason they pushed you so hard? They were scared you would struggle like they did.</p>
+    <p class="reveal">The reason they said no to things that seemed harmless? They were terrified of all the things that could go wrong.</p>
+    <p class="reveal">The reason they could not talk about feelings? Nobody taught them how.</p>
+    <p class="reveal">The reason they made mistakes? Because they are human. Just human.</p>
+
+    <p class="reveal">And you realize: they were not raising you from a place of certainty. They were raising you from a place of fear.</p>
+
+    <div class="pull-quote reveal">
+      Fear that they would mess you up. Fear that they would not be enough. Fear that they would fail you. Fear that they did not know what they were doing, because they did not.
+    </div>
+
+    <p class="reveal">Nobody does. That is the secret nobody tells you until you are an adult, maybe even a parent yourself.</p>
+
+    <p class="reveal emphasis">We are all just scared kids trying to do our best. Hoping we do not break the people we love. Hoping we are making the right choices. Hoping we are enough.</p>
+
+    <div class="section-break reveal"><div class="section-break-dot"></div></div>
+
+    <p class="reveal">Your parents? They were twenty-something-year-olds one day, and then suddenly they had you. This tiny human who needed everything from them. Who looked at them like they hung the moon. Who trusted them completely.</p>
+
+    <p class="reveal">And they had no idea what they were doing.</p>
+
+    <p class="reveal">They read books. They asked their parents. They followed advice from people who also did not really know. They made decisions based on fear, hope, and whatever information they had at the time.</p>
+
+    <p class="reveal">Some of those decisions were good. Some of them hurt you. Most of them were somewhere in between.</p>
+
+    <p class="reveal">But they were trying. In the only way they knew how. With the tools they had. With the wounds they carried. With the childhood they survived.</p>
+
+    <div class="pull-quote reveal">
+      And this is the part that is hard to swallow: They did to you what was done to them.
+    </div>
+
+    <p class="reveal">The emotional distance? They learned it from their parents.</p>
+    <p class="reveal">The inability to say "I love you"? Nobody said it to them.</p>
+    <p class="reveal">The criticism? That is how they were motivated.</p>
+    <p class="reveal">The silence around hard topics? That is how their family survived.</p>
+
+    <p class="reveal">They did not set out to hurt you. They did not wake up and choose to be imperfect parents. They were just repeating the patterns they knew. Breaking some cycles. Trapped in others.</p>
+
+    <p class="reveal">Doing better in some ways. Worse in others.</p>
+
+    <div class="section-break reveal"><div class="section-break-dot"></div></div>
+
+    <p class="reveal">And now you are old enough to see it all. To understand it. To recognize the humanity in them.</p>
+
+    <p class="reveal">And it is complicated.</p>
+
+    <p class="reveal">Because you can see their flaws now, but you also see their effort. You can acknowledge the pain they caused, but you also recognize the pain they carried. You can be angry at them for their mistakes while also understanding they were doing their best.</p>
+
+    <p class="reveal emphasis">You can hold both truths at once: They loved you AND they hurt you. They tried AND they failed sometimes. They were heroes AND they were human.</p>
+
+    <p class="reveal">And that is confusing. Because when you were a kid, things were simple. They were either good or bad. Right or wrong. Safe or scary.</p>
+
+    <p class="reveal">But now you see the gray. The nuance. The complexity of being a person trying to raise another person.</p>
+
+    <div class="section-break reveal"><div class="section-break-dot"></div></div>
+
+    <p class="reveal">And you look at your own life and realize: I am making mistakes too. I am scared too. I am figuring it out as I go too.</p>
+
+    <p class="reveal">And if you have kids, or if you want them someday, you think: I am going to mess them up somehow. Not because I want to. But because I am human. Because I am scared. Because I do not have all the answers either.</p>
+
+    <p class="reveal">And maybe your kids will sit somewhere twenty years from now and have this same realization about you.</p>
+
+    <p class="reveal">That you were not perfect. That you were just trying. That you were scared and human and doing your best with what you had.</p>
+
+    <div class="section-break reveal"><div class="section-break-dot"></div></div>
+
+    <p class="reveal">This realization about your parents, it changes things.</p>
+
+    <p class="reveal">For some people, it brings compassion. Understanding. Forgiveness. The ability to see their parents as people and love them differently, more realistically.</p>
+
+    <p class="reveal">For others, it brings grief. Because you realize they could have done better. They could have gotten help. They could have broken the cycle. They chose not to, or did not know how, or were too scared to try.</p>
+
+    <p class="reveal">Both reactions are valid. Both can be true.</p>
+
+    <div class="pull-quote reveal">
+      You can have compassion for their humanity while also setting boundaries for your healing.
+    </div>
+
+    <p class="reveal">You can understand why they did what they did without excusing the harm it caused. You can see them as flawed people and still expect them to take responsibility.</p>
+
+    <p class="reveal">Understanding does not mean accepting. Seeing their fear does not mean ignoring your pain.</p>
+
+    <p class="reveal">But it does mean something important: It means you are finally seeing them clearly.</p>
+
+    <p class="reveal">Not through the eyes of a child who needed them to be perfect. But through the eyes of an adult who understands that perfection does not exist.</p>
+
+    <div class="section-break reveal"><div class="section-break-dot"></div></div>
+
+    <p class="reveal">And maybe, if you are lucky, this realization becomes a gift.</p>
+
+    <p class="reveal">The gift of releasing them from the pedestal you put them on. The pedestal they never asked for and could never live up to.</p>
+
+    <p class="reveal">The gift of seeing them as they are: Imperfect people who loved you imperfectly.</p>
+
+    <p class="reveal">The gift of choosing how you want to move forward. With compassion or distance. With forgiveness or boundaries. With understanding or anger. Or all of it mixed together in a complicated mess.</p>
+
+    <p class="reveal">Because that is what being an adult is. Living in the gray. Holding multiple truths. Making peace with imperfection.</p>
+
+    <div class="section-break reveal"><div class="section-break-dot"></div></div>
+
+    <p class="reveal">Your parents are just scared kids too. Grown up on the outside, but still carrying all their childhood wounds. Still figuring it out. Still making mistakes.</p>
+
+    <p class="reveal">Just like you.</p>
+
+    <p class="reveal">And maybe that is the most human thing of all.</p>
+
+    <p class="reveal">We are all just scared kids, trying not to mess up the next generation. Trying to do better than what was done to us. Trying to break cycles we do not fully understand. Trying to love people we do not know how to love perfectly.</p>
+
+    <p class="reveal">And failing. And trying again.</p>
+
+    <p class="reveal">That is the thing about being human. About being a parent. About being anyone's child.</p>
+
+    <p class="reveal">We are all just doing our best. And our best is flawed. And that has to be okay.</p>
+
+    <p class="reveal">Because perfect does not exist. Not in parents. Not in children. Not in anyone.</p>
+
+    <p class="reveal emphasis">We are all just scared kids. All the way down.</p>
+
+    <p class="reveal">And maybe, just maybe, that is enough.</p>
+
+  </article>
+
+  <footer>
+    <p class="sign-off reveal">With compassion for all the scared kids,</p>
+    <p class="sign-off reveal"><strong>Including you and me</strong></p>
+
+    <p class="medium-credit reveal" style="margin-top: 3.5rem;">
+      Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a>
+    </p>
+  </footer>
+
+  <script>
+    // Reading progress
+    const bar = document.getElementById('progress');
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (scrolled / total * 100) + '%';
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => observer.observe(el));
+
+    // Floating particles
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 20; i++) {
+      const p = document.createElement('div');
+      p.classList.add('particle');
+      const left = Math.random() * 100;
+      const drift = (Math.random() - 0.5) * 80;
+      const dur = 8 + Math.random() * 12;
+      const delay = Math.random() * 15;
+      const size = 1 + Math.random() * 2.5;
+      p.style.cssText = `
+        left: ${left}%;
+        --drift: ${drift}px;
+        animation-duration: ${dur}s;
+        animation-delay: ${delay}s;
+        width: ${size}px;
+        height: ${size}px;
+        opacity: 0;
+      `;
+      container.appendChild(p);
+    }
+  </script>
+</body>
+</html>

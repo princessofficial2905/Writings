@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Princess — Writings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --bg: #0d0b09;
+      --amber: #c9903a;
+      --amber-soft: #e8b86d;
+      --amber-dim: rgba(201,144,58,0.15);
+      --cream: #f0e8d8;
+      --muted: #7a7060;
+      --line: rgba(201,144,58,0.18);
+    }
+
+    html { scroll-behavior:smooth; }
+
+    body {
+      background:var(--bg);
+      color:var(--cream);
+      font-family:'EB Garamond',Georgia,serif;
+      overflow-x:hidden;
+      min-height:100vh;
+    }
+
+    /* Grain */
+    body::before {
+      content:''; position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events:none; z-index:9999; opacity:0.4;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height:100vh;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      text-align:center;
+      padding:80px 24px 120px;
+      position:relative; overflow:hidden;
+    }
+
+    .hero-glow {
+      position:absolute; width:800px; height:800px; border-radius:50%;
+      background:radial-gradient(circle,rgba(201,144,58,0.07) 0%,transparent 70%);
+      top:50%; left:50%; transform:translate(-50%,-50%);
+      pointer-events:none;
+      animation:breathe 8s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1);}
+      50%{opacity:1;transform:translate(-50%,-50%) scale(1.15);}
+    }
+
+    #hp{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+    .pt{
+      position:absolute;bottom:-10px;border-radius:50%;
+      background:var(--amber);animation:pfloat linear infinite;
+    }
+    @keyframes pfloat{
+      0%{transform:translateY(0);opacity:0;}
+      10%{opacity:.5;} 90%{opacity:.1;}
+      100%{transform:translateY(-110vh);opacity:0;}
+    }
+
+    .hero-eyebrow {
+      font-family:'Josefin Sans',sans-serif;
+      font-size:9px;font-weight:300;letter-spacing:.42em;
+      text-transform:uppercase;color:var(--amber);
+      margin-bottom:32px;
+      opacity:0;animation:fadeUp 1s .3s forwards;
+    }
+    .hero-name {
+      font-family:'Cormorant Infant',serif;
+      font-size:clamp(72px,14vw,150px);
+      font-weight:300;line-height:1;
+      color:var(--cream);
+      opacity:0;animation:fadeUp 1.2s .5s forwards;
+    }
+    .hero-name em{font-style:italic;color:var(--amber-soft);}
+
+    .hero-rule{
+      width:1px;height:80px;
+      background:linear-gradient(to bottom,var(--amber),transparent);
+      margin:44px auto 36px;
+      opacity:0;animation:fadeUp 1s .9s forwards;
+    }
+    .hero-desc{
+      font-family:'EB Garamond',serif;
+      font-size:clamp(16px,2vw,21px);font-style:italic;
+      color:rgba(240,232,216,.5);max-width:480px;line-height:1.75;
+      opacity:0;animation:fadeUp 1s 1.1s forwards;
+    }
+    .hero-count{
+      font-family:'Josefin Sans',sans-serif;
+      font-size:9px;font-weight:200;letter-spacing:.35em;
+      text-transform:uppercase;color:var(--muted);
+      margin-top:40px;
+      opacity:0;animation:fadeUp 1s 1.4s forwards;
+    }
+    .hero-count span{color:var(--amber);}
+
+    .scroll-cue{
+      position:absolute;bottom:44px;left:50%;transform:translateX(-50%);
+      display:flex;flex-direction:column;align-items:center;gap:10px;
+      opacity:0;animation:fadeUp 1s 1.8s forwards;
+    }
+    .sc-label{
+      font-family:'Josefin Sans',sans-serif;
+      font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);
+    }
+    .sc-line{
+      width:1px;height:48px;
+      background:linear-gradient(to bottom,var(--amber),transparent);
+      animation:scPulse 2s ease-in-out infinite;
+    }
+    @keyframes scPulse{0%,100%{opacity:.4;}50%{opacity:1;}}
+
+    /* ── SECTION ── */
+    .writings-section{padding:60px 0 120px;}
+    .section-header{text-align:center;padding:0 24px 56px;}
+    .section-label{
+      font-family:'Josefin Sans',sans-serif;
+      font-size:9px;font-weight:300;letter-spacing:.42em;
+      text-transform:uppercase;color:var(--amber);margin-bottom:14px;
+    }
+    .section-title{
+      font-family:'Cormorant Infant',serif;
+      font-size:clamp(28px,4vw,46px);font-weight:300;color:var(--cream);
+    }
+
+    /* ── GRID ── */
+    .grid{
+      max-width:1200px;margin:0 auto;padding:0 32px;
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:1px;
+      background:rgba(240,232,216,0.04);
+      border:1px solid rgba(240,232,216,0.04);
+    }
+
+    /* ── CARD ── */
+    .card{
+      position:relative;
+      background:var(--bg);
+      padding:36px 32px 32px;
+      text-decoration:none;color:inherit;
+      display:flex;flex-direction:column;gap:12px;
+      min-height:180px;overflow:hidden;
+      opacity:0;transform:translateY(20px);
+      transition:opacity .6s ease,transform .6s ease,background .3s ease;
+    }
+    .card.revealed{opacity:1;transform:translateY(0);}
+
+    .card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--amber),transparent);
+      opacity:0;transition:opacity .4s;
+    }
+    .card:hover{background:#161309;}
+    .card:hover::before{opacity:1;}
+
+    .card-num{
+      font-family:'Josefin Sans',sans-serif;
+      font-size:9px;font-weight:100;letter-spacing:.35em;
+      color:var(--muted);text-transform:uppercase;
+    }
+    .card-title{
+      font-family:'Cormorant Infant',serif;
+      font-size:clamp(18px,1.8vw,23px);font-weight:300;
+      line-height:1.28;color:var(--cream);flex:1;
+      transition:color .3s;
+    }
+    .card:hover .card-title{color:var(--amber-soft);}
+
+    .card-arrow{
+      display:flex;align-items:center;gap:10px;
+      font-family:'Josefin Sans',sans-serif;
+      font-size:8px;font-weight:300;letter-spacing:.28em;
+      text-transform:uppercase;color:var(--amber);
+      opacity:0;transform:translateY(6px);
+      transition:opacity .3s,transform .3s,gap .3s;
+    }
+    .card:hover .card-arrow{opacity:1;transform:translateY(0);}
+    .card-arrow-line{width:24px;height:1px;background:var(--amber);transition:width .3s;}
+    .card:hover .card-arrow-line{width:40px;}
+
+    /* ── HOVER PREVIEW POPUP ── */
+    #preview{
+      position:fixed;
+      width:340px;
+      pointer-events:none;
+      z-index:8000;
+      opacity:0;
+      transform:translateY(10px) scale(.96);
+      transition:opacity .22s ease, transform .22s ease;
+      border-radius:4px;
+      overflow:hidden;
+      box-shadow:
+        0 0 0 1px rgba(201,144,58,.3),
+        0 20px 60px rgba(0,0,0,.75),
+        0 0 60px rgba(201,144,58,.06);
+    }
+    #preview.show{
+      opacity:1;
+      transform:translateY(0) scale(1);
+    }
+
+    /* Chrome bar */
+    .prev-chrome{
+      background:#1c1810;
+      border-bottom:1px solid rgba(201,144,58,.2);
+      padding:9px 12px;
+      display:flex;align-items:center;gap:8px;
+    }
+    .prev-dots{display:flex;gap:5px;}
+    .prev-dot{
+      width:8px;height:8px;border-radius:50%;
+      background:rgba(201,144,58,.2);
+    }
+    .prev-dot:first-child{background:rgba(201,144,58,.55);}
+    .prev-bar{
+      flex:1;background:rgba(201,144,58,.06);
+      border:1px solid rgba(201,144,58,.13);
+      border-radius:20px;height:20px;
+      display:flex;align-items:center;padding:0 10px;
+    }
+    .prev-url{
+      font-family:'Josefin Sans',sans-serif;
+      font-size:8px;font-weight:200;letter-spacing:.1em;
+      color:var(--muted);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+    }
+
+    /* Content area */
+    .prev-body{
+      background:#110f0c;
+      padding:24px 26px 28px;
+    }
+    .prev-tag{
+      font-family:'Josefin Sans',sans-serif;
+      font-size:8px;font-weight:300;letter-spacing:.35em;
+      text-transform:uppercase;color:var(--amber);
+      margin-bottom:14px;display:block;
+    }
+    .prev-title{
+      font-family:'Cormorant Infant',serif;
+      font-size:22px;font-weight:300;line-height:1.2;
+      color:var(--cream);margin-bottom:14px;
+    }
+    .prev-rule{
+      width:32px;height:1px;
+      background:linear-gradient(to right,var(--amber),transparent);
+      margin-bottom:14px;
+    }
+    .prev-excerpt{
+      font-family:'EB Garamond',serif;
+      font-size:14px;font-style:italic;
+      color:rgba(240,232,216,.55);
+      line-height:1.75;
+    }
+    .prev-footer{
+      background:#0f0d0a;
+      border-top:1px solid rgba(201,144,58,.12);
+      padding:12px 26px;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .prev-author{
+      font-family:'Josefin Sans',sans-serif;
+      font-size:8px;font-weight:200;letter-spacing:.28em;
+      text-transform:uppercase;color:var(--muted);
+    }
+    .prev-cta{
+      font-family:'Josefin Sans',sans-serif;
+      font-size:8px;font-weight:300;letter-spacing:.2em;
+      text-transform:uppercase;color:var(--amber);
+      display:flex;align-items:center;gap:6px;
+    }
+    .prev-cta-line{width:16px;height:1px;background:var(--amber);}
+
+    /* ── FOOTER ── */
+    footer{
+      text-align:center;padding:60px 24px 80px;
+      border-top:1px solid rgba(240,232,216,.05);
+    }
+    .ft-eyebrow{
+      font-family:'Josefin Sans',sans-serif;
+      font-size:9px;font-weight:200;letter-spacing:.38em;
+      text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+    }
+    .ft-name{
+      font-family:'Cormorant Infant',serif;
+      font-size:36px;font-weight:300;font-style:italic;
+      color:var(--amber-soft);margin-bottom:20px;
+    }
+    .ft-link{
+      font-family:'Josefin Sans',sans-serif;
+      font-size:9px;font-weight:300;letter-spacing:.22em;
+      text-transform:uppercase;color:var(--muted);
+      text-decoration:none;transition:color .3s;
+    }
+    .ft-link:hover{color:var(--amber);}
+    .ft-link span{color:var(--amber);}
+
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(18px);}
+      to{opacity:1;transform:translateY(0);}
+    }
+
+    @media(max-width:640px){
+      .grid{padding:0 16px;grid-template-columns:1fr;}
+      #preview{display:none;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div id="hp"></div>
+  <p class="hero-eyebrow">A collection of essays &amp; letters</p>
+  <h1 class="hero-name"><em>Princess</em></h1>
+  <div class="hero-rule"></div>
+  <p class="hero-desc">Words written for the parts of you that still need to hear them.</p>
+  <p class="hero-count"><span id="wcount"></span> writings</p>
+  <div class="scroll-cue">
+    <span class="sc-label">Read</span>
+    <div class="sc-line"></div>
+  </div>
+</section>
+
+<!-- WRITINGS -->
+<section class="writings-section">
+  <div class="section-header">
+    <p class="section-label">All writings</p>
+    <h2 class="section-title">Every letter, every essay</h2>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p class="ft-eyebrow">Written by</p>
+  <p class="ft-name">Princess</p>
+  <a href="https://medium.com/@prvaxis" target="_blank" class="ft-link">
+    Originally published on <span>Medium</span>
+  </a>
+</footer>
+
+<!-- HOVER PREVIEW -->
+<div id="preview">
+  <div class="prev-chrome">
+    <div class="prev-dots">
+      <div class="prev-dot"></div>
+      <div class="prev-dot"></div>
+      <div class="prev-dot"></div>
+    </div>
+    <div class="prev-bar">
+      <span class="prev-url" id="prev-url">princess · writings</span>
+    </div>
+  </div>
+  <div class="prev-body">
+    <span class="prev-tag">Princess · Essay</span>
+    <div class="prev-title" id="prev-title"></div>
+    <div class="prev-rule"></div>
+    <div class="prev-excerpt" id="prev-excerpt"></div>
+  </div>
+  <div class="prev-footer">
+    <span class="prev-author">By Princess</span>
+    <span class="prev-cta"><span class="prev-cta-line"></span>Read</span>
+  </div>
+</div>
+
+<script>
+const writings = [
+  { title:"To the Child You Used to Be", file:"To_The_Child_You_Used_To_Be.html", excerpt:"Tell you that it wasn't your fault. That you didn't deserve it. That you were just a kid and kids shouldn't have to go through what you went through." },
+  { title:"The Day You Stopped Performing", file:"The_Day_You.html", excerpt:"You've been performing your entire life. Playing a role. Wearing a mask. Being the version of yourself that you think people want to see." },
+  { title:"The Apology", file:"The_Apology.html", excerpt:"From the person who hurt you. Who lied to you. Who betrayed you. Who broke you. Who said they loved you and then destroyed you." },
+  { title:"The Things Your Father Never Told You", file:"The_Things_Your_Father.html", excerpt:"Or maybe he did, once, in passing, and you held onto that moment for years because it was so rare. Because his approval felt impossible to earn." },
+  { title:"For the Girl", file:"For_The_Girl.html", excerpt:"And you know it. Everyone tells you. Your friends, your family, the voice in your own head that knows better but can't seem to stop." },
+  { title:"You Are More Than", file:"You_Are_More_Than.html", excerpt:"By what you can give. What you can do. How you can help. How you can serve. How you can make other people's lives easier." },
+  { title:"The Things Your Best Friend Never Told You", file:"The_Things_your_Best_Friend.html", excerpt:"They loved you. Genuinely loved you. But sometimes loving you also meant swallowing the bitter taste of comparison." },
+  { title:"The Things Your Sister Never Told You", file:"The_Things_Your_Sister.html", excerpt:"She never said it out loud, but you felt it. In the way she competed with you. In the way she compared herself to you. In the way your successes seemed to hurt her instead of inspire her." },
+  { title:"The Weight of Relationships", file:"The_Weight_Of_Relationships.html", excerpt:"Not dramatically wrong. Not obviously toxic. Not clearly broken. Just… off. Slightly misaligned. Never quite fitting the way you thought they should." },
+  { title:"When Someone Fades Out of Your Life", file:"When_Someone_Fades_Out_Of_Your_Life.html", excerpt:"There are people who don't leave, they just slowly stop showing up. One day, they're laughing with you, calling you, sharing pieces of their world with you…" },
+  { title:"The Exhaustion of Curating a Life You Don't Actually Enjoy", file:"The_Exahaustion_Of_Curating_A_Life_You_Don_t_Actually_Enjoy.html", excerpt:"The aesthetically pleasing photos. The carefully crafted captions. The enviable moments. The life that everyone wants." },
+  { title:"The Day You Realized", file:"The_Day_You_Realized.html", excerpt:"It is not a birthday. It is not a milestone. It is not something you can mark on a calendar." },
+  { title:"Being a Stranger in Your Own Family", file:"Being_A_Stranger.html", excerpt:"You sit at the dinner table surrounded by your family. Your blood. The people who've known you your entire life." },
+  { title:"The Identity Crisis of the High Achiever", file:"The_Identity_Crisis_of_The_High_Achiever.html", excerpt:"The one who got straight A's. The one who won awards. The one everyone was proud of. The one who always had it together." },
+  { title:"The Anatomy of a Breakup With Oneself", file:"The_Anatomy_of_a_Breakup_With_Oneself.html", excerpt:"Nobody talks about this kind of breakup. The one where you don't lose a person. You lose yourself." },
+  { title:"Midnight Conversations With the Soul", file:"Midnight_Converstaions_With_The_Soul.html", excerpt:"The world is asleep, but you're awake. And so am I, your soul. The part of you that only speaks when everything else is quiet." },
+  { title:"Hating the Person You've Had to Become to Survive", file:"Hating_The_Person.html", excerpt:"Not your face. Not your body. But the person behind the eyes. The one staring back at you with tired eyes and a guarded heart." },
+  { title:"I Know You're Tired", file:"I_Know_You_re_Tired.html", excerpt:"I know you're tired. Not the kind of tired that sleep can fix. Not the kind that goes away after a good night's rest or a lazy Sunday morning." },
+  { title:"Look How Far You've Come", file:"Look_How_Far_You_ve_Came.html", excerpt:"I know you're busy looking ahead, worried about where you're going, stressed about where you should be by now. But please, just for a moment, look back." },
+  { title:"It's Time to Forgive Yourself", file:"It_s_Time_To_Forgive_Yourself.html", excerpt:"You replay it over and over. What if you had done it differently? What if you had been better, smarter, stronger, braver? What if you had just known then what you know now?" },
+  { title:"The Parts of Me I Lost Loving You", file:"The_Parts_Of_Me.html", excerpt:"There comes a moment, usually in the quiet after everything has fallen apart, when you finally see how much of yourself you gave away while trying to love someone who didn't know how to hold you." },
+  { title:"Dear Heart, It's Time to Rest", file:"Dear_Heart.html", excerpt:"I know you're tired. I know you've been beating for everyone else for so long that you've forgotten what it feels like to beat just for yourself." },
+  { title:"To the One Reading This in the Dark", file:"To_The_One_Reading_This_In_The_Dark.html", excerpt:"It's late, isn't it? Everyone else is asleep. The world is quiet. And here you are, alone with your thoughts, scrolling through your phone because sleep won't come." },
+  { title:"Waiting for the Other Shoe to Drop", file:"Waiting_For_The_Other_Shoe_To_Drop.html", excerpt:"You got the job. You met someone. You finally achieved the thing you have been working toward. Something in your life is actually going well." },
+  { title:"The Fear That Everyone Will Eventually Leave", file:"The_Fear_That_Everyone.html", excerpt:"Not because they've done anything wrong. Not because they've given you reasons to doubt. But because deep down, you're waiting for them to leave." },
+  { title:"That Empty Feeling After a Productive Day", file:"The_Empty_Feeling_After_a_Productive_Day.html", excerpt:"And now it's night. The day is over. You should feel good. You should feel satisfied. You should feel proud." },
+  { title:"The Late Night Ceiling Stare", file:"The_Late_Night_Ceiling_Stare.html", excerpt:"Everyone else is asleep. The world is quiet. And your brain decides now, right now, is the perfect time to replay every mistake you've ever made." },
+  { title:"Why You Push People Away", file:"Why_You_Push_People_Away.html", excerpt:"Not because you don't need help. But because you need it so badly that accepting it feels terrifying." },
+  { title:"Scrolling to Avoid Your Own Thoughts", file:"Scrolling_To_Avoid.html", excerpt:"You reach for your phone the second you feel uncomfortable. The second there's silence. The second you're alone with something you don't want to feel." },
+  { title:"The Weight Wasn't the Problem", file:"The_Weight_Wasn_t_The_Problem.html", excerpt:"There comes a moment when you finally feel the weight of everything you kept inside — the emotions you swallowed, the truths you silenced, the tears you blinked back." },
+  { title:"Leaving Didn't Hurt Me", file:"Leaving_Didn_t_Hurt_Me.html", excerpt:"There comes a moment when you look back at all the times you stayed — stayed in love, stayed in hope, stayed in pain — and you finally admit the truth." },
+  { title:"I Didn't Lose Them", file:"I_Didn_t_Lose_Them.html", excerpt:"There comes a moment in your healing when you suddenly remember the promises you once made to yourself, the ones whispered late at night when your heart was tired." },
+  { title:"The Things I Wanted to Say", file:"The_Things_I_Wanted_To_say.html", excerpt:"There comes a moment when you finally acknowledge all the words you swallowed, the truths you silenced, the emotions you buried, the questions you were too afraid to ask." },
+  { title:"Loving Them Wasn't the Problem", file:"Loving_Them_Wasn_t_The_Problem.html", excerpt:"There comes a moment when you finally admit that what kept you holding on wasn't the reality of the relationship — it was the hope of what it could be." },
+  { title:"The Boundaries I Should Have Set Sooner", file:"The_Boundaries.html", excerpt:"There comes a moment when you finally look back at all the times you tolerated things you should have walked away from, accepted behaviors you should have confronted." },
+  { title:"The Moments I Pretended Not to Care", file:"The_Moments.html", excerpt:"There comes a moment when you finally face the truth you hid even from yourself — you pretended not to care, not because you felt nothing, but because you felt too much." },
+  { title:"My Heart Was Honest", file:"My_Heart_Was_Honest.html", excerpt:"There comes a moment in your healing when you finally understand that the trust you offered so freely wasn't a mistake — it was a reflection of your purity." },
+  { title:"The Hardest Part Was Choosing Myself", file:"The_Hardest_Part_Was_Choosing_Myself.html", excerpt:"There comes a moment, the quiet kind, the sacred kind, when you finally look at yourself and realize you are no longer the person who begged for clarity or watered down your worth." },
+  { title:"The Strength It Took to Walk Away", file:"The_Strength_It_Took.html", excerpt:"There comes a moment when you finally understand that walking away is not a sign of weakness — it is one of the most powerful acts of self-love you will ever choose." },
+  { title:"The Love I Had to Teach Myself", file:"The_Love_I_Had_To.html", excerpt:"He removed the people who could not love you properly. Not as punishment. Not as cruelty. But as divine protection. He allowed their absence to become your lesson." },
+  { title:"The Strength I Found in Falling Apart", file:"The_Strength_I_Found.html", excerpt:"There is a version of strength the world never talks about — the kind you discover not when you are holding everything together, but when your entire life feels like it's falling." },
+  { title:"The Love That Wasn't Meant for Me", file:"The_Love.html", excerpt:"There comes a moment when you finally recognize that not every love you wanted was meant to stay, and not every person you held onto was meant to walk with you forward." },
+  { title:"The Quiet Bravery of Choosing to Stay", file:"The_Quiet_Bravery_Of_Choosing_To_Stay.html", excerpt:"Not the loud kind. Not the kind that wins awards or gets recognized or makes headlines." },
+  { title:"I Was Grieving a Family That Never Existed", file:"I_Was_Grieving__Family_That_Never_Existed.html", excerpt:"There comes a moment when you finally look back at the dreams you once held so closely — the home you imagined, the life you pictured, the future you quietly sculpted in your mind." },
+  { title:"They Stayed at the Surface", file:"They_Stayed_At_The_Surface.html", excerpt:"There comes a moment when you finally face the truth you tried to avoid — the version of you someone chose to see was never the whole you." },
+  { title:"The Hurt That Finally Made Me Choose Myself", file:"The_Hurt_That_Finally_Made_Me.html", excerpt:"There comes a moment in every woman's life where the hurt becomes too familiar, too repeated, too heavy to pretend it isn't shaping her." },
+  { title:"The People Who Only Loved Me When It Was Convenient", file:"The_People_Who_Only_Loved_Me.html", excerpt:"Some people only loved you when it was convenient for them. They reached for you when they were lonely, when they were bored, when they needed comfort." },
+  { title:"The Things I Settled For", file:"The_Things_I_Settled_For.html", excerpt:"There comes a moment in your healing when you look back at the things you once accepted — the love you tolerated, the silence you excused, the inconsistency you normalized." },
+  { title:"The Kindness I Never Received Back", file:"The_Kindness.html", excerpt:"There comes a moment when you finally allow yourself to see the truth you kept avoiding: you were kind to people who didn't know how to hold that kindness." },
+  { title:"When They've Moved On", file:"When_They_ve_Moved_On.html", excerpt:"There's a very specific kind of heartbreak that comes from watching someone move on while you're still standing in the ruins of everything you felt for them." },
+  { title:"When You're Grieving a Future You Never Got to Live", file:"When_You_re_Grieving_A_Future.html", excerpt:"There are heartbreaks that don't come from losing a person, but from losing the future you imagined with them — the conversations, the life you pictured." },
+  { title:"When You're Tired of Feeling Like Someone's Almost", file:"When_You_re_Tired_Of_Feeling_Like_Someone_s_Almost.html", excerpt:"There's a quiet heartbreak that comes from realizing you were never truly someone's first choice — that you were convenient, comforting, familiar, but not the one." },
+  { title:"The Emotions I Was Never Allowed to Feel", file:"The_Emotions_I_Was_Never_Allowed.html", excerpt:"There comes a moment in your healing when you finally acknowledge that for most of your life, you were not allowed to feel everything you felt." },
+  { title:"The Forgiveness I Gave", file:"The_Forgiveness_I_Gave.html", excerpt:"There comes a moment in your healing when you finally understand how much forgiveness you gave away long before anyone ever asked for it." },
+  { title:"The Day I Realized I Deserved More", file:"The_Day_I_Realized.html", excerpt:"There comes a moment, quiet, subtle, almost sacred, when something in your heart shifts. It doesn't happen through a dramatic heartbreak or a loud goodbye." },
+  { title:"The Love I Thought Would Save Me", file:"The_Love_I_Thought.html", excerpt:"There comes a moment, usually after the tears have dried and the silence has settled, when you finally admit to yourself that you once believed a certain love would save you." },
+  { title:"The Apologies I Never Received", file:"The_Apologies_I_Never_Received.html", excerpt:"There comes a moment in your healing when you finally admit that there are people who should have apologized to you — but never did." },
+  { title:"The Strength I Didn't Know I Had", file:"The_strength_I_Didn_t_Know_I_had.html", excerpt:"There comes a moment when you finally realize that the strength you always admired in others had been quietly living inside you the whole time." },
+  { title:"The Way I Loved — Before I Learned Better", file:"The_Way_I_Loved.html", excerpt:"There comes a moment when you look back at the way you used to love — giving without limits, trusting without hesitation, forgiving without being asked." },
+  { title:"What They Missed In Me", file:"What_They_Missed_In_Me.html", excerpt:"There comes a moment, often long after the heartbreak has settled, when you finally realize that the parts of you someone overlooked were the very parts that made you extraordinary." },
+  { title:"Some Endings Are Just You", file:"Some_Endings_Are_Just_You.html", excerpt:"There comes a moment in your healing when you look back at the love you tried so hard to hold onto and finally see what you couldn't see back then." },
+  { title:"Pain Showed Me Parts of Myself", file:"Pain_Showed_Me_Parts_Of_Myself.html", excerpt:"There comes a moment when you finally look back at the pain you once begged God to take away — the heartbreak, the disappointment, the abandonment — and you realize what it gave you." },
+  { title:"Finding Peace in Goodbyes", file:"Finding_Peace_In_Goodbyes.html", excerpt:"Goodbyes are the hardest when you never saw them coming, when everything felt fine until suddenly it didn't." },
+  { title:"When You're Trying to Forgive Someone", file:"When_You_Are_Trying_To_Forgive_Someone.html", excerpt:"Forgiveness is one of the hardest things a human heart is ever asked to do — not because you're unwilling, but because forgiveness isn't forgetting." },
+  { title:"The Slow, Quiet Process of Letting Go", file:"The_Slow_Quiet_Process_Of_Letting_Go_Of_Someone.html", excerpt:"Letting go isn't a moment, it's a process. A slow, quiet, painful unraveling of feelings that once felt permanent." },
+  { title:"Nothing Ended. I Just Woke Up.", file:"Nothing_Ended.html", excerpt:"There comes a moment, usually long after the dust has settled, when you look back at a love you once held onto so tightly and realize you did not lose it — you outgrew it." },
+];
+
+// Set count
+document.getElementById('wcount').textContent = writings.length;
+
+// Build grid
+const grid = document.getElementById('grid');
+writings.forEach((w, i) => {
+  const a = document.createElement('a');
+  a.className = 'card';
+  a.href = w.file;
+  a.dataset.idx = i;
+  a.innerHTML = `
+    <span class="card-num">${String(i+1).padStart(2,'0')}</span>
+    <span class="card-title">${w.title}</span>
+    <span class="card-arrow"><span class="card-arrow-line"></span>Read</span>
+  `;
+  grid.appendChild(a);
+});
+
+// Hero particles
+const hp = document.getElementById('hp');
+for (let i = 0; i < 24; i++) {
+  const p = document.createElement('div');
+  p.className = 'pt';
+  const s = 1 + Math.random() * 2;
+  p.style.cssText = `left:${Math.random()*100}%;width:${s}px;height:${s}px;animation-duration:${14+Math.random()*18}s;animation-delay:-${Math.random()*20}s;opacity:${.08+Math.random()*.25};`;
+  hp.appendChild(p);
+}
+
+// Scroll reveal
+const cards = document.querySelectorAll('.card');
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('revealed'); ro.unobserve(e.target); }
+  });
+}, { threshold: 0.05 });
+cards.forEach(c => ro.observe(c));
+
+// ── Preview popup ──
+const pv      = document.getElementById('preview');
+const pvTitle = document.getElementById('prev-title');
+const pvEx    = document.getElementById('prev-excerpt');
+const pvUrl   = document.getElementById('prev-url');
+
+let mx = 0, my = 0, hideTimer = null;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  if (pv.classList.contains('show')) position();
+});
+
+function position() {
+  const W = 340, H = pv.offsetHeight || 260;
+  const vw = window.innerWidth, vh = window.innerHeight, m = 16;
+  let x = mx + 24, y = my - H / 2;
+  if (x + W + m > vw) x = mx - W - 24;
+  if (y < m) y = m;
+  if (y + H + m > vh) y = vh - H - m;
+  pv.style.left = x + 'px';
+  pv.style.top  = y + 'px';
+}
+
+function show(w) {
+  clearTimeout(hideTimer);
+  pvTitle.textContent  = w.title;
+  pvEx.textContent     = w.excerpt;
+  pvUrl.textContent    = w.file.replace(/_/g,' ').replace('.html','');
+  position();
+  pv.classList.add('show');
+}
+
+function hide() {
+  hideTimer = setTimeout(() => pv.classList.remove('show'), 80);
+}
+
+cards.forEach(card => {
+  const w = writings[+card.dataset.idx];
+  card.addEventListener('mouseenter', () => show(w));
+  card.addEventListener('mouseleave', hide);
+});
+</script>
+</body>
+</html>

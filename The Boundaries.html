@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Boundaries I Should Have Set Sooner</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0805;
+    --bg2: #0f0b07;
+    --amber: #c8861a;
+    --amber-light: #e8a835;
+    --amber-glow: #f0c060;
+    --cream: #e8dcc8;
+    --cream-dim: #b8a890;
+    --gold: #d4a843;
+    --text: #d0c4b0;
+    --text-dim: #8a7e6e;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 20px;
+    line-height: 1.85;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 8px;
+    height: 8px;
+    background: var(--amber);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, opacity 0.3s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(200, 134, 26, 0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.25s ease, opacity 0.3s;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.4;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 4rem 2rem;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(200,134,26,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 100%, rgba(200,134,26,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 80% 50%, rgba(200,134,26,0.03) 0%, transparent 60%);
+  }
+
+  .hero-lines {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0.12;
+  }
+  .hero-lines::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, var(--amber), transparent);
+    animation: shimmer 4s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  .eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 1.2s 0.3s ease forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    line-height: 0.95;
+    text-align: center;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: fadeUp 1.4s 0.5s ease forwards;
+    position: relative;
+  }
+
+  .hero-title em {
+    display: block;
+    font-style: italic;
+    color: var(--amber-light);
+    font-size: 0.6em;
+    letter-spacing: 0.05em;
+    margin-top: 0.3em;
+  }
+
+  .hero-title .word-i {
+    font-style: italic;
+    color: var(--amber-glow);
+  }
+
+  .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    margin-top: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 1.4s 0.8s ease forwards;
+  }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 1s 1.5s ease forwards;
+  }
+  .scroll-indicator span {
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(180deg, var(--amber), transparent);
+    animation: scrollAnim 2s ease-in-out infinite;
+  }
+  @keyframes scrollAnim {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Ornamental divider */
+  .ornament {
+    text-align: center;
+    color: var(--amber);
+    font-size: 1.2rem;
+    letter-spacing: 0.8em;
+    margin: 3.5rem auto;
+    opacity: 0.6;
+    position: relative;
+  }
+  .ornament::before, .ornament::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 25%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--amber));
+    opacity: 0.3;
+  }
+  .ornament::before { right: calc(50% + 2rem); }
+  .ornament::after { left: calc(50% + 2rem); background: linear-gradient(90deg, var(--amber), transparent); }
+
+  /* Article */
+  .article-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 2rem 8rem;
+  }
+
+  .meta {
+    text-align: center;
+    margin-bottom: 5rem;
+    opacity: 0;
+    animation: fadeUp 1s 1.8s ease forwards;
+  }
+  .meta-author {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .meta-date {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* Dropcap opening */
+  .opening {
+    position: relative;
+    margin-bottom: 3rem;
+  }
+
+  .dropcap::first-letter {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5.5em;
+    font-weight: 600;
+    float: left;
+    line-height: 0.75;
+    margin-right: 0.08em;
+    margin-top: 0.1em;
+    color: var(--amber-light);
+    text-shadow: 0 0 40px rgba(200,134,26,0.3);
+  }
+
+  p {
+    margin-bottom: 2rem;
+    color: var(--text);
+    font-size: 1.05em;
+    font-weight: 400;
+  }
+
+  /* Stanza block */
+  .stanza {
+    margin: 3.5rem 0;
+    padding: 2.5rem 3rem;
+    border-left: 1px solid rgba(200,134,26,0.3);
+    position: relative;
+    background: linear-gradient(135deg, rgba(200,134,26,0.03), transparent);
+  }
+  .stanza::before {
+    content: '\201C';
+    position: absolute;
+    top: -0.5rem;
+    left: 1.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem;
+    color: var(--amber);
+    opacity: 0.2;
+    line-height: 1;
+  }
+
+  .stanza-line {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.15em;
+    line-height: 2;
+    color: var(--cream);
+    letter-spacing: 0.01em;
+  }
+
+  .stanza-line.indent {
+    padding-left: 1.5rem;
+    color: var(--cream-dim);
+    font-size: 1em;
+  }
+
+  /* Key verse — centered pull */
+  .key-verse {
+    text-align: center;
+    margin: 4.5rem auto;
+    max-width: 560px;
+    padding: 3rem 2rem;
+    border-top: 1px solid rgba(200,134,26,0.2);
+    border-bottom: 1px solid rgba(200,134,26,0.2);
+    position: relative;
+  }
+  .key-verse p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5em;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--amber-light);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .key-verse-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(200,134,26,0.05), transparent 70%);
+    pointer-events: none;
+  }
+
+  /* God section */
+  .divine-section {
+    margin: 3rem 0;
+    position: relative;
+  }
+
+  .divine-accent {
+    position: absolute;
+    left: -3rem;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, var(--amber), var(--amber-light), transparent);
+    opacity: 0.3;
+  }
+
+  /* Closing poem */
+  .closing-poem {
+    text-align: center;
+    margin: 5rem auto;
+    padding: 4rem 2rem;
+    position: relative;
+  }
+  .closing-poem::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 70% at center, rgba(200,134,26,0.04), transparent);
+  }
+  .closing-poem .poem-line {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: var(--cream);
+    line-height: 2.2;
+    letter-spacing: 0.02em;
+  }
+  .closing-poem .poem-line.highlight {
+    color: var(--amber-glow);
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    text-shadow: 0 0 30px rgba(200,134,26,0.3);
+  }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid rgba(200,134,26,0.12);
+    padding: 4rem 2rem;
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .footer-ornament {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--amber);
+    opacity: 0.4;
+    margin-bottom: 1.5rem;
+  }
+  .medium-link {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .medium-link a {
+    color: var(--amber);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(200,134,26,0.3);
+    transition: color 0.3s, border-color 0.3s;
+    padding-bottom: 1px;
+  }
+  .medium-link a:hover {
+    color: var(--amber-glow);
+    border-color: var(--amber-glow);
+  }
+  .author-note {
+    margin-top: 1.2rem;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Candle flicker light at top of article */
+  .candlelight {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    opacity: 0.4;
+    margin-bottom: 5rem;
+    animation: flicker 3s ease-in-out infinite;
+  }
+  @keyframes flicker {
+    0%, 100% { opacity: 0.3; }
+    30% { opacity: 0.6; }
+    60% { opacity: 0.25; }
+    80% { opacity: 0.5; }
+  }
+
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    .stanza { padding: 1.5rem 1.5rem; }
+    .dropcap::first-letter { font-size: 4em; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <p class="eyebrow">A letter to yourself</p>
+  <h1 class="hero-title">
+    The<br>Boundaries
+    <em>I Should Have Set Sooner.</em>
+  </h1>
+  <p class="subtitle">by Princess &nbsp;&middot;&nbsp; February 2026</p>
+  <div class="scroll-indicator">
+    <span>Read</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- Article -->
+<article class="article-wrap">
+
+  <div class="candlelight"></div>
+
+  <div class="meta reveal">
+    <div class="meta-author">Princess</div>
+    <div class="meta-date">February 18, 2026 &nbsp;&middot;&nbsp; A reflection</div>
+  </div>
+
+  <div class="ornament reveal">&#10022; &#10022; &#10022;</div>
+
+  <div class="opening reveal">
+    <p class="dropcap">There comes a moment when you finally look back at all the times you tolerated things you should have walked away from, accepted behaviors you should have confronted, gave chances you should not have given, and stayed silent when your heart was begging you to speak. And as painful as that realization is, it is also the moment you awaken. You begin to see that the problem was never your love, it was your lack of boundaries. You were raised to believe that kindness means tolerance, that love means sacrifice, that patience means staying, even when everything inside you felt wrong. And somewhere along the way, you learned to protect everyone except yourself.</p>
+  </div>
+
+  <div class="stanza reveal">
+    <span class="stanza-line">You should have set boundaries the first time someone made you doubt your worth.</span>
+    <span class="stanza-line">The first time someone minimized your feelings.</span>
+    <span class="stanza-line">The first time someone took without giving.</span>
+    <span class="stanza-line">The first time someone expected emotional labor without offering emotional safety.</span>
+    <span class="stanza-line indent">But you did not, not because you were weak, but because your heart believed in giving chances, in being understanding, in hoping people would rise to meet you.</span>
+    <span class="stanza-line indent">You believed that love could fix everything.</span>
+    <span class="stanza-line indent">But now you know: love without boundaries becomes self-betrayal.</span>
+  </div>
+
+  <div class="stanza reveal">
+    <span class="stanza-line">Every time you said "it's okay" when it was not,</span>
+    <span class="stanza-line">every time you forgave too quickly,</span>
+    <span class="stanza-line">every time you stayed quiet to avoid conflict,</span>
+    <span class="stanza-line indent">you were not protecting the relationship,</span>
+    <span class="stanza-line indent">you were abandoning yourself.</span>
+    <span class="stanza-line indent">And that is the part of healing that hurts the most:</span>
+    <span class="stanza-line indent">realizing that you taught people how to treat you by allowing what should have never been allowed.</span>
+  </div>
+
+  <div class="key-verse reveal">
+    <div class="key-verse-glow"></div>
+    <p>Love without boundaries<br>becomes self-betrayal.</p>
+  </div>
+
+  <div class="divine-section reveal">
+    <div class="divine-accent"></div>
+    <p>But God saw all of it. He saw the moments you softened your truth to keep someone close. He saw the way you put your needs last so someone else could feel comfortable. He saw your heart constantly choosing love over self-respect. And in His love, He allowed certain connections to break, not to punish you, but to redirect you back to yourself. He needed you to see your worth. He needed you to learn that boundaries are not walls, they are doors that protect the beauty of your soul.</p>
+  </div>
+
+  <div class="ornament reveal">&#10022;</div>
+
+  <div class="stanza reveal">
+    <span class="stanza-line">One day, My friend, you will set boundaries without shaking.</span>
+    <span class="stanza-line">You will say "no" without guilt.</span>
+    <span class="stanza-line">You will walk away from anything that dims your light.</span>
+    <span class="stanza-line indent">You will choose your peace over attachment, your self-respect over desperation, your future over temporary comfort.</span>
+    <span class="stanza-line indent">And the right people, the ones God sends, will honor those boundaries naturally.</span>
+    <span class="stanza-line indent">They will not test them, resent them, or push against them.</span>
+    <span class="stanza-line indent">They will appreciate them, because they will appreciate <em>you</em>.</span>
+  </div>
+
+  <div class="closing-poem reveal">
+    <span class="poem-line">The boundaries you should have set sooner</span>
+    <span class="poem-line">will become the boundaries</span>
+    <span class="poem-line">that protect the healed, powerful, grounded woman</span>
+    <span class="poem-line highlight">you are becoming now.</span>
+  </div>
+
+  <div class="footer reveal">
+    <div class="footer-ornament">&#10047;</div>
+    <p class="medium-link">Originally published on <a href="https://medium.com/@prvaxis" target="_blank" rel="noopener">Medium</a></p>
+    <p class="author-note">Just a girl named Princess&hellip; dreaming of that one soul who stumbles upon her words and finally feels less alone.</p>
+  </div>
+
+</article>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
